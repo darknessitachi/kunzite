@@ -145,10 +145,12 @@ public final class Series {
         if (obj == null) {
             return false;
         }
+
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Series other = (Series) obj;
+
+        final Series other = (Series) obj;
 
         return Objects.equal(values, other.values);
     }
