@@ -1,4 +1,4 @@
-kunzite
+Kunzite
 =======
 
 Misc ideas
