@@ -86,7 +86,7 @@ public final class InputRow implements Cloneable {
             return false;
         }
 
-        final InputRow other = (InputRow)obj;
+        final InputRow other = (InputRow) obj;
         // don't use Guava equals as it uses identity equality.
         return Arrays.equals(values, other.values);
     }

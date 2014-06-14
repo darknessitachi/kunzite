@@ -143,23 +143,23 @@ public final class InputRowSchema {
             this.name = name;
         }
 
-        public SeriesBuilder from(double start) {
-            this.start = start;
+        public SeriesBuilder from(double from) {
+            start = from;
             return this;
         }
 
-        public SeriesBuilder until(double end) {
-            this.end = end;
+        public SeriesBuilder until(double until) {
+            end = until;
             return this;
         }
 
-        public InputRowSchemaBuilder withStep(double step) {
+        public InputRowSchemaBuilder withStep(double stepValue) {
             // no need to do preconditions here as Series will do necessary checks
-            return builder.with(name, Series.newMinMaxSeries(start, end, step));
+            return builder.with(name, Series.newMinMaxSeries(start, end, stepValue));
         }
 
-        public SeriesBuilder step(double step) {
-            this.step = step;
+        public SeriesBuilder step(double stepValue) {
+            step = stepValue;
             return this;
         }
 
