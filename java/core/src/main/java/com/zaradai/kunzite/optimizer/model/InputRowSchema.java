@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.model;
+package com.zaradai.kunzite.optimizer.model;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -33,11 +33,11 @@ public final class InputRowSchema {
         columns = createColumnList();
     }
 
-    protected List<String> createColumnList() {
+    private List<String> createColumnList() {
         return Lists.newArrayList();
     }
 
-    protected Map<String, InputSpec> createColumnMap() {
+    private Map<String, InputSpec> createColumnMap() {
         return Maps.newHashMap();
     }
 
@@ -91,7 +91,7 @@ public final class InputRowSchema {
     public int getMaxCalculations() {
         int res = 1;
 
-        for(InputSpec spec : columnByName.values()) {
+        for (InputSpec spec : columnByName.values()) {
             res *= spec.getSeries().getSteps();
         }
 
@@ -109,11 +109,15 @@ public final class InputRowSchema {
         columns.add(name);
     }
 
-    public static class InputRowSchemaBuilder {
+    public static final class InputRowSchemaBuilder {
         private final InputRowSchema inputRowSchema;
 
         private InputRowSchemaBuilder() {
             inputRowSchema = new InputRowSchema();
+        }
+
+        public SeriesBuilder withName(String name) {
+            return new SeriesBuilder(this, name);
         }
 
         public InputRowSchemaBuilder with(String name, Series series) {
@@ -124,6 +128,44 @@ public final class InputRowSchema {
 
         public InputRowSchema build() {
             return inputRowSchema;
+        }
+    }
+
+    public static final class SeriesBuilder {
+        private final InputRowSchemaBuilder builder;
+        private final String name;
+        private double start;
+        private double end;
+        private double step;
+
+        private SeriesBuilder(InputRowSchemaBuilder builder, String name) {
+            this.builder = builder;
+            this.name = name;
+        }
+
+        public SeriesBuilder from(double start) {
+            this.start = start;
+            return this;
+        }
+
+        public SeriesBuilder until(double end) {
+            this.end = end;
+            return this;
+        }
+
+        public InputRowSchemaBuilder withStep(double step) {
+            // no need to do preconditions here as Series will do necessary checks
+            return builder.with(name, Series.newMinMaxSeries(start, end, step));
+        }
+
+        public SeriesBuilder step(double step) {
+            this.step = step;
+            return this;
+        }
+
+        public InputRowSchemaBuilder withSteps(int numSteps) {
+            // no need to do preconditions here as Series will do necessary checks
+            return builder.with(name, Series.newStepSeries(start, step, numSteps));
         }
     }
 }

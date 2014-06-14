@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.model;
+package com.zaradai.kunzite.optimizer.model;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;

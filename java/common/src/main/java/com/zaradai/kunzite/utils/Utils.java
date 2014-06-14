@@ -16,12 +16,13 @@
 package com.zaradai.kunzite.utils;
 
 public final class Utils {
-    private Utils() {
+    private static final double EPSILON = 5.96e-08;
 
+    private Utils() {
     }
 
     public static boolean areApproxSame(double a, double b) {
-        return areApproxSame(a, b, 5.96e-08);
+        return areApproxSame(a, b, EPSILON);
     }
 
     public static boolean areApproxSame(double a, double b, double epsilon) {

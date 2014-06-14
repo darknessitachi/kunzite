@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.model;
+package com.zaradai.kunzite.optimizer.model;
 
+import com.zaradai.kunzite.optimizer.model.Series;
 import org.junit.Before;
 import org.junit.Test;
 
