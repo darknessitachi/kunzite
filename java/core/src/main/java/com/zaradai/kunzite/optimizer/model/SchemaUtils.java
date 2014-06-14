@@ -21,6 +21,8 @@ public final class SchemaUtils {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private static final int MAX_UNSIGNED_SHORT_VALUE = 0xFFFF;
     private static final int MAX_UNSIGNED_BYTE_VALUE = 0xFF;
+    private static final int NUM_NIBBLE_IN_SHORT = 4;
+    private static final int NUM_NIBBLE_IN_BYTE = 2;
 
 
     private SchemaUtils() {
@@ -28,28 +30,28 @@ public final class SchemaUtils {
     }
 
     public static String intArrayToHexUsingShort(int[] data) {
-        char[] hexChars = new char[data.length * 4];
+        char[] hexChars = new char[data.length * NUM_NIBBLE_IN_SHORT];
 
         for (int j = 0; j < data.length; j++) {
             Preconditions.checkArgument(data[j] <= MAX_UNSIGNED_SHORT_VALUE);
 
-            hexChars[j * 4] = HEX_ARRAY[(data[j] & 0xF000) >>> 12];
-            hexChars[j * 4 + 1] = HEX_ARRAY[(data[j] & 0x0F00) >>> 8];
-            hexChars[j * 4 + 2] = HEX_ARRAY[(data[j] & 0x00F0) >>> 4];
-            hexChars[j * 4 + 3] = HEX_ARRAY[data[j] & 0x0F];
+            hexChars[j * NUM_NIBBLE_IN_SHORT] = HEX_ARRAY[(data[j] & 0xF000) >>> 12];
+            hexChars[j * NUM_NIBBLE_IN_SHORT + 1] = HEX_ARRAY[(data[j] & 0x0F00) >>> 8];
+            hexChars[j * NUM_NIBBLE_IN_SHORT + 2] = HEX_ARRAY[(data[j] & 0x00F0) >>> 4];
+            hexChars[j * NUM_NIBBLE_IN_SHORT + 3] = HEX_ARRAY[data[j] & 0x0F];
         }
         return new String(hexChars);
     }
 
     public static String intArrayToHexUsingByte(int[] data) {
-        char[] hexChars = new char[data.length * 2];
+        char[] hexChars = new char[data.length * NUM_NIBBLE_IN_BYTE];
         int v;
         for (int j = 0; j < data.length; j++) {
             Preconditions.checkArgument(data[j] <= MAX_UNSIGNED_BYTE_VALUE);
 
             v = data[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+            hexChars[j * NUM_NIBBLE_IN_BYTE] = HEX_ARRAY[v >>> 4];
+            hexChars[j * NUM_NIBBLE_IN_BYTE + 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
     }
