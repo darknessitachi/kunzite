@@ -33,6 +33,7 @@ public class InputRowTest {
     public static final int TEST_VALUE_1 = 4;
     public static final int TEST_VALUE_2 = 2;
     private static final int TEST_VALUE_3 = 6;
+    private static final String INPUT_KEY = "000400020006";
 
     private InputRow uut;
 
@@ -126,6 +127,12 @@ public class InputRowTest {
         uut.setValue(TEST_1, newValue);
 
         assertThat(uut.getValue(TEST_1), is(newValue));
+    }
+
+    @Test
+    public void shouldGetInputKey() throws Exception {
+        assertThat(uut.getInputKey(), is(INPUT_KEY));
+
     }
 
     @Test

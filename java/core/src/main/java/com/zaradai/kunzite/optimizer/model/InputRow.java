@@ -68,6 +68,14 @@ public final class InputRow implements Cloneable {
     }
 
     /**
+     * Returns a compressed string value of Input value
+     * @return
+     */
+    public String getInputKey() {
+        return SchemaUtils.intArrayToHexUsingShort(values);
+    }
+
+    /**
      * Hash code will only take into account the input rows positional values.
      * @return
      */
