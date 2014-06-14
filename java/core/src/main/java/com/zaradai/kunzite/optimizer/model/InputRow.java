@@ -100,7 +100,7 @@ public final class InputRow implements Cloneable {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         InputRow res = fromSchema(schema);
         System.arraycopy(values, 0, res.values, 0, values.length);
 

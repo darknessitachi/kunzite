@@ -80,7 +80,7 @@ public final class OutputRow implements Cloneable {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         OutputRow res = fromSchema(schema);
         System.arraycopy(values, 0, res.values, 0, values.length);
 
