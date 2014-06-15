@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.optimizer.config;
+package com.zaradai.kunzite.optimizer.data;
 
-public interface Configuration {
-    int getMaxCacheSize();
-    int getEvaluatorThreadSize();
-    int getResultRingSize();     // default 1048576
-    int getRequestRingSize();    // default 1048576
+public class NoDataSetException extends Exception {
+    public NoDataSetException(String message) {
+        super(message);
+    }
+
+    public NoDataSetException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

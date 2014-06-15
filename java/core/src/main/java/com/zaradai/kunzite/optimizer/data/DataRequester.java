@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.optimizer.config;
+package com.zaradai.kunzite.optimizer.data;
 
-public interface Configuration {
-    int getMaxCacheSize();
-    int getEvaluatorThreadSize();
-    int getResultRingSize();     // default 1048576
-    int getRequestRingSize();    // default 1048576
+import com.zaradai.kunzite.optimizer.eval.Evaluator;
+import com.zaradai.kunzite.optimizer.model.InputRow;
+import com.zaradai.kunzite.optimizer.model.Row;
+
+import java.util.UUID;
+
+public interface DataRequester {
+    UUID getId();
+    void request(InputRow row, Class<? extends Evaluator> evaluator);
+    void addResult(Row row);
+    void addListener(ResultListener listener);
 }

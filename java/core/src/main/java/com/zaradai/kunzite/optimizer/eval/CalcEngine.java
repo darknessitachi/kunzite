@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.optimizer.config;
+package com.zaradai.kunzite.optimizer.eval;
 
-public interface Configuration {
-    int getMaxCacheSize();
-    int getEvaluatorThreadSize();
-    int getResultRingSize();     // default 1048576
-    int getRequestRingSize();    // default 1048576
+import com.google.common.util.concurrent.Service;
+import com.zaradai.kunzite.optimizer.data.DataManager;
+import com.zaradai.kunzite.optimizer.data.DataRequest;
+
+public interface CalcEngine extends Service {
+    void calculate(DataRequest request);
+    void setDataManager(DataManager dataManager);
 }

@@ -22,11 +22,18 @@ public final class Row implements Cloneable {
     private InputRow input;
     private OutputRow output;
 
+    private Row() {
+
+    }
+
     private Row(InputRow input, OutputRow output) {
         this.input = input;
         this.output = output;
     }
 
+    public static Row newInstance() {
+        return new Row();
+    }
     public static Row fromSchema(RowSchema schema) {
         Preconditions.checkNotNull(schema, "Invalid schema specified");
 
@@ -52,5 +59,13 @@ public final class Row implements Cloneable {
 
     public OutputRow getOutput() {
         return output;
+    }
+
+    public void setInput(InputRow input) {
+        this.input = input;
+    }
+
+    public void setOutput(OutputRow output) {
+        this.output = output;
     }
 }

@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.optimizer.config;
+package com.zaradai.kunzite.optimizer.eval;
 
-public interface Configuration {
-    int getMaxCacheSize();
-    int getEvaluatorThreadSize();
-    int getResultRingSize();     // default 1048576
-    int getRequestRingSize();    // default 1048576
+public interface EvaluatorFactory {
+    Evaluator create(Class<? extends Evaluator> clazz);
 }
