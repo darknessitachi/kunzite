@@ -13,15 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.optimizer.config;
+package com.zaradai.kunzite.optimizer.tactic;
 
-public interface Configuration {
-    int getMaxCacheSize();
-    int getEvaluatorThreadSize();
-    int getResultRingSize();     // default 1048576
-    int getRequestRingSize();    // default 1048576
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
-    int getFloodBatchSize();    // default say 100
+public class DynamicTacticFactory implements OptimizerTacticFactory {
+    private final Injector injector;
 
-    int getNumShotgunClimbers();    // random spread of 6 would be a sound idea
+    @Inject
+    DynamicTacticFactory(Injector injector) {
+        this.injector = injector;
+    }
+
+    @Override
+    public OptimizerTactic create(Class<? extends OptimizerTactic> clazz) {
+        return injector.getInstance(clazz);
+    }
 }

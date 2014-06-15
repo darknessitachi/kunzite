@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.optimizer.config;
+package com.zaradai.kunzite.optimizer.tactic;
 
-public interface Configuration {
-    int getMaxCacheSize();
-    int getEvaluatorThreadSize();
-    int getResultRingSize();     // default 1048576
-    int getRequestRingSize();    // default 1048576
+import com.zaradai.kunzite.optimizer.eval.Evaluator;
+import com.zaradai.kunzite.optimizer.model.InputRow;
+import com.zaradai.kunzite.optimizer.model.InputRowSchema;
 
-    int getFloodBatchSize();    // default say 100
-
-    int getNumShotgunClimbers();    // random spread of 6 would be a sound idea
+public interface OptimizerTactic {
+    String getName();
+    OptimizerResult optimize(boolean wantMaxima, InputRowSchema schema, Class<? extends Evaluator> evaluator, InputRow start, String target) throws Exception;
 }
