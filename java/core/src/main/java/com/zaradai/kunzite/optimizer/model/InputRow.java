@@ -83,12 +83,6 @@ public final class InputRow implements Cloneable {
         return schema;
     }
 
-    public void reset() {
-        for (int i = 0; i < values.length; ++i) {
-            values[i] = 0;
-        }
-    }
-
     /**
      * Hash code will only take into account the input rows positional values.
      * @return
