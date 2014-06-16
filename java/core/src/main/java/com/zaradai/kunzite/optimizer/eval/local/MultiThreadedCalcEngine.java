@@ -17,7 +17,7 @@ package com.zaradai.kunzite.optimizer.eval.local;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.zaradai.kunzite.optimizer.config.Configuration;
+import com.zaradai.kunzite.optimizer.config.OptimizerConfiguration;
 import com.zaradai.kunzite.optimizer.data.DataRequest;
 import com.zaradai.kunzite.optimizer.eval.Evaluator;
 import com.zaradai.kunzite.optimizer.eval.EvaluatorFactory;
@@ -37,7 +37,7 @@ public class MultiThreadedCalcEngine extends AbstractCalcEngine {
     private final int numThreads;
 
     @Inject
-    MultiThreadedCalcEngine(EvaluatorFactory evaluatorFactory, Configuration configuration) {
+    MultiThreadedCalcEngine(EvaluatorFactory evaluatorFactory, OptimizerConfiguration configuration) {
         super(evaluatorFactory);
         this.numThreads = configuration.getEvaluatorThreadSize();
         executorService = createExecutor();

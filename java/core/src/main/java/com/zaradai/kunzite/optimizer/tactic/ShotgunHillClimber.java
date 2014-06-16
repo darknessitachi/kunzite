@@ -18,7 +18,7 @@ package com.zaradai.kunzite.optimizer.tactic;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ServiceManager;
 import com.google.inject.Inject;
-import com.zaradai.kunzite.optimizer.config.Configuration;
+import com.zaradai.kunzite.optimizer.config.OptimizerConfiguration;
 import com.zaradai.kunzite.optimizer.eval.Evaluator;
 import com.zaradai.kunzite.optimizer.model.InputRow;
 import com.zaradai.kunzite.optimizer.model.InputRowSchema;
@@ -39,7 +39,7 @@ public class ShotgunHillClimber implements OptimizerTactic {
     private ServiceManager serviceManager;
 
     @Inject
-    ShotgunHillClimber(OptimizerTacticFactory factory, Configuration configuration) {
+    ShotgunHillClimber(OptimizerTacticFactory factory, OptimizerConfiguration configuration) {
         this.factory = factory;
         this.numShotgunClimbers = configuration.getNumShotgunClimbers();
         executorService = createExecutorService();

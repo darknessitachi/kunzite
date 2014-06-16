@@ -24,7 +24,7 @@ import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.EventTranslatorOneArg;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import com.zaradai.kunzite.optimizer.config.Configuration;
+import com.zaradai.kunzite.optimizer.config.OptimizerConfiguration;
 import com.zaradai.kunzite.optimizer.eval.Evaluator;
 import com.zaradai.kunzite.optimizer.model.InputRow;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class DisruptorDataRequestManager implements DataRequestManager, EventHan
     private RequestListener listener;
 
     @Inject
-    DisruptorDataRequestManager(DataRequesterFactory factory, Configuration configuration) {
+    DisruptorDataRequestManager(DataRequesterFactory factory, OptimizerConfiguration configuration) {
         this.factory = factory;
         requesterById = createRequesterMap();
         executorService = createExecutorService();

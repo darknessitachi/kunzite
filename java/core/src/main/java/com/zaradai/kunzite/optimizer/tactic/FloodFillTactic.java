@@ -17,7 +17,7 @@ package com.zaradai.kunzite.optimizer.tactic;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.zaradai.kunzite.optimizer.config.Configuration;
+import com.zaradai.kunzite.optimizer.config.OptimizerConfiguration;
 import com.zaradai.kunzite.optimizer.data.DataRequestManager;
 import com.zaradai.kunzite.optimizer.model.InputRow;
 import com.zaradai.kunzite.optimizer.model.InputRowGenerator;
@@ -33,7 +33,7 @@ public final class FloodFillTactic extends AbstractTactic {
     private InputRow toSend;
 
     @Inject
-    FloodFillTactic(DataRequestManager dataRequestManager, Configuration configuration) {
+    FloodFillTactic(DataRequestManager dataRequestManager, OptimizerConfiguration configuration) {
         super(dataRequestManager);
         floodBatchSize = configuration.getFloodBatchSize();
     }

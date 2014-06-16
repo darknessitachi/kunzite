@@ -22,7 +22,7 @@ import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.EventTranslatorOneArg;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import com.zaradai.kunzite.optimizer.config.Configuration;
+import com.zaradai.kunzite.optimizer.config.OptimizerConfiguration;
 import com.zaradai.kunzite.optimizer.eval.Evaluator;
 import com.zaradai.kunzite.optimizer.model.InputRow;
 import com.zaradai.kunzite.optimizer.model.Row;
@@ -50,7 +50,7 @@ public class DisruptorDataRequester implements DataRequester, EventHandler<Row>,
     private ResultListener listener;
 
     @Inject
-    DisruptorDataRequester(DataRequestManager dataRequestManager, Configuration configuration) {
+    DisruptorDataRequester(DataRequestManager dataRequestManager, OptimizerConfiguration configuration) {
         this.dataRequestManager = dataRequestManager;
         id = UUID.randomUUID();
         executorService = createExecutorService();

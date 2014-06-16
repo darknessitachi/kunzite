@@ -15,7 +15,7 @@
  */
 package com.zaradai.kunzite.optimizer.data.dataset.cache.memory;
 
-import com.zaradai.kunzite.optimizer.config.Configuration;
+import com.zaradai.kunzite.optimizer.config.OptimizerConfiguration;
 import com.zaradai.kunzite.optimizer.model.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,13 +36,13 @@ public class InMemoryDataCacheTest {
     Map<InputRow, Row> cache;
     private InMemoryDataCache uut;
     private int createdCacheSize;
-    private Configuration configuration;
+    private OptimizerConfiguration configuration;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        configuration = mock(Configuration.class);
+        configuration = mock(OptimizerConfiguration.class);
         when(configuration.getMaxCacheSize()).thenReturn(CACHE_SIZE);
         uut = new InMemoryDataCache(configuration) {
             @Override

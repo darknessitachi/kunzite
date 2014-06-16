@@ -16,7 +16,7 @@
 package com.zaradai.kunzite.optimizer.data.dataset.cache.memory;
 
 import com.google.inject.Inject;
-import com.zaradai.kunzite.optimizer.config.Configuration;
+import com.zaradai.kunzite.optimizer.config.OptimizerConfiguration;
 import com.zaradai.kunzite.optimizer.data.dataset.cache.DataCache;
 import com.zaradai.kunzite.optimizer.model.InputRow;
 import com.zaradai.kunzite.optimizer.model.Row;
@@ -29,7 +29,7 @@ public class InMemoryDataCache implements DataCache {
     private final Map<InputRow, Row> cache;
 
     @Inject
-    InMemoryDataCache(Configuration configuration) {
+    InMemoryDataCache(OptimizerConfiguration configuration) {
         cache = createCache(configuration.getMaxCacheSize());
     }
 

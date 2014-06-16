@@ -15,7 +15,7 @@
  */
 package com.zaradai.kunzite.optimizer.config;
 
-public interface Configuration {
+public interface OptimizerConfiguration {
     int getMaxCacheSize();
     int getEvaluatorThreadSize();
     int getResultRingSize();     // default 1048576
