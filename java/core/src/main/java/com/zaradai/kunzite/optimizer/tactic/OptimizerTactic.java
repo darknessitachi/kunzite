@@ -21,5 +21,6 @@ import com.zaradai.kunzite.optimizer.model.InputRowSchema;
 
 public interface OptimizerTactic {
     String getName();
-    OptimizerResult optimize(boolean wantMaxima, InputRowSchema schema, Class<? extends Evaluator> evaluator, InputRow start, String target) throws Exception;
+    OptimizerResult optimize(boolean wantMaxima, InputRowSchema schema, Class<? extends Evaluator> evaluator,
+                             InputRow start, String target) throws Exception;
 }

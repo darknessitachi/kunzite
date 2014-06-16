@@ -17,6 +17,9 @@ package com.zaradai.kunzite.optimizer.data.dataset;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.zaradai.kunzite.optimizer.eval.Evaluator;
+import com.zaradai.kunzite.optimizer.model.InputRowSchema;
+import com.zaradai.kunzite.optimizer.model.OutputRowSchema;
 import org.joda.time.DateTime;
 
 import java.net.InetAddress;
@@ -31,6 +34,9 @@ public final class DataSetContext {
     private String createdBy;
     private String createdHost;
     private String version;
+    private InputRowSchema inputSchema;
+    private OutputRowSchema outputSchema;
+    private Class<? extends Evaluator> evaluator;
 
     public String getName() {
         return name;
@@ -86,6 +92,30 @@ public final class DataSetContext {
 
     private void setVersion(String version) {
         this.version = version;
+    }
+
+    public InputRowSchema getInputSchema() {
+        return inputSchema;
+    }
+
+    private void setInputSchema(InputRowSchema inputSchema) {
+        this.inputSchema = inputSchema;
+    }
+
+    public OutputRowSchema getOutputSchema() {
+        return outputSchema;
+    }
+
+    private void setOutputSchema(OutputRowSchema outputSchema) {
+        this.outputSchema = outputSchema;
+    }
+
+    public Class<? extends Evaluator> getEvaluator() {
+        return evaluator;
+    }
+
+    private void setEvaluator(Class<? extends Evaluator> evaluator) {
+        this.evaluator = evaluator;
     }
 
     @Override
@@ -157,6 +187,21 @@ public final class DataSetContext {
 
         public ContextBuilder host(String host) {
             context.setCreatedHost(host);
+            return this;
+        }
+
+        public ContextBuilder input(InputRowSchema inputRowSchema) {
+            context.setInputSchema(inputRowSchema);
+            return this;
+        }
+
+        public ContextBuilder output(OutputRowSchema outputRowSchema) {
+            context.setOutputSchema(outputRowSchema);
+            return this;
+        }
+
+        public ContextBuilder evaluator(Class<? extends Evaluator> evaluator) {
+            context.setEvaluator(evaluator);
             return this;
         }
 

@@ -59,7 +59,7 @@ public class MultiThreadedCalcEngine extends AbstractCalcEngine {
     @Override
     protected void shutDown() throws Exception {
         executorService.shutdown();
-        if (executorService.awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS) == false) {
+        if (!executorService.awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
             LOGGER.debug("Unable to shutdown calc threads, forcing shutdown");
             executorService.shutdownNow();
         }

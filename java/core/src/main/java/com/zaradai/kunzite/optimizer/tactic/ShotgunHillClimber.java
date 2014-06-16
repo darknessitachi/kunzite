@@ -55,7 +55,9 @@ public class ShotgunHillClimber implements OptimizerTactic {
     }
 
     @Override
-    public OptimizerResult optimize(final boolean wantMaxima, final InputRowSchema schema, final Class<? extends Evaluator> evaluator, final InputRow start, final String target) throws Exception {
+    public OptimizerResult optimize(final boolean wantMaxima, final InputRowSchema schema,
+                                    final Class<? extends Evaluator> evaluator, final InputRow start,
+                                    final String target) throws Exception {
         List<Future<OptimizerResult>> resultFutures = Lists.newArrayList();
 
         for (int i = 0; i < numShotgunClimbers; ++i) {
@@ -71,17 +73,18 @@ public class ShotgunHillClimber implements OptimizerTactic {
         return processOptimizations(resultFutures, wantMaxima, target);
     }
 
-    private OptimizerResult processOptimizations(List<Future<OptimizerResult>> resultFutures, boolean wantMaxima, String target) throws Exception {
-        OptimizerResult result = OptimizerResult.newInstance(target, wantMaxima);
+    private OptimizerResult processOptimizations(List<Future<OptimizerResult>> resultFutures, boolean wantMaxima,
+                                                 String target) throws Exception {
+        OptimizerResult aggregateResult = OptimizerResult.newInstance(target, wantMaxima);
         // Todo: Use a completion service to process newest results
         for (Future<OptimizerResult> resultFuture : resultFutures) {
             OptimizerResult res = resultFuture.get();
             // update if better
-            result.testValue(res.getOptimizedRow());
-            result.setGenerations(result.getGenerations() + res.getGenerations());
-            result.setCalculations(result.getCalculations() + res.getCalculations());
+            aggregateResult.testValue(res.getOptimizedRow());
+            aggregateResult.setGenerations(result.getGenerations() + res.getGenerations());
+            aggregateResult.setCalculations(result.getCalculations() + res.getCalculations());
         }
 
-        return result;
+        return aggregateResult;
     }
 }

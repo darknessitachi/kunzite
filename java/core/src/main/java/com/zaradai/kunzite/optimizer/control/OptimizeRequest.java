@@ -26,14 +26,16 @@ public final class OptimizeRequest {
     private final boolean lookForMaxima;
     private final InputRow start;
 
-    private OptimizeRequest(Class<? extends OptimizerTactic> tactic, String target, boolean lookForMaxima, InputRow start) {
+    private OptimizeRequest(Class<? extends OptimizerTactic> tactic, String target, boolean lookForMaxima,
+                            InputRow start) {
         this.tactic = tactic;
         this.target = target;
         this.lookForMaxima = lookForMaxima;
         this.start = start;
     }
 
-    public static OptimizeRequest newRequest(Class<? extends OptimizerTactic> tactic, String target, boolean lookForMaxima, InputRow start) {
+    public static OptimizeRequest newRequest(Class<? extends OptimizerTactic> tactic, String target,
+                                             boolean lookForMaxima, InputRow start) {
         Preconditions.checkNotNull(tactic, "Invalid tactic specified");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(target), "No target specified");
         Preconditions.checkNotNull(start, "No start position specified");

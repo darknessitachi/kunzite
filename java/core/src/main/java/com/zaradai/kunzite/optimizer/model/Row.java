@@ -34,6 +34,18 @@ public final class Row implements Cloneable {
     public static Row newInstance() {
         return new Row();
     }
+
+    public static Row newInstance(InputRow inputRow, OutputRow outputRow) {
+        Preconditions.checkNotNull(inputRow, "Invalid input specified");
+        Preconditions.checkNotNull(outputRow, "Invalid output specified");
+
+        Row res = new Row();
+        res.setInput(inputRow);
+        res.setOutput(outputRow);
+
+        return res;
+    }
+
     public static Row fromSchema(RowSchema schema) {
         Preconditions.checkNotNull(schema, "Invalid schema specified");
 

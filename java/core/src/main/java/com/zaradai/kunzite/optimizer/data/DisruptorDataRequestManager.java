@@ -35,7 +35,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class DisruptorDataRequestManager implements DataRequestManager, EventHandler<DataRequest>, EventTranslatorOneArg<DataRequest, DataRequest> {
+public class DisruptorDataRequestManager implements DataRequestManager, EventHandler<DataRequest>,
+        EventTranslatorOneArg<DataRequest, DataRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DisruptorDataRequestManager.class);
 
     private final Map<UUID, DataRequester> requesterById;
@@ -56,7 +57,8 @@ public class DisruptorDataRequestManager implements DataRequestManager, EventHan
         this.factory = factory;
         requesterById = createRequesterMap();
         executorService = createExecutorService();
-        disruptor = new Disruptor<DataRequest>(FACTORY, configuration.getRequestRingSize(), executorService, ProducerType.MULTI, new BusySpinWaitStrategy());
+        disruptor = new Disruptor<DataRequest>(FACTORY, configuration.getRequestRingSize(), executorService,
+                ProducerType.MULTI, new BusySpinWaitStrategy());
         disruptor.handleEventsWith(this);
         disruptor.start();
     }
@@ -98,8 +100,8 @@ public class DisruptorDataRequestManager implements DataRequestManager, EventHan
     }
 
     @Override
-    public void addListener(RequestListener listener) {
-        this.listener = listener;
+    public void addListener(RequestListener requestListener) {
+        listener = requestListener;
     }
 
     private void logStaleResult(UUID requestId) {

@@ -13,13 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.optimizer.eval;
+package com.zaradai.kunzite.optimizer.data.matrix;
 
-import com.google.common.util.concurrent.Service;
-import com.zaradai.kunzite.optimizer.data.DataManager;
-import com.zaradai.kunzite.optimizer.data.DataRequest;
+import com.google.common.collect.Maps;
 
-public interface CalcEngine extends Service {
-    void calculate(DataRequest request);
-    void setDataManager(DataManager dataManager);
+import java.util.Map;
+
+public class SparseMatrix<T> {
+    private final Map<Pair, T> values;
+
+    public SparseMatrix() {
+        values = createMap();
+    }
+
+    protected Map<Pair, T> createMap() {
+        return Maps.newHashMap();
+    }
+
+    public T get(int x, int y) {
+        return values.get(Pair.newPair(x, y));
+    }
+
+    public void set(int x, int y, T value) {
+        values.put(Pair.newPair(x, y), value);
+    }
 }

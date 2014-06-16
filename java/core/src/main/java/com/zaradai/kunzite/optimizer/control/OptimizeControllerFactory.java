@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.optimizer.eval;
+package com.zaradai.kunzite.optimizer.control;
 
-import com.google.common.util.concurrent.Service;
-import com.zaradai.kunzite.optimizer.data.DataManager;
-import com.zaradai.kunzite.optimizer.data.DataRequest;
+import com.zaradai.kunzite.optimizer.data.dataset.DataSet;
 
-public interface CalcEngine extends Service {
-    void calculate(DataRequest request);
-    void setDataManager(DataManager dataManager);
+public interface OptimizeControllerFactory {
+    OptimizeController create(DataSet dataSet);
 }

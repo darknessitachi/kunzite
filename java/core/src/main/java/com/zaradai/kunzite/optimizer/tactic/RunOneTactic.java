@@ -24,7 +24,7 @@ import com.zaradai.kunzite.optimizer.model.Row;
 import java.util.List;
 
 public class RunOneTactic extends AbstractTactic {
-    final static String OPTIMIZER_NAME = "Run One";
+    static final String OPTIMIZER_NAME = "Run One";
 
     @Inject
     RunOneTactic(DataRequestManager dataRequestManager) {

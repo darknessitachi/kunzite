@@ -54,7 +54,8 @@ public class DisruptorDataRequester implements DataRequester, EventHandler<Row>,
         this.dataRequestManager = dataRequestManager;
         id = UUID.randomUUID();
         executorService = createExecutorService();
-        disruptor = new Disruptor<Row>(FACTORY, configuration.getResultRingSize(), executorService, ProducerType.MULTI, new BusySpinWaitStrategy());
+        disruptor = new Disruptor<Row>(FACTORY, configuration.getResultRingSize(), executorService,
+                ProducerType.MULTI, new BusySpinWaitStrategy());
         disruptor.handleEventsWith(this);
         disruptor.start();
     }
@@ -84,8 +85,8 @@ public class DisruptorDataRequester implements DataRequester, EventHandler<Row>,
     }
 
     @Override
-    public void addListener(ResultListener listener) {
-        this.listener = listener;
+    public void addListener(ResultListener resultListener) {
+        listener = resultListener;
     }
 
     @Override

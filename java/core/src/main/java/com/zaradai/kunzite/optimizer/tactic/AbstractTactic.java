@@ -52,13 +52,16 @@ public abstract class AbstractTactic implements OptimizerTactic, ResultListener 
     }
 
     @Override
-    public OptimizerResult optimize(boolean wantMaxima, InputRowSchema schema, Class<? extends Evaluator> evaluator, InputRow start, String target) throws InterruptedException {
-        this.schema = schema;
-        this.evaluator = evaluator;
+    public OptimizerResult optimize(boolean wantMaxima, InputRowSchema inputRowSchema,
+                                    Class<? extends Evaluator> eval, InputRow startingRow, String target)
+            throws InterruptedException {
+        schema = inputRowSchema;
+        evaluator = eval;
         optimizerResult = OptimizerResult.newInstance(target, wantMaxima);
-        this.start = start;
+        start = startingRow;
         // setup the counters
-        processed = generations = 0;
+        processed = 0;
+        generations = 0;
         processedBuffer.clear();
         // setup the barrier
         barrier = createBarrier();

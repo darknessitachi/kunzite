@@ -97,4 +97,8 @@ public final class OutputRow implements Cloneable {
 
         return helper.toString();
     }
+
+    public OutputRowSchema getSchema() {
+        return schema;
+    }
 }

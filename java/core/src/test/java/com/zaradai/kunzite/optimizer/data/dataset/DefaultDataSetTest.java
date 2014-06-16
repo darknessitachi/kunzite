@@ -17,6 +17,7 @@ package com.zaradai.kunzite.optimizer.data.dataset;
 
 import com.zaradai.kunzite.optimizer.data.dataset.cache.DataCache;
 import com.zaradai.kunzite.optimizer.data.dataset.driver.DataSetDriver;
+import com.zaradai.kunzite.optimizer.data.matrix.MatrixManagerFactory;
 import com.zaradai.kunzite.optimizer.model.InputRowSchema;
 import com.zaradai.kunzite.optimizer.model.OutputRowSchema;
 import com.zaradai.kunzite.optimizer.model.Row;
@@ -46,6 +47,7 @@ public class DefaultDataSetTest {
     private List<DataSetUpdateListener> listenList;
     @Mock
     private Iterator<Row> iterator;
+    private MatrixManagerFactory matrixManagerFactory;
 
     @Before
     public void setUp() throws Exception {
@@ -53,8 +55,10 @@ public class DefaultDataSetTest {
 
         cache = mock(DataCache.class);
         dataSetDriver = mock(DataSetDriver.class);
+        matrixManagerFactory = mock(MatrixManagerFactory.class);
+
         dataSetContext = DataSetContext.builder().name("test").build();
-        uut = new DefaultDataSet(cache, dataSetDriver, dataSetContext);
+        uut = new DefaultDataSet(cache, matrixManagerFactory, dataSetDriver, dataSetContext);
     }
 
     @Test
@@ -64,7 +68,7 @@ public class DefaultDataSetTest {
 
     @Test
     public void shouldRegisterListeners() throws Exception {
-        uut = new DefaultDataSet(cache, dataSetDriver, dataSetContext) {
+        uut = new DefaultDataSet(cache, matrixManagerFactory, dataSetDriver, dataSetContext) {
             @Override
             protected List<DataSetUpdateListener> createListenerList() {
                 return listenList;
@@ -83,7 +87,7 @@ public class DefaultDataSetTest {
         final Lock lock = mock(Lock.class);
         final ReadWriteLock readWriteLock = mock(ReadWriteLock.class);
         when(readWriteLock.writeLock()).thenReturn(lock);
-        uut = new DefaultDataSet(cache, dataSetDriver, dataSetContext) {
+        uut = new DefaultDataSet(cache, matrixManagerFactory, dataSetDriver, dataSetContext) {
             @Override
             protected List<DataSetUpdateListener> createListenerList() {
                 return listenList;
@@ -104,7 +108,7 @@ public class DefaultDataSetTest {
 
     @Test
     public void shouldUnRegisterListeners() throws Exception {
-        uut = new DefaultDataSet(cache, dataSetDriver, dataSetContext) {
+        uut = new DefaultDataSet(cache, matrixManagerFactory, dataSetDriver, dataSetContext) {
             @Override
             protected List<DataSetUpdateListener> createListenerList() {
                 return listenList;
@@ -123,7 +127,7 @@ public class DefaultDataSetTest {
         final Lock lock = mock(Lock.class);
         final ReadWriteLock readWriteLock = mock(ReadWriteLock.class);
         when(readWriteLock.writeLock()).thenReturn(lock);
-        uut = new DefaultDataSet(cache, dataSetDriver, dataSetContext) {
+        uut = new DefaultDataSet(cache, matrixManagerFactory, dataSetDriver, dataSetContext) {
             @Override
             protected List<DataSetUpdateListener> createListenerList() {
                 return listenList;

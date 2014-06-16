@@ -13,13 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.optimizer.eval;
+package com.zaradai.kunzite.optimizer.data.matrix;
 
-import com.google.common.util.concurrent.Service;
-import com.zaradai.kunzite.optimizer.data.DataManager;
-import com.zaradai.kunzite.optimizer.data.DataRequest;
-
-public interface CalcEngine extends Service {
-    void calculate(DataRequest request);
-    void setDataManager(DataManager dataManager);
+public interface MatrixManager {
+    ResultMatrix get(String columnX, String columnY, String target);
 }

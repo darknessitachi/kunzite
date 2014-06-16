@@ -16,9 +16,11 @@
 package com.zaradai.kunzite.optimizer.data.dataset;
 
 import com.zaradai.kunzite.optimizer.data.dataset.driver.DataSetDriver;
+import com.zaradai.kunzite.optimizer.data.matrix.MatrixManager;
 
 public interface DataSet extends DataSetDriver {
     DataSetContext getContext();
     void registerUpdateListener(DataSetUpdateListener listener);
     void unRegisterUpdateListener(DataSetUpdateListener listener);
+    MatrixManager getMatrixManager();
 }

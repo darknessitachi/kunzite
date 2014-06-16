@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.optimizer.tactic;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.zaradai.kunzite.optimizer.model.Row;
 import org.perf4j.StopWatch;
@@ -55,7 +56,7 @@ public final class OptimizerResult {
         return target;
     }
 
-    public Boolean wantMaxima(){
+    public Boolean wantMaxima() {
         return wantMaxima;
     }
 
@@ -129,5 +130,17 @@ public final class OptimizerResult {
     public void setOptimizedRow(Row row) {
         optimizedRow = row;
         optimizedValue = getTargetValue(row);
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("Opt Value", getOptimizedValue())
+                .add("Opt Input", getOptimizedRow().getInput())
+                .add("Opt Output", getOptimizedRow().getOutput())
+                .add("Time (ms)", getTimeTaken())
+                .add("Gens", getGenerations())
+                .add("Calcs", getCalculations())
+                .toString();
     }
 }

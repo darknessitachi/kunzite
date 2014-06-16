@@ -20,6 +20,8 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.zaradai.kunzite.optimizer.data.dataset.cache.DataCache;
 import com.zaradai.kunzite.optimizer.data.dataset.driver.DataSetDriver;
+import com.zaradai.kunzite.optimizer.data.matrix.MatrixManager;
+import com.zaradai.kunzite.optimizer.data.matrix.MatrixManagerFactory;
 import com.zaradai.kunzite.optimizer.model.InputRow;
 import com.zaradai.kunzite.optimizer.model.Row;
 
@@ -32,15 +34,18 @@ public class DefaultDataSet implements DataSet {
     private final DataCache cache;
     private final DataSetDriver driver;
     private final DataSetContext context;
+    private final MatrixManager matrixManager;
     private final List<DataSetUpdateListener> listeners;
     private final ReadWriteLock listenerLock;
     private long rowCount;
 
     @Inject
-    DefaultDataSet(DataCache cache, @Assisted DataSetDriver driver, @Assisted DataSetContext context) {
+    DefaultDataSet(DataCache cache, MatrixManagerFactory matrixManagerFactory, @Assisted DataSetDriver driver,
+                   @Assisted DataSetContext context) {
         this.cache = cache;
         this.driver = driver;
         this.context = context;
+        this.matrixManager = matrixManagerFactory.create(this);
         this.listeners = createListenerList();
         this.rowCount = driver.getRowCount();
         listenerLock = createListenerLock();
@@ -140,5 +145,10 @@ public class DefaultDataSet implements DataSet {
     @Override
     public Iterator<Row> iterator() {
         return driver.iterator();
+    }
+
+    @Override
+    public MatrixManager getMatrixManager() {
+        return matrixManager;
     }
 }

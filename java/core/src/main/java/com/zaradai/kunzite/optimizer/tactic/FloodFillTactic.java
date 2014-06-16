@@ -26,7 +26,7 @@ import com.zaradai.kunzite.optimizer.model.Row;
 import java.util.List;
 
 public final class FloodFillTactic extends AbstractTactic {
-    final static String OPTIMIZER_NAME = "Flood Fill";
+    static final String OPTIMIZER_NAME = "Flood Fill";
 
     private boolean sentAllRequests;
     private final int floodBatchSize;

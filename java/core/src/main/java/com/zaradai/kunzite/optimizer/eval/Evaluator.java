@@ -16,8 +16,16 @@
 package com.zaradai.kunzite.optimizer.eval;
 
 import com.zaradai.kunzite.optimizer.model.InputRow;
+import com.zaradai.kunzite.optimizer.model.OutputRowSchema;
 import com.zaradai.kunzite.optimizer.model.Row;
 
+import java.util.List;
+
 public interface Evaluator {
+    List<String> getInputKeys();
+    List<String> getOutputKeys();
+    String getVersion();
+    OutputRowSchema getOutputSchema();
+
     Row evaluate(InputRow inputRow);
 }

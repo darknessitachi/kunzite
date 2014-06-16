@@ -101,5 +101,10 @@
             <artifactId>perf4j</artifactId>
             <version>0.9.16</version>
         </dependency>
+        <dependency>
+            <groupId>com.codahale.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+            <version>3.0.1</version>
+        </dependency>
     </dependencies>
 </project>
