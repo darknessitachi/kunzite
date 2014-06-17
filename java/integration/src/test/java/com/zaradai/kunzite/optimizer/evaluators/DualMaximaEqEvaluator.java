@@ -25,9 +25,9 @@ import com.zaradai.kunzite.optimizer.model.Row;
 import java.util.List;
 
 public class DualMaximaEqEvaluator implements Evaluator {
-    private static final String INPUT_X = "x";
-    private static final String INPUT_Y = "y";
-    private static final String OUTPUT_Z = "z";
+    public static final String INPUT_X = "x";
+    public static final String INPUT_Y = "y";
+    public static final String OUTPUT_Z = "z";
     private static final OutputRowSchema outputRowSchema;
     public static final String VERSION = "1.0";
     private static final List<String> validInputs = Lists.newArrayList(INPUT_X, INPUT_Y);

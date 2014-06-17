@@ -15,11 +15,8 @@
  */
 package com.zaradai.kunzite.optimizer;
 
-import com.google.inject.AbstractModule;
-
-public class OptimizerModule extends AbstractModule {
-    @Override
-    protected void configure() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
+public enum DataStrategy {
+    None,
+    Mem,
+    Mongo
 }

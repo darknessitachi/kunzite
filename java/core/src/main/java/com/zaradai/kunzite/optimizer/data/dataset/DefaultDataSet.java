@@ -45,10 +45,11 @@ public class DefaultDataSet implements DataSet {
         this.cache = cache;
         this.driver = driver;
         this.context = context;
-        this.matrixManager = matrixManagerFactory.create(this);
-        this.listeners = createListenerList();
-        this.rowCount = driver.getRowCount();
+        listeners = createListenerList();
         listenerLock = createListenerLock();
+
+        this.matrixManager = matrixManagerFactory.create(this);
+        this.rowCount = driver.getRowCount();
     }
 
     protected ReadWriteLock createListenerLock() {
