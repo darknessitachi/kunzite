@@ -72,10 +72,6 @@ public final class FloodFillTactic extends AbstractTactic {
         for (Row row : results) {
             testValue(row);
         }
-        // are we done
-        if (sentAllRequests) {
-            setOptimized();
-        }
 
         return sentAllRequests;
     }

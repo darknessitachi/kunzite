@@ -66,10 +66,6 @@ public class HillClimberTactic extends AbstractTactic {
             }
         }
 
-        if (finished) {
-            setOptimized();
-        }
-
         return finished;
     }
 }

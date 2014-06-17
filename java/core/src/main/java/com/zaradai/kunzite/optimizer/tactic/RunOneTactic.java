@@ -44,7 +44,6 @@ public class RunOneTactic extends AbstractTactic {
     @Override
     protected boolean process(List<Row> results) {
         testValue(results.get(0));
-        setOptimized();
 
         return true;
     }

@@ -107,10 +107,6 @@ public abstract class AbstractTactic implements OptimizerTactic, ResultListener 
         return optimizerResult.getTarget();
     }
 
-    protected void setOptimized() {
-        optimizerResult.setOptimized();
-    }
-
     protected boolean testValue(Row row) {
         return getResult().testValue(row);
     }
@@ -131,6 +127,7 @@ public abstract class AbstractTactic implements OptimizerTactic, ResultListener 
             processedBuffer.clear();
             // check for complete
             if (done) {
+                optimizerResult.setOptimized();
                 optimizerResult.setCalculations(processed);
                 optimizerResult.setGenerations(generations);
                 // signal finished
