@@ -15,6 +15,8 @@
  */
 package com.zaradai.kunzite.optimizer.data;
 
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -26,16 +28,22 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultDataManager implements DataManager, RequestListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDataManager.class);
+    public static final String METRIC_NAME_NEW_CALC = "DataManager.new.calc";
+    public static final String METRIC_NAME_FROM_DB = "DataManager.hit.db";
 
     private final DataSet dataSet;
     private final CalcEngine calcEngine;
     private final DataRequestManager requestManager;
-
+    private final Meter newCalc;
+    private final Meter fromDb;
 
     @Inject
-    DefaultDataManager(DataRequestManager requestManager, @Assisted CalcEngine calcEngine, @Assisted DataSet dataSet) {
+    DefaultDataManager(MetricRegistry metrics, DataRequestManager requestManager, @Assisted CalcEngine calcEngine, @Assisted DataSet dataSet) {
         this.dataSet = dataSet;
         this.calcEngine = calcEngine;
+        newCalc = metrics.meter(METRIC_NAME_NEW_CALC);
+        fromDb =  metrics.meter(METRIC_NAME_FROM_DB);
+
         this.requestManager = requestManager;
         this.requestManager.addListener(this);
         this.calcEngine.setDataManager(this);
@@ -58,9 +66,12 @@ public class DefaultDataManager implements DataManager, RequestListener {
         Row result = dataSet.get(request.getRequest());
 
         if (result != null) {
+            //db hit
+            fromDb.mark();
             // put on the result queue
             requestManager.handleResult(DataResult.newResult(request.getRequester(), result));
         } else {
+            newCalc.mark();
             calcEngine.calculate(request);
         }
     }

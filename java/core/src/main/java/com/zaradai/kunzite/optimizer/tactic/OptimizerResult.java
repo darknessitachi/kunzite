@@ -82,7 +82,7 @@ public final class OptimizerResult {
         Preconditions.checkNotNull(row, "Row should not be null");
         double value = getTargetValue(row);
 
-        boolean isOptimal = false;
+        boolean isOptimal;
 
         if (wantMaxima) {
             isOptimal = value > optimizedValue;
@@ -91,11 +91,15 @@ public final class OptimizerResult {
         }
 
         if (isOptimal) {
-            optimizedRow = row;
-            optimizedValue = value;
+            updateOptimized(row, value);
         }
 
         return isOptimal;
+    }
+
+    private void updateOptimized(Row row, double value) {
+        optimizedRow = Row.fromRow(row);
+        optimizedValue = value;
     }
 
     public void setOptimized() {
@@ -125,11 +129,6 @@ public final class OptimizerResult {
 
     public long getTimeTaken() {
         return optimizationTimer.getElapsedTime();
-    }
-
-    public void setOptimizedRow(Row row) {
-        optimizedRow = row;
-        optimizedValue = getTargetValue(row);
     }
 
     @Override

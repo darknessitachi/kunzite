@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread][%logger{0}] %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="rollingLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/optimizer.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/edge.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread][%logger{0}] %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="perf4jFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/optperf.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/perf.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread][%logger{0}] %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.perf4j.TimingLogger" additivity="false">
+        <level value="Info"/>
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="perf4jFileAppender"/>
+        <appender-ref ref="rollingLogFile"/>
+    </logger>
+
+    <root level="Debug">
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="rollingLogFile"/>
+    </root>
+</configuration>

@@ -15,6 +15,8 @@
  */
 package com.zaradai.kunzite.optimizer.data;
 
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -35,14 +37,18 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.codahale.metrics.MetricRegistry.name;
+
 public class DisruptorDataRequestManager implements DataRequestManager, EventHandler<DataRequest>,
         EventTranslatorOneArg<DataRequest, DataRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DisruptorDataRequestManager.class);
+    public static final String METRIC_NAME_REQUESTS = "requests";
 
     private final Map<UUID, DataRequester> requesterById;
     private final DataRequesterFactory factory;
     private final ExecutorService executorService;
     private final Disruptor<DataRequest> disruptor;
+    private final Meter requests;
 
     private static final EventFactory<DataRequest> FACTORY = new EventFactory<DataRequest>() {
         @Override
@@ -53,8 +59,9 @@ public class DisruptorDataRequestManager implements DataRequestManager, EventHan
     private RequestListener listener;
 
     @Inject
-    DisruptorDataRequestManager(DataRequesterFactory factory, OptimizerConfiguration configuration) {
+    DisruptorDataRequestManager(MetricRegistry metrics, DataRequesterFactory factory, OptimizerConfiguration configuration) {
         this.factory = factory;
+        requests = metrics.meter(name(DisruptorDataRequestManager.class, METRIC_NAME_REQUESTS));
         requesterById = createRequesterMap();
         executorService = createExecutorService();
         disruptor = new Disruptor<DataRequest>(FACTORY, configuration.getRequestRingSize(), executorService,
@@ -84,6 +91,8 @@ public class DisruptorDataRequestManager implements DataRequestManager, EventHan
         DataRequest request = DataRequest.newRequest(from.getId(), inputRow, evaluator);
         // push it to the disruptor
         disruptor.publishEvent(this, request);
+        //  update metric counter
+        requests.mark();
     }
 
     @Override

@@ -15,6 +15,8 @@
  */
 package com.zaradai.kunzite.optimizer.data;
 
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 import com.zaradai.kunzite.optimizer.data.dataset.DataSet;
 import com.zaradai.kunzite.optimizer.eval.CalcEngine;
 import com.zaradai.kunzite.optimizer.eval.Evaluator;
@@ -38,19 +40,27 @@ public class DefaultDataManagerTest {
     private CalcEngine calcEngine;
     private DataSet dataSet;
     private DefaultDataManager uut;
+    private MetricRegistry metricRegistry;
 
     @Before
     public void setUp() throws Exception {
         dataRequestManager = mock(DataRequestManager.class);
+        metricRegistry = mock(MetricRegistry.class);
+        Meter fromDbMeter = mock(Meter.class);
+        Meter newCalc = mock(Meter.class);
+        when(metricRegistry.meter(DefaultDataManager.METRIC_NAME_FROM_DB)).thenReturn(fromDbMeter);
+        when(metricRegistry.meter(DefaultDataManager.METRIC_NAME_NEW_CALC)).thenReturn(newCalc);
         calcEngine = mock(CalcEngine.class);
         dataSet = mock(DataSet.class);
-        uut = new DefaultDataManager(dataRequestManager, calcEngine, dataSet);
+        uut = new DefaultDataManager(metricRegistry, dataRequestManager, calcEngine, dataSet);
     }
 
     @Test
     public void shouldConstructProperly() throws Exception {
         verify(dataRequestManager).addListener(uut);
         verify(calcEngine).setDataManager(uut);
+        verify(metricRegistry).meter(DefaultDataManager.METRIC_NAME_FROM_DB);
+        verify(metricRegistry).meter(DefaultDataManager.METRIC_NAME_NEW_CALC);
     }
 
     @Test

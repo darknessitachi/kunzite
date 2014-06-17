@@ -111,11 +111,6 @@ public abstract class AbstractTactic implements OptimizerTactic, ResultListener 
         optimizerResult.setOptimized();
     }
 
-    protected void setOptimized(Row row) {
-        optimizerResult.setOptimizedRow(row);
-        optimizerResult.setOptimized();
-    }
-
     protected boolean testValue(Row row) {
         return getResult().testValue(row);
     }
