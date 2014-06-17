@@ -20,7 +20,7 @@ import com.google.common.base.Strings;
 import com.zaradai.kunzite.optimizer.model.InputRowSchema;
 import com.zaradai.kunzite.optimizer.model.Row;
 
-public final class ResultMatrix {
+public class ResultMatrix {
     private final SparseMatrix<Row> data;
     private final int xIndex;
     private final int yIndex;
@@ -34,7 +34,11 @@ public final class ResultMatrix {
     private final String columnYName;
     private final InputRowSchema schema;
 
-    private ResultMatrix(String columnXName, String columnYName, String target, InputRowSchema schema) {
+    public ResultMatrix(String columnXName, String columnYName, String target, InputRowSchema schema) {
+        Preconditions.checkNotNull(schema, "Invalid Schema");
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(target), "Invalid target");
+        Preconditions.checkArgument(schema.hasColumn(columnXName), "Name for columnXName is unknown");
+        Preconditions.checkArgument(schema.hasColumn(columnYName), "Name for columnXName is unknown");
 
         this.columnXName = columnXName;
         this.columnYName = columnYName;
@@ -53,15 +57,6 @@ public final class ResultMatrix {
     protected SparseMatrix<Row> createSparseMatrix() {
         // default is not thread safe, override and provide SafeSparseMatrix if thread safety required
         return new SparseMatrix<Row>();
-    }
-
-    public static ResultMatrix newMatrix(String columnXName, String columnYName, String target, InputRowSchema schema) {
-        Preconditions.checkNotNull(schema, "Invalid Schema");
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(target), "Invalid target");
-        Preconditions.checkArgument(schema.hasColumn(columnXName), "Name for columnXName is unknown");
-        Preconditions.checkArgument(schema.hasColumn(columnYName), "Name for columnXName is unknown");
-
-        return new ResultMatrix(columnXName, columnYName, target, schema);
     }
 
     public double getMinValue() {

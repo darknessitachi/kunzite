@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
-public final class InMemoryDataSetDatabase implements DataSetDatabase {
+public class InMemoryDataSetDatabase implements DataSetDatabase {
     private static final Logger LOGGER = LoggerFactory.getLogger(InMemoryDataSetDatabase.class);
     private final Map<DataSetContext, DataSetDriver> activeDataSets;
 

@@ -51,7 +51,7 @@ public class CachingMatrixManager implements MatrixManager, DataSetUpdateListene
                 // return a reversed matrix
                 return reverseMatrix(res);
             }
-            res = ResultMatrix.newMatrix(columnX, columnY, target, dataSet.getContext().getInputSchema());
+            res = new ResultMatrix(columnX, columnY, target, dataSet.getContext().getInputSchema());
             // add to active map
             matrices.put(getInputKey(columnX, columnY, target), res);
             // for now do a painful scan to update

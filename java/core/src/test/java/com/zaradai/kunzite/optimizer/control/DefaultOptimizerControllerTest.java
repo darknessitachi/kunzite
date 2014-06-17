@@ -132,7 +132,7 @@ public class DefaultOptimizerControllerTest {
         String target = "t";
         MatrixManager matrixManager = mock(MatrixManager.class);
         InputRowSchema inputRowSchema = buildInputSchema(columnX, columnY);
-        ResultMatrix resultMatrix = ResultMatrix.newMatrix(columnX, columnY, target, inputRowSchema);
+        ResultMatrix resultMatrix = new ResultMatrix(columnX, columnY, target, inputRowSchema);
         when(dataSet.getMatrixManager()).thenReturn(matrixManager);
         when(matrixManager.get(columnX, columnY, target)).thenReturn(resultMatrix);
 

@@ -23,5 +23,6 @@ import com.zaradai.kunzite.optimizer.model.InputRowSchema;
 
 public interface OptimizerService extends Service {
     OptimizeController open(DataSetContext context);
-    OptimizeController create(String name, String description, Class<? extends Evaluator> evaluator, InputRowSchema schema);
+    OptimizeController create(String name, String description, Class<? extends Evaluator> evaluator,
+                              InputRowSchema schema);
 }

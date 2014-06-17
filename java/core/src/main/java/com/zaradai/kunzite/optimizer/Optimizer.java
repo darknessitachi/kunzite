@@ -76,7 +76,8 @@ public class Optimizer  extends AbstractIdleService implements OptimizerService 
     }
 
     @Override
-    public OptimizeController create(String name, String description, Class<? extends Evaluator> evaluator, InputRowSchema schema) {
+    public OptimizeController create(String name, String description, Class<? extends Evaluator> evaluator,
+                                     InputRowSchema schema) {
         return open(DataSetContext.builder()
                 .name(name)
                 .description(description)

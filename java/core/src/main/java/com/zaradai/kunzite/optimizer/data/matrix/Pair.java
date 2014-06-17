@@ -22,9 +22,10 @@ public final class Pair {
     private final int y;
     private final int hashCode;
 
-    private Pair(int y, int x) {
-        this.y = y;
+    private Pair(int x, int y) {
         this.x = x;
+        this.y = y;
+
         hashCode = Objects.hashCode(getX(), getY());
     }
 
