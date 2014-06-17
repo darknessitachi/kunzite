@@ -15,66 +15,27 @@
  */
 package com.zaradai.kunzite.optimizer;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.zaradai.kunzite.config.ConfigurationSource;
 import com.zaradai.kunzite.optimizer.config.OptimizerConfigurationImpl;
-import com.zaradai.kunzite.optimizer.control.OptimizeController;
 import com.zaradai.kunzite.optimizer.control.OptimizeRequest;
 import com.zaradai.kunzite.optimizer.evaluators.DualMaximaEqEvaluator;
 import com.zaradai.kunzite.optimizer.model.InputRowGenerator;
-import com.zaradai.kunzite.optimizer.model.InputRowSchema;
 import com.zaradai.kunzite.optimizer.tactic.*;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-public class OptimizerTest {
-    private InputRowSchema schema;
-    private Injector injector;
-    private OptimizerService optimizerService;
-    private ConfigurationSource source;
-    private OptimizeController controller;
-
-    @Before
-    public void setUp() throws Exception {
-        schema = InputRowSchema.newBuilder()
-                .withName(DualMaximaEqEvaluator.INPUT_X).from(-10).step(1).withSteps(36)
-                .withName(DualMaximaEqEvaluator.INPUT_Y).from(-10).step(1).withSteps(36)
-                .build();
-        injector = Guice.createInjector(new OptimizerModule(CacheStrategy.None, DataStrategy.None,
-                EvaluationStrategy.LocalSingleThreaded));
-        // get the config source
-        source = injector.getInstance(ConfigurationSource.class);
-        // get the optimizer service
-        optimizerService = injector.getInstance(OptimizerService.class);
-        // start and wait to be initialized
-        optimizerService.startAsync().awaitRunning();
-        // create a controller for this run with a new database
-        controller = optimizerService.create("test", "A test database", DualMaximaEqEvaluator.class, schema);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        // stop the controller
-        controller.stopAsync().awaitTerminated();
-        // stop the service
-        optimizerService.stopAsync().awaitTerminated();
-    }
-
+public class OptimizerTest extends BaseOptimizerTest {
     @Test
     public void shouldRunFloodFill() throws Exception {
         // prepare the request
         OptimizeRequest request = OptimizeRequest.newRequest(FloodFillTactic.class, DualMaximaEqEvaluator.OUTPUT_Z,
-                true, InputRowGenerator.getRandom(schema));
+                true, InputRowGenerator.getRandom(getSchema()));
         // configure the tactic
-        source.set(OptimizerConfigurationImpl.FLOOD_BATCH_SIZE, 100);
+        getSource().set(OptimizerConfigurationImpl.FLOOD_BATCH_SIZE, 2000);
         // submit and wait for it to finish
-        OptimizerResult res = controller.optimize(request).get();
+        OptimizerResult res = getController().optimize(request).get();
 
         assertThat(res, not(nullValue()));
     }
@@ -83,9 +44,9 @@ public class OptimizerTest {
     public void shouldRunHillClimber() throws Exception {
         // prepare the request
         OptimizeRequest request = OptimizeRequest.newRequest(HillClimberTactic.class, DualMaximaEqEvaluator.OUTPUT_Z,
-                true, InputRowGenerator.getRandom(schema));
+                true, InputRowGenerator.getRandom(getSchema()));
         // submit and wait for it to finish
-        OptimizerResult res = controller.optimize(request).get();
+        OptimizerResult res = getController().optimize(request).get();
 
         assertThat(res, not(nullValue()));
     }
@@ -94,11 +55,11 @@ public class OptimizerTest {
     public void shouldRunShotgun() throws Exception {
         // prepare the request
         OptimizeRequest request = OptimizeRequest.newRequest(ShotgunHillClimber.class, DualMaximaEqEvaluator.OUTPUT_Z,
-                true, InputRowGenerator.getRandom(schema));
+                true, InputRowGenerator.getRandom(getSchema()));
         // configure the tactic
-        source.set(OptimizerConfigurationImpl.NUM_SHOTGUN_CLIMBERS, 6);
+        getSource().set(OptimizerConfigurationImpl.NUM_SHOTGUN_CLIMBERS, 6);
         // submit and wait for it to finish
-        OptimizerResult res = controller.optimize(request).get();
+        OptimizerResult res = getController().optimize(request).get();
 
         assertThat(res, not(nullValue()));
     }
@@ -107,9 +68,9 @@ public class OptimizerTest {
     public void shouldRunOne() throws Exception {
         // prepare the request
         OptimizeRequest request = OptimizeRequest.newRequest(RunOneTactic.class, DualMaximaEqEvaluator.OUTPUT_Z,
-                true, InputRowGenerator.getRandom(schema));
+                true, InputRowGenerator.getRandom(getSchema()));
         // submit and wait for it to finish
-        OptimizerResult res = controller.optimize(request).get();
+        OptimizerResult res = getController().optimize(request).get();
 
         assertThat(res, not(nullValue()));
     }
