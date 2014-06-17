@@ -25,6 +25,7 @@ import com.zaradai.kunzite.optimizer.evaluators.DualMaximaEqEvaluator;
 import com.zaradai.kunzite.optimizer.model.InputRowGenerator;
 import com.zaradai.kunzite.optimizer.model.InputRowSchema;
 import com.zaradai.kunzite.optimizer.tactic.FloodFillTactic;
+import com.zaradai.kunzite.optimizer.tactic.HillClimberTactic;
 import com.zaradai.kunzite.optimizer.tactic.OptimizerResult;
 import org.junit.After;
 import org.junit.Before;
@@ -74,6 +75,17 @@ public class MultiThreadedEvaluationTest {
                 true, InputRowGenerator.getRandom(schema));
         // configure the tactic
         source.set(OptimizerConfigurationImpl.FLOOD_BATCH_SIZE, 4000);
+        // submit and wait for it to finish
+        OptimizerResult res = controller.optimize(request).get();
+
+        assertThat(res, not(nullValue()));
+    }
+
+    @Test
+    public void shouldRunHillClimber() throws Exception {
+        // prepare the request
+        OptimizeRequest request = OptimizeRequest.newRequest(HillClimberTactic.class, DualMaximaEqEvaluator.OUTPUT_Z,
+                true, InputRowGenerator.getRandom(schema));
         // submit and wait for it to finish
         OptimizerResult res = controller.optimize(request).get();
 
