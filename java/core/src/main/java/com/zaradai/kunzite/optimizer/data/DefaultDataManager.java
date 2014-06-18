@@ -38,7 +38,8 @@ public class DefaultDataManager implements DataManager, RequestListener {
     private final Meter fromDb;
 
     @Inject
-    DefaultDataManager(MetricRegistry metrics, DataRequestManager requestManager, @Assisted CalcEngine calcEngine, @Assisted DataSet dataSet) {
+    DefaultDataManager(MetricRegistry metrics, DataRequestManager requestManager, @Assisted CalcEngine calcEngine,
+                       @Assisted DataSet dataSet) {
         this.dataSet = dataSet;
         this.calcEngine = calcEngine;
         newCalc = metrics.meter(METRIC_NAME_NEW_CALC);

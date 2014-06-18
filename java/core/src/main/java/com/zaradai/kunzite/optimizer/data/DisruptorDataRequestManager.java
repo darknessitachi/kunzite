@@ -59,7 +59,8 @@ public class DisruptorDataRequestManager implements DataRequestManager, EventHan
     private RequestListener listener;
 
     @Inject
-    DisruptorDataRequestManager(MetricRegistry metrics, DataRequesterFactory factory, OptimizerConfiguration configuration) {
+    DisruptorDataRequestManager(MetricRegistry metrics, DataRequesterFactory factory,
+                                OptimizerConfiguration configuration) {
         this.factory = factory;
         requests = metrics.meter(name(DisruptorDataRequestManager.class, METRIC_NAME_REQUESTS));
         requesterById = createRequesterMap();
