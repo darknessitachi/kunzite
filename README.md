@@ -1,10 +1,13 @@
-Kunzite
-=======
+# Kunzite
 
 Financial application ideas
 
-Optimizer
----------
+## Trader
+
+This application which is being developed will provide a means of developing trading strategies that can be optimized
+with the Optimizer below.
+
+## Optimizer
 
 Often when one writes trading algorithms a number of input variables are specified such as number of days/ticks to
 average.  To generate maximum profit these input variables are tweaked and the algorithm run against historical
