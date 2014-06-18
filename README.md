@@ -18,3 +18,23 @@ Using my i7-3770K @ 3.5GHz with the 'Flood Fill' strategy batching 4000 requests
 I was able to attain 1.5 MM calculations per second of a simple equation. This strategy ran through all 4 MM possible
 calculations in 2768 ms.  In contrast using a 'Hill Climber' strategy I was able to get the correct result in 74 ms
 after only 2277 calculations, however it must be noted that this strategy was fortunate to follow the maxima peak.
+
+### Examples
+
+There are integration tests which demonstrate how to setup and execute an optimization on a given evaluation.
+
+### License
+
+Copyright 2014 Zaradai.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
