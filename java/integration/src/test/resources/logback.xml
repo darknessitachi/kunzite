@@ -11,7 +11,7 @@
         <file>logs/optimizer.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>logs/edge.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/optimizer.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- keep 30 days' worth of history -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
@@ -40,7 +40,7 @@
         <appender-ref ref="rollingLogFile"/>
     </logger>
 
-    <root level="Debug">
+    <root level="Info">
         <appender-ref ref="stdout"/>
         <appender-ref ref="rollingLogFile"/>
     </root>

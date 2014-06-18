@@ -20,8 +20,11 @@ import com.google.common.base.Preconditions;
 import com.zaradai.kunzite.optimizer.model.Row;
 import org.perf4j.StopWatch;
 import org.perf4j.slf4j.Slf4JStopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class OptimizerResult {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OptimizerResult.class);
     private final String target;
     private final boolean wantMaxima;
     private boolean optimized;
@@ -100,6 +103,7 @@ public final class OptimizerResult {
     private void updateOptimized(Row row, double value) {
         optimizedRow = Row.fromRow(row);
         optimizedValue = value;
+        LOGGER.debug("New optima: {}, {}", value, row.getInput());
     }
 
     public void setOptimized() {

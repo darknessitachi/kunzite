@@ -61,7 +61,7 @@ public abstract class AbstractTactic implements OptimizerTactic, ResultListener 
         start = startingRow;
         // setup the counters
         processed = 0;
-        generations = 0;
+        generations = 1;   // 1st generation
         processedBuffer.clear();
         // setup the barrier
         barrier = createBarrier();
