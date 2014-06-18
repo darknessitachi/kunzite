@@ -12,6 +12,8 @@ data to find the most optimum input variables.  If the algorithm has a large num
 space can quickly become too large.  This is where the **Optimizer** comes into play.  It will, using various tactics
 attempt to shorten the time taken to find the most optimum set of inputs.
 
+Full writeup can be found in the [wiki](https://github.com/zaradai/kunzite/wiki/Optimizer)
+
 ### Performance
 
 Using my i7-3770K @ 3.5GHz with the 'Flood Fill' strategy batching 4000 requests and using 8 evaluation threads
