@@ -17,6 +17,7 @@ package com.zaradai.kunzite.trader.positions;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 
 import java.util.Map;
@@ -25,7 +26,7 @@ import java.util.concurrent.ConcurrentMap;
 public final class ConcurrentPositionBook extends AbstractPositionBook {
     @Inject
     ConcurrentPositionBook(PositionFactory positionFactory, PositionUpdater positionUpdater,
-                           PortfolioResolver portfolioResolver, Instrument instrument) {
+                           PortfolioResolver portfolioResolver, @Assisted Instrument instrument) {
         super(positionFactory, positionUpdater, portfolioResolver, instrument);
     }
 
