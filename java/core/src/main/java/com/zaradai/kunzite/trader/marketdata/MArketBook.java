@@ -16,4 +16,30 @@
 package com.zaradai.kunzite.trader.marketdata;
 
 public interface MarketBook {
+    String getInstrumentId();
+    MarketBookItem getLastTrade();
+    double getLastTradedPrice();
+    long getLastTradedSize();
+    double bestBid();
+    long bestBidSize();
+    double bestAsk();
+    long bestAskSize();
+    double getBid(int level);
+    long getBidSize(int level);
+    double getAsk(int level);
+    long getAskSize(int level);
+    int getAskDepth();
+    int getBidDepth();
+    double getPrevClose();
+    double getOpen();
+    double getHigh();
+    double getLow();
+
+    void reset();
+    void setSize(Side side, int depth, long size);
+    void setPrice(Side side, int depth, double price);
+    void setPrevClose(double value);
+    void setOpen(double value);
+    void setHigh(double value);
+    void setLow(double value);
 }
