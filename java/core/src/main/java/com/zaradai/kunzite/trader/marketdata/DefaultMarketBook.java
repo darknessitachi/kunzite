@@ -19,7 +19,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 
-public class DefaultMarketBook implements MarketBook {
+public class DefaultMarketBook implements IMarketBook {
     public static final int MAX_BOOK_DEPTH = 10;
     private final MarketBookItem bids[] = new MarketBookItem[MAX_BOOK_DEPTH];
     private final MarketBookItem asks[] = new MarketBookItem[MAX_BOOK_DEPTH];
