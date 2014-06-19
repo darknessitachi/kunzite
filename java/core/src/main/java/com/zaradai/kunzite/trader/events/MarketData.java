@@ -43,7 +43,7 @@ public final class MarketData {
     }
 
     public static MarketData newInstance(String instrumentId, List<MarketDataField> fields) {
-        return new MarketData(instrumentId, DateTime.now(), fields);
+        return newInstance(instrumentId, DateTime.now(), fields);
     }
 
     public static MarketData newInstance(String instrumentId, DateTime timestamp, MarketDataField... elements) {
