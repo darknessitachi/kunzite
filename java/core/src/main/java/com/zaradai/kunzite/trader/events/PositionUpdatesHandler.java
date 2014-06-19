@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.positions;
+package com.zaradai.kunzite.trader.events;
 
-import com.zaradai.kunzite.trader.events.StartOfDay;
-import com.zaradai.kunzite.trader.events.Trade;
-
-public interface PositionUpdater {
-    void update(Position position, Trade trade);
-    void update(Position position, StartOfDay startOfDay);
+public interface PositionUpdatesHandler {
+    void onStartOfDay(StartOfDay startOfDay);
+    void onTrade(Trade trade);
 }

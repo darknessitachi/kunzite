@@ -15,10 +15,15 @@
  */
 package com.zaradai.kunzite.trader.positions;
 
-import com.zaradai.kunzite.trader.events.StartOfDay;
-import com.zaradai.kunzite.trader.events.Trade;
+import com.zaradai.kunzite.trader.events.PositionUpdatesHandler;
 
-public interface PositionUpdater {
-    void update(Position position, Trade trade);
-    void update(Position position, StartOfDay startOfDay);
+/**
+ * Maintains positions across portfolios per instrument.
+ */
+public interface PositionBook extends PositionUpdatesHandler {
+    Position getPositionFor(String portfolioId);    // always succeeds
+    long getNetPosition(String portfolioId);
+    long getTotalNetPosition();
+    double getNetCashFlow(String portfolioId);
+    double getTotalNetCashFlow();
 }

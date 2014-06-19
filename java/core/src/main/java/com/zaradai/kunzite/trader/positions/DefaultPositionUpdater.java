@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.positions;
 
+import com.zaradai.kunzite.trader.events.StartOfDay;
 import com.zaradai.kunzite.trader.events.Trade;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -44,4 +45,18 @@ public class DefaultPositionUpdater implements PositionUpdater {
             position.addLongCashFlow(cashFlow);
         }
     }
+
+    @Override
+    public void update(Position position, StartOfDay startOfDay) {
+        checkNotNull(position, "Invalid Position");
+        checkNotNull(startOfDay, "Invalid Start of Day Position");
+        checkArgument(startOfDay.getInstrumentId().equals(position.getInstrumentId()), "Start of day position is not for this position");
+        checkArgument(startOfDay.getPortfolioId().equals(position.getPortfolioId()), "Start of day position is not for this position");
+
+        position.reset();
+        position.setStartOfDay(startOfDay.getPosition());
+        position.setStartOfDayCashFlow(startOfDay.getCashFlow());
+    }
+
+
 }

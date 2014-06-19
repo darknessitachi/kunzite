@@ -34,8 +34,10 @@ public class Position {
 
     @Inject
     Position(@Assisted Portfolio portfolio, @Assisted Instrument instrument) {
+        //TODO: check whether Guice checks assisted objects for null otherwise need preconditions here.
         this.portfolio = portfolio;
         this.instrument = instrument;
+        reset();
     }
 
     public Portfolio getPortfolio() {
@@ -112,6 +114,11 @@ public class Position {
 
     public boolean isLong() {
         return getNet() >= 0;
+    }
+
+    public void reset() {
+        startOfDay = intradayLong = intradayShort = 0L;
+        startOfDayCashFlow = intradayLongCashFlow = intradayShortCashFlow = 0.0;
     }
 
     @Override
