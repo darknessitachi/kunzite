@@ -20,9 +20,7 @@ import com.zaradai.kunzite.trader.instruments.OptionType;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 public class InstrumentConfigTest {
@@ -87,7 +85,7 @@ public class InstrumentConfigTest {
         InstrumentConfig uut = new InstrumentConfig();
         uut.addMember(TEST_STRING);
 
-        assertThat(uut.getMembers(), not(notNullValue()));
+        assertThat(uut.getMembers(), not(nullValue()));
     }
 
     @Test
@@ -95,7 +93,7 @@ public class InstrumentConfigTest {
         InstrumentConfig uut = new InstrumentConfig();
         uut.addPartOf(TEST_STRING);
 
-        assertThat(uut.getPartOf(), not(notNullValue()));
+        assertThat(uut.getPartOf(), not(nullValue()));
     }
 
     @Test
@@ -103,7 +101,7 @@ public class InstrumentConfigTest {
         InstrumentConfig uut = new InstrumentConfig();
         uut.addBasketConstituent(TEST_STRING);
 
-        assertThat(uut.getBasketConstituents(), not(notNullValue()));
+        assertThat(uut.getBasketConstituents(), not(nullValue()));
     }
 
     @Test
