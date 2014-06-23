@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.instruments;
+package com.zaradai.kunzite.trader.control;
 
-/**
- * Provides a means of obtaining the specific instrument given a unique identifier.
- */
-public interface InstrumentResolver {
-    Instrument resolveInstrument(String instrumentId);
+public interface TradingStateResolver {
+    TradingState resolveTradingState(String instrumentId);
 }
