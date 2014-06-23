@@ -15,7 +15,11 @@
  */
 package com.zaradai.kunzite.trader.orders;
 
-public final class Order {
+import org.joda.time.DateTime;
+
+import java.util.Comparator;
+
+public class Order {
     private String exchangeOrderId;
     private String orderId;
     private String clientOrderId;
@@ -26,6 +30,16 @@ public final class Order {
     private OrderSide side;
     private OrderType type;
     private OrderTimeInForce timeInForce;
+    private DateTime created;
+    private final OrderState state;
+
+    public Order() {
+        state = createOrderState();
+    }
+
+    protected OrderState createOrderState() {
+        return new OrderState();
+    }
 
     public String getExchangeOrderId() {
         return exchangeOrderId;
@@ -105,5 +119,39 @@ public final class Order {
 
     public void setTimeInForce(OrderTimeInForce timeInForce) {
         this.timeInForce = timeInForce;
+    }
+
+    public DateTime getCreated() {
+        return state.getCreated();
+    }
+
+    public double getPrice() {
+        return state.getPrice();
+    }
+
+    public boolean isBuy() {
+        return (side == OrderSide.Buy || side == OrderSide.Cover_Short);
+    }
+
+    public boolean isSell() {
+        return (side == OrderSide.Sell || side == OrderSide.Sell_Short);
+    }
+
+    //PriceComparator
+    public static Comparator<? super Order> LimitPriceComparator = new Comparator<Order>() {
+        public int compare(Order o1, Order o2) {
+            return (int) (o1.getPrice() - o2.getPrice());
+        }
+    };
+
+    //TimeComparator
+    public static final Comparator<? super Order> TimeComparator = new Comparator<Order>() {
+        public int compare(Order o1, Order o2) {
+            return o1.compareCreateTimeTo(o2);
+        }
+    };
+
+    private int compareCreateTimeTo(Order o2) {
+        return (int) (getCreated().getMillis() - o2.getCreated().getMillis());
     }
 }
