@@ -137,6 +137,10 @@ public class Order {
         return (side == OrderSide.Sell || side == OrderSide.Sell_Short);
     }
 
+    public boolean isMarketOrder() {
+        return this.type == OrderType.Market;
+    }
+
     //PriceComparator
     public static Comparator<? super Order> LimitPriceComparator = new Comparator<Order>() {
         public int compare(Order o1, Order o2) {

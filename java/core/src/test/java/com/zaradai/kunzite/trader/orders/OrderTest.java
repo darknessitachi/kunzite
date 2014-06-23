@@ -138,6 +138,17 @@ public class OrderTest {
     }
 
     @Test
+    public void shouldBeMarketOrderIfSet() throws Exception {
+        Order uut = new Order();
+
+        uut.setType(OrderType.Stop);
+        assertThat(uut.isMarketOrder(), is(false));
+
+        uut.setType(OrderType.Market);
+        assertThat(uut.isMarketOrder(), is(true));
+    }
+
+    @Test
     public void shouldCompareByCreated() throws Exception {
         Order uut = createOrder(TEST_DATE_TIME, TEST_DOUBLE);
         Order same = createOrder(TEST_DATE_TIME, TEST_DOUBLE);
