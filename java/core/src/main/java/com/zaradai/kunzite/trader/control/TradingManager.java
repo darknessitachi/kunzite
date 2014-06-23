@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.control;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -94,8 +95,17 @@ public class TradingManager implements InstrumentResolver, TradingStateResolver,
         }
     }
 
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("Porfolio's", portfolioByPortfolioId.size())
+                .add("Markets", marketByMarketId.size())
+                .add("Instruments", instrumentByInstrumentId.size())
+                .toString();
+    }
+
     private void logBuilt() {
-        //To change body of created methods use File | Settings | File Templates.
+        LOGGER.info("Built: {}", toString());
     }
 
     private void buildPortfolios() {
@@ -113,7 +123,7 @@ public class TradingManager implements InstrumentResolver, TradingStateResolver,
             for (TickDefinition tickDefinition : config.getTickDefinitions()) {
                 market.addTickDefinition(tickDefinition);
             }
-            marketByMarketId.put(id, market);
+            marketByMarketId.put(market.getId(), market);
         }
     }
 
