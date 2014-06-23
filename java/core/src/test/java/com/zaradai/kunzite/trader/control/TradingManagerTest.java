@@ -15,34 +15,50 @@
  */
 package com.zaradai.kunzite.trader.control;
 
+import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
+import com.zaradai.kunzite.trader.instruments.InstrumentFactory;
+import com.zaradai.kunzite.trader.instruments.MarketFactory;
+import com.zaradai.kunzite.trader.positions.PortfolioFactory;
+import org.junit.Before;
 import org.junit.Test;
 
+import static org.mockito.Mockito.mock;
+
 public class TradingManagerTest {
+    private StaticConfiguration config;
+    private PortfolioFactory portfolioFactory;
+    private MarketFactory marketFactory;
+    private InstrumentFactory instrumentFactory;
+    private TradingStateFactory tradingStateFactory;
+    private TradingManager uut;
+
+    @Before
+    public void setUp() throws Exception {
+        config = mock(StaticConfiguration.class);
+        portfolioFactory = mock(PortfolioFactory.class);
+        marketFactory = mock(MarketFactory.class);
+        tradingStateFactory = mock(TradingStateFactory.class);
+        instrumentFactory = mock(InstrumentFactory.class);
+        uut = new TradingManager(config, portfolioFactory, marketFactory, tradingStateFactory, instrumentFactory);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailWhenResolvingBadInstrumentId() throws Exception {
-        TradingManager uut = new TradingManager();
-
         uut.resolveInstrument(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailWhenResolvingBadMarketId() throws Exception {
-        TradingManager uut = new TradingManager();
-
         uut.resolveMarket(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailWhenResolvingBadPortfolioId() throws Exception {
-        TradingManager uut = new TradingManager();
-
         uut.resolvePortfolio(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailWhenResolvingBadTradingState() throws Exception {
-        TradingManager uut = new TradingManager();
-
         uut.resolveTradingState(null);
     }
 }

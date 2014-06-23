@@ -50,24 +50,24 @@ public abstract class MembershipInstrument extends Instrument {
         return Lists.newArrayList();
     }
 
-    protected void addTo(MembershipInstrument instrument) {
+    public void addTo(MembershipInstrument instrument) {
         checkNotNull(instrument, INVALID_INSTRUMENT_SPECIFIED);
 
         instrument.add(this);
         partOf.add(instrument);
     }
 
-    protected void addTo(String instrumentId) {
+    public void addTo(String instrumentId) {
         addTo(getInstrument(instrumentId));
     }
 
-    protected void add(MembershipInstrument instrument) {
+    public void add(MembershipInstrument instrument) {
         checkNotNull(instrument, INVALID_INSTRUMENT_SPECIFIED);
 
         members.add(instrument);
     }
 
-    protected void add(String instrumentId) {
+    public void add(String instrumentId) {
         add(getInstrument(instrumentId));
     }
 
