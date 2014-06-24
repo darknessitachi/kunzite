@@ -24,4 +24,6 @@ public interface OrderBook extends OrderLoadHandler {
     Order get(String orderId);
     Order getByClientId(String orderId);
     Order getByExchangeId(String orderId);
+
+    long getOutstandingBuyQuantity();
 }

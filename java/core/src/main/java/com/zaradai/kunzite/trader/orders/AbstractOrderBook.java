@@ -42,11 +42,8 @@ public abstract class AbstractOrderBook implements OrderBook {
     public void add(Order order) {
         if (order.isMarketOrder()) {
             addEntry(marketOrders, order);
-            marketOrders.add(order);
         } else {
-            PriceEntry entry = getOrCreateAtEntryPrice(order.getPrice());
-
-            addEntry(entry, order);
+            addEntry(getOrCreateAtEntryPrice(order.getPrice()), order);
         }
 
         rememberOrder(order);
@@ -65,6 +62,25 @@ public abstract class AbstractOrderBook implements OrderBook {
         }
 
         forgetOrder(order);
+    }
+
+    @Override
+    public long getOutstandingBuyQuantity() {
+        long res = 0;
+        // Process limits
+        for (Map.Entry<Double, PriceEntry> entry : this.limitOrders.entrySet()) {
+            PriceEntry priceEntry = entry.getValue();
+
+            for (Order order : priceEntry.getBuyOrders()) {
+                res += order.getPendingOrOnMarket();
+            }
+        }
+        // process market orders
+        for (Order order : this.marketOrders.getBuyOrders()) {
+            res += order.getPendingOrOnMarket();
+        }
+
+        return res;
     }
 
     protected void removeEntry(PriceEntry entry, Order order) {

@@ -25,6 +25,12 @@ public class OrderRequest {
     private double price;
     private OrderSide side;
     private OrderType type;
+    private OrderRejectReason rejectReason;
+    private boolean valid;
+
+    public OrderRequest() {
+        valid = true;
+    }
 
     public OrderRequestType getOrderRequestType() {
         return orderRequestType;
@@ -96,5 +102,30 @@ public class OrderRequest {
 
     public void setType(OrderType type) {
         this.type = type;
+    }
+
+    public boolean isBuy() {
+        return this.side == OrderSide.Buy || this.side == OrderSide.Cover_Short;
+    }
+
+    public boolean isSell() {
+        return !isBuy();
+    }
+
+    public void reject(OrderRejectReason reason) {
+        rejectReason = reason;
+        valid = false;
+    }
+
+    public OrderRejectReason getRejectReason() {
+        return rejectReason;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 }

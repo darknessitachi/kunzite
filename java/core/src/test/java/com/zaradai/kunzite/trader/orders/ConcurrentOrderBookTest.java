@@ -29,6 +29,7 @@ public class ConcurrentOrderBookTest {
     private static final String TEST_ORDER_ID = "test";
     private static final Double TEST_PRICE = 42.42;
     private static final DateTime TEST_CREATED = DateTime.now();
+    private static final long TEST_PENDING_OR_ON_MARKET = 1500;
 
     @Test
     public void shouldAddAndRememberByOrderId() throws Exception {
@@ -89,10 +90,27 @@ public class ConcurrentOrderBookTest {
         assertThat(uut.get(TEST_ORDER_ID), is(nullValue()));
     }
 
+    @Test
+    public void shouldGetOutstandingBuyQuantity() throws Exception {
+        DefaultOrderBook uut = new DefaultOrderBook();
+        // add market order
+        Order order = createOrder();
+        order.setType(OrderType.Market);
+        order.setSide(OrderSide.Buy);
+        uut.add(order);
+        // add limit order
+        order = createOrder();
+        order.setSide(OrderSide.Buy);
+        uut.add(order);
+
+        assertThat(uut.getOutstandingBuyQuantity(), is(TEST_PENDING_OR_ON_MARKET * 2));
+    }
+
     private Order createOrder() {
         final OrderState orderState = mock(OrderState.class);
         when(orderState.getCreated()).thenReturn(TEST_CREATED);
         when(orderState.getPrice()).thenReturn(TEST_PRICE);
+        when(orderState.getPendingOrOnMarket()).thenReturn(TEST_PENDING_OR_ON_MARKET);
 
         Order order = new Order() {
             @Override

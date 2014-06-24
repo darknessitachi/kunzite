@@ -15,7 +15,9 @@
  */
 package com.zaradai.kunzite.trader.filters;
 
+import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.trader.control.TradingStateResolver;
+import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,11 +28,16 @@ import static org.mockito.Mockito.mock;
 public class MaxLongFilterTest {
     private TradingStateResolver resolver;
     private MaxLongFilter uut;
+    private ContextLogger logger;
+    private FilterParameterManager parameterManager;
 
     @Before
     public void setUp() throws Exception {
+        logger = ContextLoggerMocker.create();
         resolver = mock(TradingStateResolver.class);
-        uut = new MaxLongFilter(resolver);
+        parameterManager = mock(FilterParameterManager.class);
+
+        uut = new MaxLongFilter(logger, resolver, parameterManager);
     }
 
     @Test

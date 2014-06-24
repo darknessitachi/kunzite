@@ -15,22 +15,6 @@
  */
 package com.zaradai.kunzite.trader.orders;
 
-import org.joda.time.DateTime;
-
-public class OrderState {
-    public DateTime getCreated() {
-        return null;
-    }
-
-    public double getPrice() {
-        return 0;
-    }
-
-    /**
-     * Return the quantity of the order that is either on the market or pending acknowledgement
-     * @return
-     */
-    public long getPendingOrOnMarket() {
-        return 0;
-    }
+public enum OrderRejectReason {
+    MaxLong
 }

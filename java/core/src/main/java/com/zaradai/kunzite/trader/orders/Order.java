@@ -129,6 +129,10 @@ public class Order {
         return state.getPrice();
     }
 
+    public long getPendingOrOnMarket() {
+        return state.getPendingOrOnMarket();
+    }
+
     public boolean isBuy() {
         return (side == OrderSide.Buy || side == OrderSide.Cover_Short);
     }
