@@ -16,25 +16,46 @@
 package com.zaradai.kunzite.trader.filters;
 
 import com.zaradai.kunzite.logging.ContextLogger;
+import com.zaradai.kunzite.trader.control.TradingState;
 import com.zaradai.kunzite.trader.control.TradingStateResolver;
 import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
+import com.zaradai.kunzite.trader.orders.OrderBook;
+import com.zaradai.kunzite.trader.orders.OrderRequest;
+import com.zaradai.kunzite.trader.orders.OrderSide;
+import com.zaradai.kunzite.trader.positions.PositionBook;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class MaxLongFilterTest {
+    private static final String TEST_INST_ID = "test";
+    private static final String TEST_PTF_ID = "ptf";
+    private static final long TOTAL_NET = 1500;
+    private static final long TOTAL_OUTSTANDING = 3500;
+    private static final long TEST_REQUEST_QTY = 4500;
+
     private TradingStateResolver resolver;
     private MaxLongFilter uut;
     private ContextLogger logger;
     private FilterParameterManager parameterManager;
+    private PositionBook positionBook;
+    private OrderBook orderBook;
 
     @Before
     public void setUp() throws Exception {
         logger = ContextLoggerMocker.create();
         resolver = mock(TradingStateResolver.class);
+        TradingState state = mock(TradingState.class);
+        positionBook = mock(PositionBook.class);
+        orderBook = mock(OrderBook.class);
+        when(state.getPositionBook()).thenReturn(positionBook);
+        when(state.getOrderBook()).thenReturn(orderBook);
+        when(resolver.resolveTradingState(TEST_INST_ID)).thenReturn(state);
         parameterManager = mock(FilterParameterManager.class);
 
         uut = new MaxLongFilter(logger, resolver, parameterManager);
@@ -48,5 +69,37 @@ public class MaxLongFilterTest {
     @Test(expected = NullPointerException.class)
     public void shouldFailWithInvalidOrderRequest() throws Exception {
         uut.check(null);
+    }
+
+    @Test
+    public void shouldReturnFalseIfPositionExceeds() throws Exception {
+        long invalidSize = TOTAL_NET + TOTAL_OUTSTANDING + TEST_REQUEST_QTY - 10;
+
+        OrderRequest request = new OrderRequest();
+        request.setSide(OrderSide.Buy);
+        request.setInstrumentId(TEST_INST_ID);
+        request.setPortfolioId(TEST_PTF_ID);
+        request.setQuantity(TEST_REQUEST_QTY);
+        when(positionBook.getTotalNetPosition()).thenReturn(TOTAL_NET);
+        when(orderBook.getOutstandingBuyQuantity()).thenReturn(TOTAL_OUTSTANDING);
+        when(parameterManager.getMaxLong(any(FilterRequest.class))).thenReturn(invalidSize);
+
+        assertThat(uut.check(request), is(false));
+    }
+
+    @Test
+    public void shouldReturnTrueIfPositionIsLessThanMaxLong() throws Exception {
+        long validSize = TOTAL_NET + TOTAL_OUTSTANDING + TEST_REQUEST_QTY + 10;
+
+        OrderRequest request = new OrderRequest();
+        request.setSide(OrderSide.Buy);
+        request.setInstrumentId(TEST_INST_ID);
+        request.setPortfolioId(TEST_PTF_ID);
+        request.setQuantity(TEST_REQUEST_QTY);
+        when(positionBook.getTotalNetPosition()).thenReturn(TOTAL_NET);
+        when(orderBook.getOutstandingBuyQuantity()).thenReturn(TOTAL_OUTSTANDING);
+        when(parameterManager.getMaxLong(any(FilterRequest.class))).thenReturn(validSize);
+
+        assertThat(uut.check(request), is(true));
     }
 }
