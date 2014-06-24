@@ -17,6 +17,7 @@ package com.zaradai.kunzite.trader.filters;
 
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
+import com.zaradai.kunzite.trader.orders.OrderRejectReason;
 import com.zaradai.kunzite.trader.orders.OrderRequest;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +65,7 @@ public class MaxQuantityFilterTest {
         when(parameterManager.getMaxQuantity(any(FilterRequest.class))).thenReturn(invalidQuantity);
 
         assertThat(uut.check(request), is(false));
+        assertThat(request.getRejectReason(), is(OrderRejectReason.MaxQuantity));
     }
 
     @Test
