@@ -15,10 +15,11 @@
  */
 package com.zaradai.kunzite.trader.control;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.zaradai.kunzite.logging.ContextLogger;
+import com.zaradai.kunzite.logging.LogHelper;
 import com.zaradai.kunzite.trader.config.statics.InstrumentConfig;
 import com.zaradai.kunzite.trader.config.statics.MarketConfig;
 import com.zaradai.kunzite.trader.config.statics.PortfolioConfig;
@@ -27,20 +28,17 @@ import com.zaradai.kunzite.trader.instruments.*;
 import com.zaradai.kunzite.trader.positions.Portfolio;
 import com.zaradai.kunzite.trader.positions.PortfolioFactory;
 import com.zaradai.kunzite.trader.positions.PortfolioResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 public class TradingManager implements InstrumentResolver, TradingStateResolver, MarketResolver, PortfolioResolver {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TradingManager.class);
-
     private final Map<String, Portfolio> portfolioByPortfolioId;
     private final Map<String, Market> marketByMarketId;
     private final Map<String, Instrument> instrumentByInstrumentId;
     private final Map<String, TradingState> tradingStateByInstrumentId;
+    private final ContextLogger logger;
     private final StaticConfiguration configuration;
     private final PortfolioFactory portfolioFactory;
     private final MarketFactory marketFactory;
@@ -48,8 +46,10 @@ public class TradingManager implements InstrumentResolver, TradingStateResolver,
     private final InstrumentFactory instrumentFactory;
 
     @Inject
-    TradingManager(StaticConfiguration configuration, PortfolioFactory portfolioFactory, MarketFactory marketFactory,
-                   TradingStateFactory tradingStateFactory, InstrumentFactory instrumentFactory) {
+    TradingManager(ContextLogger logger, StaticConfiguration configuration, PortfolioFactory portfolioFactory,
+                   MarketFactory marketFactory, TradingStateFactory tradingStateFactory,
+                   InstrumentFactory instrumentFactory) {
+        this.logger = logger;
         this.configuration = configuration;
         this.portfolioFactory = portfolioFactory;
         this.marketFactory = marketFactory;
@@ -95,17 +95,14 @@ public class TradingManager implements InstrumentResolver, TradingStateResolver,
         }
     }
 
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("Porfolio's", portfolioByPortfolioId.size())
+    private void logBuilt() {
+        LogHelper.info(logger)
+                .addContext("Trading Manager built")
+                .add("Portfolios", portfolioByPortfolioId.size())
                 .add("Markets", marketByMarketId.size())
                 .add("Instruments", instrumentByInstrumentId.size())
-                .toString();
-    }
-
-    private void logBuilt() {
-        LOGGER.info("Built: {}", toString());
+                .add("States", tradingStateByInstrumentId.size())
+                .log();
     }
 
     private void buildPortfolios() {

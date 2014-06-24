@@ -16,11 +16,13 @@
 package com.zaradai.kunzite.trader.control;
 
 import com.google.common.collect.Lists;
+import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.trader.config.statics.InstrumentConfig;
 import com.zaradai.kunzite.trader.config.statics.MarketConfig;
 import com.zaradai.kunzite.trader.config.statics.PortfolioConfig;
 import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
 import com.zaradai.kunzite.trader.instruments.*;
+import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
 import com.zaradai.kunzite.trader.positions.Portfolio;
 import com.zaradai.kunzite.trader.positions.PortfolioFactory;
 import org.junit.Before;
@@ -42,15 +44,18 @@ public class TradingManagerTest {
     private InstrumentFactory instrumentFactory;
     private TradingStateFactory tradingStateFactory;
     private TradingManager uut;
+    private ContextLogger logger;
 
     @Before
     public void setUp() throws Exception {
+        logger = ContextLoggerMocker.create();
         config = mock(StaticConfiguration.class);
         portfolioFactory = mock(PortfolioFactory.class);
         marketFactory = mock(MarketFactory.class);
         tradingStateFactory = mock(TradingStateFactory.class);
         instrumentFactory = mock(InstrumentFactory.class);
-        uut = new TradingManager(config, portfolioFactory, marketFactory, tradingStateFactory, instrumentFactory);
+        uut = new TradingManager(logger, config, portfolioFactory, marketFactory, tradingStateFactory,
+                instrumentFactory);
     }
 
     @Test(expected = IllegalArgumentException.class)
