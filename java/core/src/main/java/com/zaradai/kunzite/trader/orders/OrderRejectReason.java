@@ -16,5 +16,5 @@
 package com.zaradai.kunzite.trader.orders;
 
 public enum OrderRejectReason {
-    LotSize, MaxNotional, MaxLong
+    LotSize, MaxNotional, MaxQuantity, MaxLong
 }
