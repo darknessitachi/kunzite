@@ -15,31 +15,31 @@
  */
 package com.zaradai.kunzite.trader.filters;
 
-import com.google.inject.Inject;
 import com.zaradai.kunzite.trader.control.TradingStateResolver;
-import com.zaradai.kunzite.trader.orders.OrderRequest;
+import org.junit.Before;
+import org.junit.Test;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
-public class MaxLongFilter implements Filter {
-    static final String FILTER_NAME = "Max Long";
-    private final TradingStateResolver stateResolver;
+public class MaxLongFilterTest {
+    private TradingStateResolver resolver;
+    private MaxLongFilter uut;
 
-    @Inject
-    MaxLongFilter(TradingStateResolver stateResolver) {
-        this.stateResolver = stateResolver;
+    @Before
+    public void setUp() throws Exception {
+        resolver = mock(TradingStateResolver.class);
+        uut = new MaxLongFilter(resolver);
     }
 
-    @Override
-    public boolean check(OrderRequest orderRequest) {
-        checkNotNull(orderRequest, "Invalid Order request");
-
-
-        return false;
+    @Test
+    public void shouldGetName() throws Exception {
+        assertThat(uut.getName(), is(MaxLongFilter.FILTER_NAME));
     }
 
-    @Override
-    public String getName() {
-        return FILTER_NAME;
+    @Test(expected = NullPointerException.class)
+    public void shouldFailWithInvalidOrderRequest() throws Exception {
+        uut.check(null);
     }
 }
