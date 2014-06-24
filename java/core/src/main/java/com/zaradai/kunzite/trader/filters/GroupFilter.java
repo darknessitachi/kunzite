@@ -21,8 +21,10 @@ import com.zaradai.kunzite.trader.orders.OrderRequest;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public final class GroupFilter implements Filter {
-    public static final String FILTER_NAME = "Group Filter";
+    static final String FILTER_NAME = "Group Filter";
 
     private final List<Filter> filters;
 
@@ -41,6 +43,8 @@ public final class GroupFilter implements Filter {
 
     @Override
     public boolean check(OrderRequest orderRequest) {
+        checkNotNull(orderRequest, "Invalid Order request");
+
         for (Filter filter : this.filters) {
             if (!filter.check(orderRequest)) {
                 // get out early
