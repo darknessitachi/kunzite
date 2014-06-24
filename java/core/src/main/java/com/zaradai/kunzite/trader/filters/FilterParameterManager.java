@@ -20,4 +20,5 @@ package com.zaradai.kunzite.trader.filters;
  */
 public interface FilterParameterManager {
     long getMaxLong(FilterRequest filterRequest);
+    double getMaxNotional(FilterRequest filterRequest);
 }
