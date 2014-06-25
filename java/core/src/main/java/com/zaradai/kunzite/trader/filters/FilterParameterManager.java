@@ -23,4 +23,5 @@ public interface FilterParameterManager {
     double getMaxNotional(FilterRequest filterRequest);
     long getMaxQuantity(FilterRequest filterRequest);
     long getMaxShort(FilterRequest filterRequest);
+    double getMaxSpread(FilterRequest filterRequest);
 }

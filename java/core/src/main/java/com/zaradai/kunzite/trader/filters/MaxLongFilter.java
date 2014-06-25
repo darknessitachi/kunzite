@@ -46,7 +46,8 @@ public class MaxLongFilter implements Filter {
 
         if (orderRequest.isBuy()) {
             // get the trading state for this instrument
-            TradingState state = stateResolver.resolveTradingState(orderRequest.getInstrumentId());
+            TradingState state = checkNotNull(stateResolver.resolveTradingState(orderRequest.getInstrumentId()),
+                    "Invalid Instrument in request");
             // get expected total position which includes outstanding potential positions out in the market
             long totalPosition = state.getPositionBook().getTotalNetPosition() +
                             state.getOrderBook().getOutstandingBuyQuantity() +

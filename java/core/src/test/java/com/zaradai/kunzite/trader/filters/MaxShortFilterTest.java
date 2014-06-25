@@ -72,6 +72,12 @@ public class MaxShortFilterTest {
         uut.check(null);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void shouldFailWithInvalidInstrument() throws Exception {
+        when(resolver.resolveTradingState(TEST_INST_ID)).thenReturn(null);
+        uut.check(null);
+    }
+
     @Test
     public void shouldReturnFalseIfPositionExceedsShortLimit() throws Exception {
         long invalidSize = TOTAL_NET - TOTAL_OUTSTANDING - TEST_REQUEST_QTY + 10;

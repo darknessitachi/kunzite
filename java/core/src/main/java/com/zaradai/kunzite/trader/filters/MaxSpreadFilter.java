@@ -25,16 +25,16 @@ import com.zaradai.kunzite.trader.orders.OrderRequest;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class MaxShortFilter implements Filter {
-    static final String FILTER_NAME = "Max Short";
+public class MaxSpreadFilter implements Filter {
+    static final String FILTER_NAME = "Max Spread";
 
     private final ContextLogger logger;
     private final TradingStateResolver stateResolver;
     private final FilterParameterManager filterParameterManager;
 
     @Inject
-    MaxShortFilter(ContextLogger logger, TradingStateResolver stateResolver,
-                          FilterParameterManager filterParameterManager) {
+    MaxSpreadFilter(ContextLogger logger, TradingStateResolver stateResolver,
+                           FilterParameterManager filterParameterManager) {
         this.logger = logger;
         this.stateResolver = stateResolver;
         this.filterParameterManager = filterParameterManager;
@@ -43,39 +43,35 @@ public class MaxShortFilter implements Filter {
     @Override
     public boolean check(OrderRequest orderRequest) {
         checkNotNull(orderRequest, "Invalid Order request");
+        // get the trading state for this instrument
+        TradingState state = checkNotNull(stateResolver.resolveTradingState(orderRequest.getInstrumentId()),
+                "Invalid Instrument in request");
+        double lastTradedPrice = state.getMarketBook().getLastTradedPrice();
+        double spread = Math.abs(lastTradedPrice - orderRequest.getPrice());
+        // get the limit
+        double limit = getLimit(orderRequest);
 
-        if (orderRequest.isSell()) {
-            // get the trading state for this instrument
-            TradingState state = checkNotNull(stateResolver.resolveTradingState(orderRequest.getInstrumentId()),
-                    "Invalid Instrument in request");
-            // get expected total position which includes outstanding potential sell positions out in the market
-            long totalPosition = state.getPositionBook().getTotalNetPosition() -
-                    state.getOrderBook().getOutstandingSellQuantity() -
-                    orderRequest.getQuantity();
-            // get the limit
-            long limit = getLimit(orderRequest);
-            // check against limits, note negative position convention
-            if (totalPosition < limit) {
-                logFail(totalPosition, limit);
-                orderRequest.reject(OrderRejectReason.MaxShort);
-                return false;
-            }
+        if (spread > limit) {
+            logFail(lastTradedPrice, spread, limit);
+            orderRequest.reject(OrderRejectReason.MaxSpread);
+            return false;
         }
 
         return true;
     }
 
-    private long getLimit(OrderRequest request) {
-        FilterRequest filterRequest = FilterRequest.newInstance(request.getInstrumentId(),request.getPortfolioId());
-        return filterParameterManager.getMaxShort(filterRequest);
-    }
-
-    private void logFail(long totalPosition, long limit) {
+    private void logFail(double lastTradedPrice, double spread, double limit) {
         LogHelper.warn(logger)
                 .addContext("Filter: " + getName())
-                .add("Position", totalPosition)
+                .add("Last Traded", lastTradedPrice)
+                .add("Spread", spread)
                 .add("Limit", limit)
                 .log();
+    }
+
+    private double getLimit(OrderRequest request) {
+        FilterRequest filterRequest = FilterRequest.newInstance(request.getInstrumentId(),request.getPortfolioId());
+        return filterParameterManager.getMaxSpread(filterRequest);
     }
 
     @Override
