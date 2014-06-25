@@ -15,6 +15,8 @@
  */
 package com.zaradai.kunzite.trader.filters;
 
+import java.util.Set;
+
 /**
  * Provides configured limits to the trading engine
  */
@@ -27,4 +29,5 @@ public interface FilterParameterManager {
     double getMaxPrice(FilterRequest filterRequest);
     double getMinPrice(FilterRequest filterRequest);
     boolean allowShort(FilterRequest filterRequest);
+    Set<String> getRestrictedList(FilterRequest filterRequest);
 }
