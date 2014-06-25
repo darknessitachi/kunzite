@@ -26,4 +26,5 @@ public interface FilterParameterManager {
     double getMaxSpread(FilterRequest filterRequest);
     double getMaxPrice(FilterRequest filterRequest);
     double getMinPrice(FilterRequest filterRequest);
+    boolean allowShort(FilterRequest filterRequest);
 }
