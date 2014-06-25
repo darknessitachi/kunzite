@@ -83,6 +83,25 @@ public abstract class AbstractOrderBook implements OrderBook {
         return res;
     }
 
+    @Override
+    public long getOutstandingSellQuantity() {
+        long res = 0;
+        // Process limits
+        for (Map.Entry<Double, PriceEntry> entry : this.limitOrders.entrySet()) {
+            PriceEntry priceEntry = entry.getValue();
+
+            for (Order order : priceEntry.getSellOrders()) {
+                res += order.getPendingOrOnMarket();
+            }
+        }
+        // process market orders
+        for (Order order : this.marketOrders.getSellOrders()) {
+            res += order.getPendingOrOnMarket();
+        }
+
+        return res;
+    }
+
     protected void removeEntry(PriceEntry entry, Order order) {
         entry.remove(order);
     }

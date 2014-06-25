@@ -33,7 +33,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class MaxLongFilterTest {
+public class MaxShortFilterTest {
     private static final String TEST_INST_ID = "test";
     private static final String TEST_PTF_ID = "ptf";
     private static final long TOTAL_NET = 1500;
@@ -41,7 +41,7 @@ public class MaxLongFilterTest {
     private static final long TEST_REQUEST_QTY = 4500;
 
     private TradingStateResolver resolver;
-    private MaxLongFilter uut;
+    private MaxShortFilter uut;
     private ContextLogger logger;
     private FilterParameterManager parameterManager;
     private PositionBook positionBook;
@@ -59,12 +59,12 @@ public class MaxLongFilterTest {
         when(resolver.resolveTradingState(TEST_INST_ID)).thenReturn(state);
         parameterManager = mock(FilterParameterManager.class);
 
-        uut = new MaxLongFilter(logger, resolver, parameterManager);
+        uut = new MaxShortFilter(logger, resolver, parameterManager);
     }
 
     @Test
     public void shouldGetName() throws Exception {
-        assertThat(uut.getName(), is(MaxLongFilter.FILTER_NAME));
+        assertThat(uut.getName(), is(MaxShortFilter.FILTER_NAME));
     }
 
     @Test(expected = NullPointerException.class)
@@ -73,34 +73,34 @@ public class MaxLongFilterTest {
     }
 
     @Test
-    public void shouldReturnFalseIfPositionExceeds() throws Exception {
-        long invalidSize = TOTAL_NET + TOTAL_OUTSTANDING + TEST_REQUEST_QTY - 10;
+    public void shouldReturnFalseIfPositionExceedsShortLimit() throws Exception {
+        long invalidSize = TOTAL_NET - TOTAL_OUTSTANDING - TEST_REQUEST_QTY + 10;
 
         OrderRequest request = new OrderRequest();
-        request.setSide(OrderSide.Buy);
+        request.setSide(OrderSide.Sell);
         request.setInstrumentId(TEST_INST_ID);
         request.setPortfolioId(TEST_PTF_ID);
         request.setQuantity(TEST_REQUEST_QTY);
         when(positionBook.getTotalNetPosition()).thenReturn(TOTAL_NET);
-        when(orderBook.getOutstandingBuyQuantity()).thenReturn(TOTAL_OUTSTANDING);
-        when(parameterManager.getMaxLong(any(FilterRequest.class))).thenReturn(invalidSize);
+        when(orderBook.getOutstandingSellQuantity()).thenReturn(TOTAL_OUTSTANDING);
+        when(parameterManager.getMaxShort(any(FilterRequest.class))).thenReturn(invalidSize);
 
         assertThat(uut.check(request), is(false));
-        assertThat(request.getRejectReason(), is(OrderRejectReason.MaxLong));
+        assertThat(request.getRejectReason(), is(OrderRejectReason.MaxShort));
     }
 
     @Test
-    public void shouldReturnTrueIfPositionIsLessThanMaxLong() throws Exception {
-        long validSize = TOTAL_NET + TOTAL_OUTSTANDING + TEST_REQUEST_QTY + 10;
+    public void shouldReturnTrueIfPositionIsLessThanMaxShort() throws Exception {
+        long validSize = TOTAL_NET - TOTAL_OUTSTANDING - TEST_REQUEST_QTY - 10;
 
         OrderRequest request = new OrderRequest();
-        request.setSide(OrderSide.Buy);
+        request.setSide(OrderSide.Sell);
         request.setInstrumentId(TEST_INST_ID);
         request.setPortfolioId(TEST_PTF_ID);
         request.setQuantity(TEST_REQUEST_QTY);
         when(positionBook.getTotalNetPosition()).thenReturn(TOTAL_NET);
-        when(orderBook.getOutstandingBuyQuantity()).thenReturn(TOTAL_OUTSTANDING);
-        when(parameterManager.getMaxLong(any(FilterRequest.class))).thenReturn(validSize);
+        when(orderBook.getOutstandingSellQuantity()).thenReturn(TOTAL_OUTSTANDING);
+        when(parameterManager.getMaxShort(any(FilterRequest.class))).thenReturn(validSize);
 
         assertThat(uut.check(request), is(true));
     }

@@ -33,7 +33,8 @@ public class MaxLongFilter implements Filter {
     private final FilterParameterManager filterParameterManager;
 
     @Inject
-    MaxLongFilter(ContextLogger logger, TradingStateResolver stateResolver, FilterParameterManager filterParameterManager) {
+    MaxLongFilter(ContextLogger logger, TradingStateResolver stateResolver,
+                  FilterParameterManager filterParameterManager) {
         this.logger = logger;
         this.stateResolver = stateResolver;
         this.filterParameterManager = filterParameterManager;
