@@ -57,7 +57,7 @@ public class MaxSpreadFilterTest {
 
     @Test
     public void shouldGetName() throws Exception {
-        assertThat(uut.getName(), is(MaxSpreadFilter.FILTER_NAME));
+        assertThat(uut.getName(), is(Constants.MAX_SPREAD_FILTER_NAME));
     }
 
     @Test(expected = NullPointerException.class)

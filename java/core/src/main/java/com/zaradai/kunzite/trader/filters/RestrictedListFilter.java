@@ -26,8 +26,6 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class RestrictedListFilter implements Filter {
-    static final String FILTER_NAME = "Restricted List";
-
     private final ContextLogger logger;
     private final FilterParameterManager filterParameterManager;
 
@@ -39,7 +37,7 @@ public class RestrictedListFilter implements Filter {
 
     @Override
     public boolean check(OrderRequest orderRequest) {
-        checkNotNull(orderRequest, "Invalid Order request");
+        checkNotNull(orderRequest, Constants.INVALID_ORDER_REQUEST);
 
         Set<String> restricted = getRestrictedList(orderRequest);
 
@@ -67,6 +65,6 @@ public class RestrictedListFilter implements Filter {
 
     @Override
     public String getName() {
-        return FILTER_NAME;
+        return Constants.RESTRICTED_LIST_FILTER_NAME;
     }
 }

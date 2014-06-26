@@ -64,7 +64,7 @@ public class MaxLongFilterTest {
 
     @Test
     public void shouldGetName() throws Exception {
-        assertThat(uut.getName(), is(MaxLongFilter.FILTER_NAME));
+        assertThat(uut.getName(), is(Constants.MAX_LONG_FILTER_NAME));
     }
 
     @Test(expected = NullPointerException.class)

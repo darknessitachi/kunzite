@@ -46,7 +46,7 @@ public class MaxQuantityFilterTest {
 
     @Test
     public void shouldGetName() throws Exception {
-        assertThat(uut.getName(), is(MaxQuantityFilter.FILTER_NAME));
+        assertThat(uut.getName(), is(Constants.MAX_QUANTITY_FILTER_NAME));
     }
 
     @Test(expected = NullPointerException.class)

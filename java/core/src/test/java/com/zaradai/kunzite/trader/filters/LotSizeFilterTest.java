@@ -73,7 +73,7 @@ public class LotSizeFilterTest {
 
     @Test
     public void shouldGetName() throws Exception {
-        assertThat(uut.getName(), is(LotSizeFilter.FILTER_NAME));
+        assertThat(uut.getName(), is(Constants.LOT_SIZE_FILTER_NAME));
     }
 
     @Test(expected = NullPointerException.class)

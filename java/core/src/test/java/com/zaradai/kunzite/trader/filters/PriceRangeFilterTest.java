@@ -49,7 +49,7 @@ public class PriceRangeFilterTest {
 
     @Test
     public void shouldGetName() throws Exception {
-        assertThat(uut.getName(), is(PriceRangeFilter.FILTER_NAME));
+        assertThat(uut.getName(), is(Constants.PRICE_RANGE_FILTER_NAME));
     }
 
     @Test(expected = NullPointerException.class)

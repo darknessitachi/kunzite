@@ -26,8 +26,6 @@ import com.zaradai.kunzite.trader.orders.OrderRequest;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ShortSellFilter implements Filter {
-    static final String FILTER_NAME = "Short Sell";
-
     private final ContextLogger logger;
     private final TradingStateResolver stateResolver;
     private final FilterParameterManager filterParameterManager;
@@ -42,12 +40,12 @@ public class ShortSellFilter implements Filter {
 
     @Override
     public boolean check(OrderRequest orderRequest) {
-        checkNotNull(orderRequest, "Invalid Order request");
+        checkNotNull(orderRequest, Constants.INVALID_ORDER_REQUEST);
 
         if (orderRequest.isSell() && (!getAllowShort(orderRequest))) {
             // get the trading state for this instrument
             TradingState state = checkNotNull(stateResolver.resolveTradingState(orderRequest.getInstrumentId()),
-                    "Invalid Instrument in request");
+                    Constants.INVALID_INSTRUMENT_REQUEST);
             // get possible short position, i.e. ignore outstanding buy as all the sells may be executed first
             // leaving us short.
             long possibleShortestPosition =
@@ -80,6 +78,6 @@ public class ShortSellFilter implements Filter {
 
     @Override
     public String getName() {
-        return FILTER_NAME;
+        return Constants.SHORT_SELL_FILTER_NAME;
     }
 }

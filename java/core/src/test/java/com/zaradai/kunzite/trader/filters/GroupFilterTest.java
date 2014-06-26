@@ -80,6 +80,6 @@ public class GroupFilterTest {
     public void shouldGetName() throws Exception {
         GroupFilter uut = new GroupFilter();
 
-        assertThat(uut.getName(), is(GroupFilter.FILTER_NAME));
+        assertThat(uut.getName(), is(Constants.GROUP_FILTER_NAME));
     }
 }

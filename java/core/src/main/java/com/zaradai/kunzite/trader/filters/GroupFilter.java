@@ -24,8 +24,6 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class GroupFilter implements Filter {
-    static final String FILTER_NAME = "Group Filter";
-
     private final List<Filter> filters;
 
     @Inject
@@ -43,7 +41,7 @@ public final class GroupFilter implements Filter {
 
     @Override
     public boolean check(OrderRequest orderRequest) {
-        checkNotNull(orderRequest, "Invalid Order request");
+        checkNotNull(orderRequest, Constants.INVALID_ORDER_REQUEST);
 
         for (Filter filter : this.filters) {
             if (!filter.check(orderRequest)) {
@@ -57,6 +55,6 @@ public final class GroupFilter implements Filter {
 
     @Override
     public String getName() {
-        return FILTER_NAME;
+        return Constants.GROUP_FILTER_NAME;
     }
 }

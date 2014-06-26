@@ -24,8 +24,6 @@ import com.zaradai.kunzite.trader.orders.OrderRequest;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PriceRangeFilter implements Filter {
-    static final String FILTER_NAME = "Price Range";
-
     private final ContextLogger logger;
     private final FilterParameterManager filterParameterManager;
 
@@ -37,7 +35,7 @@ public class PriceRangeFilter implements Filter {
 
     @Override
     public boolean check(OrderRequest orderRequest) {
-        checkNotNull(orderRequest, "Invalid Order request");
+        checkNotNull(orderRequest, Constants.INVALID_ORDER_REQUEST);
 
         double maxPrice = getMaxPriceLimit(orderRequest);
         double minPrice = getMinPriceLimit(orderRequest);
@@ -73,6 +71,6 @@ public class PriceRangeFilter implements Filter {
 
     @Override
     public String getName() {
-        return FILTER_NAME;
+        return Constants.PRICE_RANGE_FILTER_NAME;
     }
 }

@@ -26,8 +26,6 @@ import com.zaradai.kunzite.trader.orders.OrderRequest;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class MaxNotionalFilter implements Filter {
-    static final String FILTER_NAME = "Max Notional";
-
     private final ContextLogger logger;
     private final InstrumentResolver instrumentResolver;
     private final FilterParameterManager filterParameterManager;
@@ -42,9 +40,9 @@ public class MaxNotionalFilter implements Filter {
 
     @Override
     public boolean check(OrderRequest orderRequest) {
-        checkNotNull(orderRequest, "Invalid Order request");
+        checkNotNull(orderRequest, Constants.INVALID_ORDER_REQUEST);
         Instrument instrument = checkNotNull(instrumentResolver.resolveInstrument(orderRequest.getInstrumentId()),
-                "Invalid Instrument in request");
+                Constants.INVALID_INSTRUMENT_REQUEST);
 
         double notional = orderRequest.getPrice() * orderRequest.getQuantity() * instrument.getMultiplier();
         double limit = getLimit(orderRequest);
@@ -73,6 +71,6 @@ public class MaxNotionalFilter implements Filter {
 
     @Override
     public String getName() {
-        return FILTER_NAME;
+        return Constants.MAX_NOTIONAL_FILTER_NAME;
     }
 }

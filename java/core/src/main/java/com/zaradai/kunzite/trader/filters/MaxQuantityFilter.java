@@ -24,8 +24,6 @@ import com.zaradai.kunzite.trader.orders.OrderRequest;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class MaxQuantityFilter implements Filter {
-    static final String FILTER_NAME = "Max Quantity";
-
     private final ContextLogger logger;
     private final FilterParameterManager filterParameterManager;
 
@@ -37,7 +35,7 @@ public class MaxQuantityFilter implements Filter {
 
     @Override
     public boolean check(OrderRequest orderRequest) {
-        checkNotNull(orderRequest, "Invalid Order request");
+        checkNotNull(orderRequest, Constants.INVALID_ORDER_REQUEST);
 
         long quantity = orderRequest.getQuantity();
         long limit = getLimit(orderRequest);
@@ -66,6 +64,6 @@ public class MaxQuantityFilter implements Filter {
 
     @Override
     public String getName() {
-        return FILTER_NAME;
+        return Constants.MAX_QUANTITY_FILTER_NAME;
     }
 }

@@ -26,8 +26,6 @@ import com.zaradai.kunzite.trader.orders.OrderRequest;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class MaxLongFilter implements Filter {
-    static final String FILTER_NAME = "Max Long";
-
     private final ContextLogger logger;
     private final TradingStateResolver stateResolver;
     private final FilterParameterManager filterParameterManager;
@@ -42,12 +40,12 @@ public class MaxLongFilter implements Filter {
 
     @Override
     public boolean check(OrderRequest orderRequest) {
-        checkNotNull(orderRequest, "Invalid Order request");
+        checkNotNull(orderRequest, Constants.INVALID_ORDER_REQUEST);
 
         if (orderRequest.isBuy()) {
             // get the trading state for this instrument
             TradingState state = checkNotNull(stateResolver.resolveTradingState(orderRequest.getInstrumentId()),
-                    "Invalid Instrument in request");
+                    Constants.INVALID_INSTRUMENT_REQUEST);
             // get expected total position which includes outstanding potential positions out in the market
             long totalPosition = state.getPositionBook().getTotalNetPosition() +
                             state.getOrderBook().getOutstandingBuyQuantity() +
@@ -72,7 +70,7 @@ public class MaxLongFilter implements Filter {
 
     @Override
     public String getName() {
-        return FILTER_NAME;
+        return Constants.MAX_LONG_FILTER_NAME;
     }
 
     private void logFail(long totalPosition, long limit) {

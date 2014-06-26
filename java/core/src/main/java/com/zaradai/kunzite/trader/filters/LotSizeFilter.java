@@ -26,8 +26,6 @@ import com.zaradai.kunzite.trader.orders.OrderRequest;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class LotSizeFilter implements Filter {
-    static final String FILTER_NAME = "Lot Size";
-
     private final ContextLogger logger;
     private final InstrumentResolver instrumentResolver;
 
@@ -39,9 +37,9 @@ public class LotSizeFilter implements Filter {
 
     @Override
     public boolean check(OrderRequest orderRequest) {
-        checkNotNull(orderRequest, "Invalid Order request");
+        checkNotNull(orderRequest, Constants.INVALID_ORDER_REQUEST);
         Instrument instrument = checkNotNull(instrumentResolver.resolveInstrument(orderRequest.getInstrumentId()),
-                "Invalid Instrument in request");
+                Constants.INVALID_INSTRUMENT_REQUEST);
 
         long lotSize = instrument.getLotSize();
         if (orderRequest.getQuantity() % lotSize != 0) {
@@ -63,6 +61,6 @@ public class LotSizeFilter implements Filter {
 
     @Override
     public String getName() {
-        return FILTER_NAME;
+        return Constants.LOT_SIZE_FILTER_NAME;
     }
 }

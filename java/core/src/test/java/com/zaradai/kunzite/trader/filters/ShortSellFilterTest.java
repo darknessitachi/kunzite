@@ -61,7 +61,7 @@ public class ShortSellFilterTest {
 
     @Test
     public void shouldGetName() throws Exception {
-        assertThat(uut.getName(), is(ShortSellFilter.FILTER_NAME));
+        assertThat(uut.getName(), is(Constants.SHORT_SELL_FILTER_NAME));
     }
 
     @Test(expected = NullPointerException.class)

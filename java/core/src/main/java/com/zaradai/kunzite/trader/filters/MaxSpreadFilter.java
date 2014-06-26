@@ -26,8 +26,6 @@ import com.zaradai.kunzite.trader.orders.OrderRequest;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class MaxSpreadFilter implements Filter {
-    static final String FILTER_NAME = "Max Spread";
-
     private final ContextLogger logger;
     private final TradingStateResolver stateResolver;
     private final FilterParameterManager filterParameterManager;
@@ -42,10 +40,10 @@ public class MaxSpreadFilter implements Filter {
 
     @Override
     public boolean check(OrderRequest orderRequest) {
-        checkNotNull(orderRequest, "Invalid Order request");
+        checkNotNull(orderRequest, Constants.INVALID_ORDER_REQUEST);
         // get the trading state for this instrument
         TradingState state = checkNotNull(stateResolver.resolveTradingState(orderRequest.getInstrumentId()),
-                "Invalid Instrument in request");
+                Constants.INVALID_INSTRUMENT_REQUEST);
         double lastTradedPrice = state.getMarketBook().getLastTradedPrice();
         double spread = Math.abs(lastTradedPrice - orderRequest.getPrice());
         // get the limit
@@ -76,6 +74,6 @@ public class MaxSpreadFilter implements Filter {
 
     @Override
     public String getName() {
-        return FILTER_NAME;
+        return Constants.MAX_SPREAD_FILTER_NAME;
     }
 }

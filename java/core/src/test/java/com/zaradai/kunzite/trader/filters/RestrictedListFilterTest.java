@@ -53,7 +53,7 @@ public class RestrictedListFilterTest {
 
     @Test
     public void shouldGetName() throws Exception {
-        assertThat(uut.getName(), is(RestrictedListFilter.FILTER_NAME));
+        assertThat(uut.getName(), is(Constants.RESTRICTED_LIST_FILTER_NAME));
     }
 
     @Test(expected = NullPointerException.class)
