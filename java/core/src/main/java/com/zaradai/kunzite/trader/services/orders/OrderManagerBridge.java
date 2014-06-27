@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders;
+package com.zaradai.kunzite.trader.services.orders;
 
-public enum OrderRejectReason {
-    LotSize, MaxNotional, MaxQuantity, MaxShort, MaxSpread, PriceRange, ShortSell, RestrictedList, InvalidPortfolio, TICK_SIZE, MaxLong
+import com.zaradai.kunzite.trader.events.OrderSendEvent;
+
+public interface OrderManagerBridge {
+    void onOrderSend(OrderSendEvent event);
 }

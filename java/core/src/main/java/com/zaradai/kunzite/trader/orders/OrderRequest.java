@@ -27,6 +27,7 @@ public class OrderRequest {
     private OrderType type;
     private OrderRejectReason rejectReason;
     private boolean valid;
+    private String marketId;
 
     public OrderRequest() {
         valid = true;
@@ -127,5 +128,13 @@ public class OrderRequest {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public void setMarketId(String marketId) {
+        this.marketId = marketId;
+    }
+
+    public String getMarketId() {
+        return marketId;
     }
 }

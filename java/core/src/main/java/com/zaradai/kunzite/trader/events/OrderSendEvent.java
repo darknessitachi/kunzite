@@ -13,8 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders;
+package com.zaradai.kunzite.trader.events;
 
-public enum OrderRejectReason {
-    LotSize, MaxNotional, MaxQuantity, MaxShort, MaxSpread, PriceRange, ShortSell, RestrictedList, InvalidPortfolio, TICK_SIZE, MaxLong
+import com.google.common.collect.Lists;
+import com.zaradai.kunzite.trader.orders.Order;
+
+import java.util.List;
+
+public class OrderSendEvent {
+    private final List<Order> orders;
+
+    private OrderSendEvent() {
+        orders = Lists.newArrayList();
+    }
+
+    public static OrderSendEvent newInstance() {
+        return new OrderSendEvent();
+    }
+
+    public boolean hasOrders() {
+        return orders.size() > 0;
+    }
+
+    public void add(Order order) {
+        orders.add(order);
+    }
 }

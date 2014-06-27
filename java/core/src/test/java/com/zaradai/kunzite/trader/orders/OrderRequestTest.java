@@ -136,4 +136,11 @@ public class OrderRequestTest {
 
         assertThat(uut.isValid(), is(TEST_VALID));
     }
+
+    @Test
+    public void shouldGetMarketId() throws Exception {
+        uut.setMarketId(TEST_STRING);
+
+        assertThat(uut.getMarketId(), is(TEST_STRING));
+    }
 }

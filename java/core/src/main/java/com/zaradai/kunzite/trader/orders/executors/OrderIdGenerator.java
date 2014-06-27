@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders;
+package com.zaradai.kunzite.trader.orders.executors;
 
-public enum OrderRejectReason {
-    LotSize, MaxNotional, MaxQuantity, MaxShort, MaxSpread, PriceRange, ShortSell, RestrictedList, InvalidPortfolio, TICK_SIZE, MaxLong
+public interface OrderIdGenerator {
+    String generate();
 }
