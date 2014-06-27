@@ -72,7 +72,7 @@ public class MaxSpreadFilterTest {
     }
 
     @Test
-     public void shouldReturnFalseIfSpreadExceedsLimit() throws Exception {
+    public void shouldReturnFalseIfSpreadExceedsLimit() throws Exception {
         double testPrice = LAST_TRADED - 2.0;
         double invalidSpread = LAST_TRADED - testPrice - 0.5;
 
