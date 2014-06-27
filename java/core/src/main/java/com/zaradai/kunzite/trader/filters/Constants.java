@@ -30,6 +30,7 @@ public final class Constants {
     public static final String PRICE_RANGE_FILTER_NAME = "Price Range";
     public static final String RESTRICTED_LIST_FILTER_NAME = "Restricted List";
     public static final String SHORT_SELL_FILTER_NAME = "Short Sell";
+    public static final String PORTFOLIO_FILTER_NAME = "Portfolio";
 
     public static final String INVALID_ORDER_REQUEST = "Invalid Order request";
     public static final String INVALID_INSTRUMENT_REQUEST = "Invalid Instrument in request";
