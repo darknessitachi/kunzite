@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders.executors;
+package com.zaradai.kunzite.trader.orders.execution;
 
-public interface OrderIdGenerator {
-    String generate();
+import com.zaradai.kunzite.trader.control.TradingState;
+
+public interface OrderStateManagerFactory {
+    OrderStateManager create(TradingState tradingState);
 }

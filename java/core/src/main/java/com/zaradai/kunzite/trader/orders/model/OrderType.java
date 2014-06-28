@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders.executors;
+package com.zaradai.kunzite.trader.orders.model;
 
-import com.zaradai.kunzite.trader.control.TradingState;
-
-public interface OrderExecutorFactory {
-    /**
-     * Create an order executor and associate it with a trading state.
-     * @param tradingState
-     * @return
-     */
-    OrderExecutor create(TradingState tradingState);
+public enum OrderType {
+    Market,
+    Limit,
+    Stop,
+    Stop_Limit
 }

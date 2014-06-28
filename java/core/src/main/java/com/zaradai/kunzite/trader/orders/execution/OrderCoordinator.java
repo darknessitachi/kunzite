@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders;
+package com.zaradai.kunzite.trader.orders.execution;
 
-public enum OrderType {
-    Market,
-    Limit,
-    Stop,
-    Stop_Limit
+import com.zaradai.kunzite.trader.orders.model.OrderRequest;
+
+public interface OrderCoordinator {
+    void add(OrderRequest orderRequest);
+    void process();
+    void clear();
 }

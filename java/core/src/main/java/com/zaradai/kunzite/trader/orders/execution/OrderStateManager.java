@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders;
+package com.zaradai.kunzite.trader.orders.execution;
 
-import com.zaradai.kunzite.trader.events.OrderLoadHandler;
+import com.zaradai.kunzite.trader.events.OrderStatusEvent;
+import com.zaradai.kunzite.trader.orders.model.Order;
+import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 
-public interface OrderBook extends OrderLoadHandler {
-    void add(Order order);
-    void remove(Order order);
-
-    Order get(String orderId);
-    Order getByClientId(String orderId);
-    Order getByExchangeId(String orderId);
-
-    long getOutstandingBuyQuantity();
-    long getOutstandingSellQuantity();
+public interface OrderStateManager {
+    void newRequest(Order order, OrderRequest request);
+    void onOrderStatus(Order order, OrderStatusEvent event);
 }

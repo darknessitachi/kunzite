@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders.executors;
+package com.zaradai.kunzite.trader.orders.utils;
 
 import org.joda.time.DateTime;
 

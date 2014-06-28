@@ -20,8 +20,8 @@ import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.logging.LogHelper;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.instruments.InstrumentResolver;
-import com.zaradai.kunzite.trader.orders.OrderRejectReason;
-import com.zaradai.kunzite.trader.orders.OrderRequest;
+import com.zaradai.kunzite.trader.orders.model.OrderRejectReason;
+import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

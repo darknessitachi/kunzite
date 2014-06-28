@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders;
+package com.zaradai.kunzite.trader.orders.book;
 
-public enum OrderRequestType {
-    Create,
-    Amend,
-    Cancel
+public interface OrderBookFactory {
+    OrderBook create();
 }

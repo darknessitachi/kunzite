@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders;
+package com.zaradai.kunzite.trader.orders.model;
 
-import org.joda.time.DateTime;
-
-public class OrderState {
-    public DateTime getCreated() {
-        return null;
-    }
-
-    public double getPrice() {
-        return 0;
-    }
-
-    /**
-     * Return the quantity of the order that is either on the market or pending acknowledgement
-     * @return
-     */
-    public long getPendingOrOnMarket() {
-        return 0;
-    }
+public enum OrderTimeInForce {
+    Day,
+    GoodTillCancel,
+    AtTheOpen,
+    ImmediateOrCancel,
+    FillOrKill,
+    AtTheClose
 }

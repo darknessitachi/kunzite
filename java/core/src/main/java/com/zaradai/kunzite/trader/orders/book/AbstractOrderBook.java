@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders;
+package com.zaradai.kunzite.trader.orders.book;
 
 import com.google.common.base.Strings;
+import com.zaradai.kunzite.trader.orders.model.Order;
 
 import java.util.Map;
 
@@ -130,27 +131,35 @@ public abstract class AbstractOrderBook implements OrderBook {
     }
 
     private void rememberOrder(Order order) {
-        if (!Strings.isNullOrEmpty(order.getExchangeOrderId())) {
-            ordersByExchangeId.put(order.getExchangeOrderId(), order);
+        String orderId = order.getRefData().getExchangeOrderId();
+        String clientId = order.getRefData().getClientOrderId();
+        String exchangeId = order.getRefData().getExchangeOrderId();
+
+        if (!Strings.isNullOrEmpty(exchangeId)) {
+            ordersByExchangeId.put(exchangeId, order);
         }
-        if (!Strings.isNullOrEmpty(order.getClientOrderId())) {
-            ordersByClientId.put(order.getClientOrderId(), order);
+        if (!Strings.isNullOrEmpty(clientId)) {
+            ordersByClientId.put(clientId, order);
         }
-        if (!Strings.isNullOrEmpty(order.getOrderId())) {
-            ordersByOrderId.put(order.getOrderId(), order);
+        if (!Strings.isNullOrEmpty(orderId)) {
+            ordersByOrderId.put(orderId, order);
         }
     }
 
 
     private void forgetOrder(Order order) {
-        if (!Strings.isNullOrEmpty(order.getExchangeOrderId())) {
-            ordersByExchangeId.remove(order.getExchangeOrderId());
+        String orderId = order.getRefData().getExchangeOrderId();
+        String clientId = order.getRefData().getClientOrderId();
+        String exchangeId = order.getRefData().getExchangeOrderId();
+
+        if (!Strings.isNullOrEmpty(exchangeId)) {
+            ordersByExchangeId.remove(exchangeId);
         }
-        if (!Strings.isNullOrEmpty(order.getClientOrderId())) {
-            ordersByClientId.remove(order.getClientOrderId());
+        if (!Strings.isNullOrEmpty(clientId)) {
+            ordersByClientId.remove(clientId);
         }
-        if (!Strings.isNullOrEmpty(order.getOrderId())) {
-            ordersByOrderId.remove(order.getOrderId());
+        if (!Strings.isNullOrEmpty(orderId)) {
+            ordersByOrderId.remove(orderId);
         }
     }
 }

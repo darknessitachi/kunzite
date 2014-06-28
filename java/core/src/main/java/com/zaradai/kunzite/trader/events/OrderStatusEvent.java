@@ -13,15 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders.executors;
+package com.zaradai.kunzite.trader.events;
 
-import com.zaradai.kunzite.trader.orders.OrderRequest;
-
-/**
- * Provides an interface to enable multiple order execution strategies.
- */
-public interface OrderExecutor {
-    void addRequest(OrderRequest orderRequest);
-    void execute();
-    void clear();
+public class OrderStatusEvent {
+    private OrderStatus orderStatus;
 }

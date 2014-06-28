@@ -13,29 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.events;
+package com.zaradai.kunzite.trader.orders.utils;
 
-import com.google.common.collect.Lists;
-import com.zaradai.kunzite.trader.orders.model.Order;
-
-import java.util.List;
-
-public class OrderSendEvent {
-    private final List<Order> orders;
-
-    private OrderSendEvent() {
-        orders = Lists.newArrayList();
-    }
-
-    public static OrderSendEvent newInstance() {
-        return new OrderSendEvent();
-    }
-
-    public boolean hasOrders() {
-        return orders.size() > 0;
-    }
-
-    public void add(Order order) {
-        orders.add(order);
-    }
+public interface OrderIdGenerator {
+    String generate();
 }

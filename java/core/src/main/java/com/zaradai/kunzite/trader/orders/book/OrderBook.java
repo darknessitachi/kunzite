@@ -13,11 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders;
+package com.zaradai.kunzite.trader.orders.book;
 
-public enum OrderSide {
-    Buy,
-    Sell,
-    Sell_Short,
-    Cover_Short
+import com.zaradai.kunzite.trader.events.OrderLoadHandler;
+import com.zaradai.kunzite.trader.orders.model.Order;
+
+public interface OrderBook extends OrderLoadHandler {
+    void add(Order order);
+    void remove(Order order);
+
+    Order get(String orderId);
+    Order getByClientId(String orderId);
+    Order getByExchangeId(String orderId);
+
+    long getOutstandingBuyQuantity();
+    long getOutstandingSellQuantity();
 }

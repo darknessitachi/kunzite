@@ -15,7 +15,7 @@
  */
 package com.zaradai.kunzite.trader.filters;
 
-import com.zaradai.kunzite.trader.orders.OrderRequest;
+import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 import org.junit.Before;
 import org.junit.Test;
 

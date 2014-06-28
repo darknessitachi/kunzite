@@ -13,8 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders;
+package com.zaradai.kunzite.trader.events;
 
-public interface OrderBookFactory {
-    OrderBook create();
+public enum OrderStatus {
+    New,
+    PartiallyFilled,
+    Filled,
+    DoneForDay,
+    Cancelled,
+    Replaced,
+    PendingCancelReplace,
+    Stopped,
+    Rejected,
+    Suspended,
+    PendingNew,
+    Calculated,
+    Expired
 }

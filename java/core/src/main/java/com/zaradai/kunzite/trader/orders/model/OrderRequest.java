@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders;
+package com.zaradai.kunzite.trader.orders.model;
+
+import org.joda.time.DateTime;
 
 public class OrderRequest {
     private OrderRequestType orderRequestType;
@@ -28,6 +30,10 @@ public class OrderRequest {
     private OrderRejectReason rejectReason;
     private boolean valid;
     private String marketId;
+    private String dependentOrderId;    // amend or cancel need an existing order id to work on
+    private String brokerId;
+    private OrderTimeInForce timeInForce;
+    private DateTime created;
 
     public OrderRequest() {
         valid = true;
@@ -136,5 +142,37 @@ public class OrderRequest {
 
     public String getMarketId() {
         return marketId;
+    }
+
+    public String getDependentOrderId() {
+        return dependentOrderId;
+    }
+
+    public void setDependentOrderId(String dependentOrderId) {
+        this.dependentOrderId = dependentOrderId;
+    }
+
+    public String getBrokerId() {
+        return brokerId;
+    }
+
+    public void setBrokerId(String brokerId) {
+        this.brokerId = brokerId;
+    }
+
+    public OrderTimeInForce getTimeInForce() {
+        return timeInForce;
+    }
+
+    public void setTimeInForce(OrderTimeInForce timeInForce) {
+        this.timeInForce = timeInForce;
+    }
+
+    public DateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(DateTime created) {
+        this.created = created;
     }
 }

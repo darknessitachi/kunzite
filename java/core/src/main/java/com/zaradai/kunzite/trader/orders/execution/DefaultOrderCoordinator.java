@@ -13,49 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders.executors;
+package com.zaradai.kunzite.trader.orders.execution;
 
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.zaradai.kunzite.events.EventAggregator;
 import com.zaradai.kunzite.logging.ContextLogger;
+import com.zaradai.kunzite.logging.LogHelper;
 import com.zaradai.kunzite.trader.control.TradingState;
 import com.zaradai.kunzite.trader.events.OrderSendEvent;
 import com.zaradai.kunzite.trader.filters.Filter;
 import com.zaradai.kunzite.trader.filters.FilterManager;
-import com.zaradai.kunzite.trader.orders.Order;
-import com.zaradai.kunzite.trader.orders.OrderRequest;
-import com.zaradai.kunzite.trader.orders.OrderRequestType;
+import com.zaradai.kunzite.trader.orders.book.OrderBook;
+import com.zaradai.kunzite.trader.orders.book.OrderBookFactory;
+import com.zaradai.kunzite.trader.orders.model.Order;
+import com.zaradai.kunzite.trader.orders.model.OrderRejectReason;
+import com.zaradai.kunzite.trader.orders.model.OrderRequest;
+import com.zaradai.kunzite.trader.orders.model.OrderRequestType;
+import com.zaradai.kunzite.trader.orders.utils.OrderIdGenerator;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * A simple order executor per tradeable instrument that batch converts a number of requests into orders to be sent to
- * the market.  The requests are validated against limits and the associated trading state
- */
-public class DefaultOrderExecutor implements OrderExecutor {
+public class DefaultOrderCoordinator implements OrderCoordinator {
+    private final OrderStateManager orderStateManager;
+    private final OrderBook orderBook;
     private final ContextLogger logger;
     private final EventAggregator eventAggregator;
-    private final OrderIdGenerator orderIdGenerator;
-    private final TradingState tradingState;
+    private final OrderIdGenerator idGenerator;
 
     private final List<OrderRequest> pending;
+    private final Filter orderFilter;
     private final String instrumentId;
     private final String marketId;
-    private final Filter orderFilter;
 
-    @Inject
-    DefaultOrderExecutor(ContextLogger logger, EventAggregator eventAggregator, OrderIdGenerator orderIdGenerator,
-                         FilterManager filterManager, @Assisted TradingState tradingState) {
+    public DefaultOrderCoordinator(ContextLogger logger, EventAggregator eventAggregator, OrderIdGenerator idGenerator,
+                                   OrderStateManagerFactory orderStateManagerFactory, OrderBookFactory orderBookFactory,
+                                   FilterManager filterManager, @Assisted TradingState tradingState) {
         this.logger = logger;
         this.eventAggregator = eventAggregator;
-        this.orderIdGenerator = orderIdGenerator;
-        this.tradingState = tradingState;
-        pending = createPendingList();
+        this.idGenerator = idGenerator;
+        orderStateManager = orderStateManagerFactory.create(tradingState);
+        orderBook = orderBookFactory.create();
 
+        pending = createPendingList();
         instrumentId = tradingState.getInstrument().getId();
         marketId = tradingState.getInstrument().getMarketId();
         orderFilter = filterManager.createFor(tradingState);
@@ -66,16 +68,21 @@ public class DefaultOrderExecutor implements OrderExecutor {
     }
 
     @Override
-    public void addRequest(OrderRequest orderRequest) {
+    public void add(OrderRequest orderRequest) {
         checkNotNull(orderRequest, "Invalid Order Request");
         pending.add(orderRequest);
     }
 
     @Override
-    public void execute() {
+    public void process() {
         processPending();
         processRejects();
         clear();
+    }
+
+    @Override
+    public void clear() {
+        pending.clear();
     }
 
     private void processRejects() {
@@ -86,9 +93,8 @@ public class DefaultOrderExecutor implements OrderExecutor {
         }
     }
 
-    @Override
-    public void clear() {
-        pending.clear();
+    private void processReject(OrderRequest orderRequest) {
+        //To be implemented
     }
 
     private void processPending() {
@@ -121,20 +127,51 @@ public class DefaultOrderExecutor implements OrderExecutor {
         }
         // create the order based on a valid request
         Order order = createOrder(request);
-        // add to the send event
-        orderSendEvent.add(order);
+
+        if (order != null) {
+            // add to the send event if a valid order was created
+            orderSendEvent.add(order);
+        }
     }
 
     private Order createOrder(OrderRequest request) {
-        // create the order
+        Order order;
+        boolean newOrder = request.getOrderRequestType() == OrderRequestType.Create;
 
-        // add to the order book
+        if (newOrder) {
+            order = Order.builder()
+                    // set a new unique id
+                    .id(idGenerator.generate())
+                    .instrument(request.getInstrumentId())
+                    .market(request.getMarketId())
+                    .portfolio(request.getPortfolioId())
+                    .client(request.getClientOrderId())
+                    .broker(request.getBrokerId())
+                    .build();
+        } else {
+            // get from the book
+            order = orderBook.get(request.getDependentOrderId());
+            // if the order is not found reject the request
+            if (order == null) {
+                failedToGetDependentOrder(request);
+                return null;
+            }
+        }
+        // ask the state manager to update the order based on the request
+        orderStateManager.newRequest(order, request);
+        // if this is a new order then add to the order book
+        if (newOrder) {
+            orderBook.add(order);
+        }
 
-        // To be implemented
-        return new Order();
+        return order;
     }
 
-    private void processReject(OrderRequest orderRequest) {
-        // To be implemented
+    private void failedToGetDependentOrder(OrderRequest request) {
+        request.reject(OrderRejectReason.DependantOrder);
+        LogHelper.warn(logger)
+                .addContext("Filter: Dependant Order")
+                .add("Order ID", request.getDependentOrderId())
+                .log();
     }
 }

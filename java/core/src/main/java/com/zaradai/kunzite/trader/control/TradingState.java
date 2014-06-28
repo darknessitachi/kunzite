@@ -17,7 +17,7 @@ package com.zaradai.kunzite.trader.control;
 
 import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.marketdata.MarketBook;
-import com.zaradai.kunzite.trader.orders.OrderBook;
+import com.zaradai.kunzite.trader.orders.book.OrderBook;
 import com.zaradai.kunzite.trader.positions.PositionBook;
 
 public interface TradingState {

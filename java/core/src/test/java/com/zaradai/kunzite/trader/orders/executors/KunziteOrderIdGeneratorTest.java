@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.orders.executors;
 
+import com.zaradai.kunzite.trader.orders.utils.KunziteOrderIdGenerator;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

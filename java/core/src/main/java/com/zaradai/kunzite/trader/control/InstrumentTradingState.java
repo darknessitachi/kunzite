@@ -20,8 +20,8 @@ import com.google.inject.assistedinject.Assisted;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.marketdata.MarketBook;
 import com.zaradai.kunzite.trader.marketdata.MarketBookFactory;
-import com.zaradai.kunzite.trader.orders.OrderBook;
-import com.zaradai.kunzite.trader.orders.OrderBookFactory;
+import com.zaradai.kunzite.trader.orders.book.OrderBook;
+import com.zaradai.kunzite.trader.orders.book.OrderBookFactory;
 import com.zaradai.kunzite.trader.positions.PositionBook;
 import com.zaradai.kunzite.trader.positions.PositionBookFactory;
 

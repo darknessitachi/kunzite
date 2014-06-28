@@ -18,8 +18,8 @@ package com.zaradai.kunzite.trader.filters;
 import com.google.inject.Inject;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.logging.LogHelper;
-import com.zaradai.kunzite.trader.orders.OrderRejectReason;
-import com.zaradai.kunzite.trader.orders.OrderRequest;
+import com.zaradai.kunzite.trader.orders.model.OrderRejectReason;
+import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 
 import java.util.Set;
 

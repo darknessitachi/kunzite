@@ -17,7 +17,7 @@ package com.zaradai.kunzite.trader.filters;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.zaradai.kunzite.trader.orders.OrderRequest;
+import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 
 import java.util.List;
 

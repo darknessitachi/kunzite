@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders;
+package com.zaradai.kunzite.trader.orders.book;
 
 import com.google.common.collect.ImmutableList;
+import com.zaradai.kunzite.trader.orders.model.Order;
 
 import java.util.List;
 import java.util.PriorityQueue;
