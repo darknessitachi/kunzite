@@ -142,7 +142,7 @@ public class DefaultOrderStateManager implements OrderStateManager {
 
     private void onPartiallyFilled(OrderState state, OrderStatusEvent event) {
         // update executed quantity
-        state.setExecQty(event.getExecQty());
+        state.setExecQty(state.getExecQty() + event.getExecQty());
         // fire a trade event
         fireTradeEvent(state, event);
     }
@@ -238,5 +238,4 @@ public class DefaultOrderStateManager implements OrderStateManager {
 
         eventAggregator.publish(trade);
     }
-
 }
