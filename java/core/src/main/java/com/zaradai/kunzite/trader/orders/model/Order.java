@@ -83,7 +83,7 @@ public class Order {
     };
 
     private int compareCreateTimeTo(Order o2) {
-        return (int) (state.getCreated().getMillis() - o2.state.getCreated().getMillis());
+        return (int) (getState().getCreated().getMillis() - o2.getState().getCreated().getMillis());
     }
 
     public static OrderBuilder builder() {

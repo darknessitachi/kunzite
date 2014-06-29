@@ -124,7 +124,6 @@ public abstract class AbstractOrderBook implements OrderBook {
         }
     }
 
-
     private void forgetOrder(Order order) {
         String orderId = order.getRefData().getOrderId();
 
