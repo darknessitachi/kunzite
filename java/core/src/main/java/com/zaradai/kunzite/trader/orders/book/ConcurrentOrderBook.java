@@ -50,7 +50,7 @@ public class ConcurrentOrderBook extends AbstractOrderBook {
         PriceEntry entry = limitOrders.get(entryPrice);
 
         if (entry == null) {
-            entry = PriceEntry.newEntry(entryPrice);
+            entry = new PriceEntry(entryPrice);
             PriceEntry previous = limitOrders.putIfAbsent(entryPrice, entry);
 
             if (previous != null) {

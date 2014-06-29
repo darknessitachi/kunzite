@@ -37,7 +37,7 @@ public final class DefaultOrderBook extends AbstractOrderBook {
         PriceEntry entry = limitOrders.get(entryPrice);
 
         if (entry == null) {
-            entry = PriceEntry.newEntry(entryPrice);
+            entry = new PriceEntry(entryPrice);
             limitOrders.put(entryPrice, entry);
         }
 

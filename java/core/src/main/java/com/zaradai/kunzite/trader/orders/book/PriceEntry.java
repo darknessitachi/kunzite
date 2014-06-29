@@ -27,27 +27,27 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * Will support Order Book capability to view an orders time priority
  */
-public final class PriceEntry {
+public class PriceEntry {
     private static final int ORDER_QUEUE_INITIAL_CAPACITY = 100;
 
     private final double price;
     private final Queue<Order> buySide;
     private final Queue<Order> sellSide;
 
-    private PriceEntry(double price) {
+    public PriceEntry(double price) {
+        checkArgument(!Double.isNaN(price), "Invalid entry specified");
+
         this.price = price;
-        buySide = createOrderQueue();
-        sellSide = createOrderQueue();
+        buySide = createBuyOrderQueue();
+        sellSide = createSellOrderQueue();
     }
 
-    private Queue<Order> createOrderQueue() {
+    protected Queue<Order> createBuyOrderQueue() {
         return new PriorityQueue<Order>(ORDER_QUEUE_INITIAL_CAPACITY, Order.TimeComparator);
     }
 
-    public static PriceEntry newEntry(double entry) {
-        checkArgument(!Double.isNaN(entry), "Invalid entry specified");
-
-        return new PriceEntry(entry);
+    protected Queue<Order> createSellOrderQueue() {
+        return new PriorityQueue<Order>(ORDER_QUEUE_INITIAL_CAPACITY, Order.TimeComparator);
     }
 
     void add(Order order) {

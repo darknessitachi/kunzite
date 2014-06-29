@@ -27,7 +27,7 @@ public abstract class AbstractOrderBook implements OrderBook {
 
     public AbstractOrderBook() {
         ordersByOrderId = createOrderMap();
-        marketOrders = PriceEntry.newEntry(0);
+        marketOrders = new PriceEntry(0);
         limitOrders = createEntryMap();
     }
 
