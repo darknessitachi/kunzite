@@ -13,8 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.events;
+package com.zaradai.kunzite.trader.strategies;
 
-public interface MarketBookUpdateHandler {
-    void onMarketBookUpdate(MarketBookUpdate marketBookUpdate);
+public class StrategyException extends Exception {
+    public StrategyException(String message) {
+        super(message);
+    }
+
+    public StrategyException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

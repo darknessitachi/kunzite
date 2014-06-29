@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.marketdata;
+package com.zaradai.kunzite.trader.events;
 
-import com.zaradai.kunzite.trader.events.MarketBookUpdateEvent;
-import com.zaradai.kunzite.trader.events.MarketData;
-
-public interface MarketBookUpdater {
-    MarketBookUpdateEvent update(MarketBook book, MarketData marketData);
+public interface TradeEventHandler {
+    void onTrade(TradeEvent event);
 }

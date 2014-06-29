@@ -16,7 +16,7 @@
 package com.zaradai.kunzite.trader.marketdata;
 
 import com.google.common.collect.Lists;
-import com.zaradai.kunzite.trader.events.MarketBookUpdate;
+import com.zaradai.kunzite.trader.events.MarketBookUpdateEvent;
 import com.zaradai.kunzite.trader.events.MarketData;
 import com.zaradai.kunzite.trader.events.MarketDataField;
 import com.zaradai.kunzite.trader.events.MarketDataFieldType;
@@ -94,7 +94,7 @@ public class DefaultMarketBookUpdaterTest {
                 MarketDataField.newLongValue(MarketDataFieldType.TRADE_SIZE, TEST_QTY)
                 ));
 
-        MarketBookUpdate update = uut.update(marketBook, md);
+        MarketBookUpdateEvent update = uut.update(marketBook, md);
 
         assertThat(marketBook.getBid(0), is(TEST_PRICE));
         assertThat(marketBook.getBid(1), is(TEST_PRICE));

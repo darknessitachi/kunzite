@@ -15,13 +15,13 @@
  */
 package com.zaradai.kunzite.trader.marketdata;
 
-import com.zaradai.kunzite.trader.events.MarketBookUpdate;
+import com.zaradai.kunzite.trader.events.MarketBookUpdateEvent;
 import com.zaradai.kunzite.trader.events.MarketData;
 import com.zaradai.kunzite.trader.events.MarketDataField;
 
 public class DefaultMarketBookUpdater implements MarketBookUpdater {
     @Override
-    public MarketBookUpdate update(MarketBook book, MarketData marketData) {
+    public MarketBookUpdateEvent update(MarketBook book, MarketData marketData) {
         boolean bestPriceChanged = false;
         boolean bestSizeChanged = false;
         boolean depthChanged = false;
@@ -217,7 +217,7 @@ public class DefaultMarketBookUpdater implements MarketBookUpdater {
             }
         }
 
-        return MarketBookUpdate.builder()
+        return MarketBookUpdateEvent.builder()
                 .instrument(book.getInstrumentId())
                 .book(book)
                 .bestPrice(bestPriceChanged)

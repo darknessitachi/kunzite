@@ -25,7 +25,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class MarketBookUpdateTest {
+public class MarketBookUpdateEventTest {
     private static final boolean TEST_BEST_PRICE = true;
     private static final boolean TEST_BEST_SIZE = true;
     private static final MarketBook TEST_BOOK = mock(MarketBook.class);
@@ -37,7 +37,7 @@ public class MarketBookUpdateTest {
 
     @Test
     public void shouldBuild() throws Exception {
-        MarketBookUpdate uut = MarketBookUpdate.builder()
+        MarketBookUpdateEvent uut = MarketBookUpdateEvent.builder()
                 .bestPrice(TEST_BEST_PRICE)
                 .bestSize(TEST_BEST_SIZE)
                 .book(TEST_BOOK)
@@ -60,12 +60,12 @@ public class MarketBookUpdateTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailWithInvalidInstrument() throws Exception {
-        MarketBookUpdate uut = MarketBookUpdate.builder().build();
+        MarketBookUpdateEvent uut = MarketBookUpdateEvent.builder().build();
     }
 
     @Test
     public void shouldSetTimestampIfNotGiven() throws Exception {
-        MarketBookUpdate uut = MarketBookUpdate.builder().instrument(TEST_INST_ID).build();
+        MarketBookUpdateEvent uut = MarketBookUpdateEvent.builder().instrument(TEST_INST_ID).build();
 
         assertThat(uut.getTimestamp(), not(nullValue()));
     }
