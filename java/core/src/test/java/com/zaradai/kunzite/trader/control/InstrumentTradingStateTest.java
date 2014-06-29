@@ -19,7 +19,8 @@ import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.marketdata.MarketBook;
 import com.zaradai.kunzite.trader.marketdata.MarketBookFactory;
 import com.zaradai.kunzite.trader.orders.book.OrderBook;
-import com.zaradai.kunzite.trader.orders.book.OrderBookFactory;
+import com.zaradai.kunzite.trader.orders.execution.OrderManager;
+import com.zaradai.kunzite.trader.orders.execution.OrderManagerFactory;
 import com.zaradai.kunzite.trader.positions.PositionBook;
 import com.zaradai.kunzite.trader.positions.PositionBookFactory;
 import org.junit.Before;
@@ -27,6 +28,7 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,6 +38,7 @@ public class InstrumentTradingStateTest {
     private InstrumentTradingState uut;
     private PositionBook positionBook;
     private OrderBook orderBook;
+    private OrderManager orderManager;
 
     @Before
     public void setUp() throws Exception {
@@ -46,11 +49,13 @@ public class InstrumentTradingStateTest {
         PositionBookFactory positionBookFactory = mock(PositionBookFactory.class);
         positionBook = mock(PositionBook.class);
         when(positionBookFactory.create(instrument)).thenReturn(positionBook);
-        OrderBookFactory orderBookFactory = mock(OrderBookFactory.class);
+        orderManager = mock(OrderManager.class);
+        OrderManagerFactory orderManagerFactory = mock(OrderManagerFactory.class);
+        when(orderManagerFactory.create(any(InstrumentTradingState.class))).thenReturn(orderManager);
         orderBook = mock(OrderBook.class);
-        when(orderBookFactory.create()).thenReturn(orderBook);
+        when(orderManager.getBook()).thenReturn(orderBook);
 
-        uut = new InstrumentTradingState(marketBookFactory, positionBookFactory, orderBookFactory, instrument);
+        uut = new InstrumentTradingState(marketBookFactory, positionBookFactory, orderManagerFactory, instrument);
     }
 
     @Test
@@ -71,5 +76,10 @@ public class InstrumentTradingStateTest {
     @Test
     public void shouldGetOrderBook() throws Exception {
         assertThat(uut.getOrderBook(), is(orderBook));
+    }
+
+    @Test
+    public void shouldGetOrderManager() throws Exception {
+        assertThat(uut.getOrderManager(), is(orderManager));
     }
 }

@@ -36,7 +36,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class DefaultOrderCoordinator implements OrderCoordinator {
+public class DefaultOrderManager implements OrderManager {
     private final OrderStateManager orderStateManager;
     private final OrderBook orderBook;
     private final ContextLogger logger;
@@ -48,9 +48,9 @@ public class DefaultOrderCoordinator implements OrderCoordinator {
     private final String instrumentId;
     private final String marketId;
 
-    public DefaultOrderCoordinator(ContextLogger logger, EventAggregator eventAggregator, OrderIdGenerator idGenerator,
-                                   OrderStateManagerFactory orderStateManagerFactory, OrderBookFactory orderBookFactory,
-                                   FilterManager filterManager, @Assisted TradingState tradingState) {
+    public DefaultOrderManager(ContextLogger logger, EventAggregator eventAggregator, OrderIdGenerator idGenerator,
+                               OrderStateManagerFactory orderStateManagerFactory, OrderBookFactory orderBookFactory,
+                               FilterManager filterManager, @Assisted TradingState tradingState) {
         this.logger = logger;
         this.eventAggregator = eventAggregator;
         this.idGenerator = idGenerator;
@@ -83,6 +83,11 @@ public class DefaultOrderCoordinator implements OrderCoordinator {
     @Override
     public void clear() {
         pending.clear();
+    }
+
+    @Override
+    public OrderBook getBook() {
+        return orderBook;
     }
 
     private void processRejects() {
@@ -159,10 +164,6 @@ public class DefaultOrderCoordinator implements OrderCoordinator {
         }
         // ask the state manager to update the order based on the request
         orderStateManager.newRequest(order, request);
-        // if this is a new order then add to the order book
-        if (newOrder) {
-            orderBook.add(order);
-        }
 
         return order;
     }

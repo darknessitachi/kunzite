@@ -17,6 +17,8 @@ package com.zaradai.kunzite.trader.orders.model;
 
 import org.joda.time.DateTime;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Represents the latest order entry sent to the exchange.  Given an order may
  * be created, amended, cancel they may be more than one OrderEntry per order.  The
@@ -30,13 +32,24 @@ public class OrderEntry {
     private long quantity;
     private double price;
     private OrderLatency latency;
+    private String exchangeId;
 
-    public OrderEntry() {
+    private OrderEntry() {
         latency = OrderLatency.newInstance();
     }
 
-    public OrderEntry(DateTime created) {
+    private OrderEntry(DateTime created) {
         latency = OrderLatency.newInstanceFrom(created);
+    }
+
+    public static OrderEntry newInstance() {
+        return new OrderEntry();
+    }
+
+    public static OrderEntry newInstanceWithCreated(DateTime created) {
+        checkNotNull(created, "Invalid create time");
+
+        return new OrderEntry(created);
     }
 
     public OrderRequestType getRequestType() {
@@ -89,5 +102,13 @@ public class OrderEntry {
 
     public OrderLatency getLatency() {
         return latency;
+    }
+
+    public void setExchangeId(String exchangeId) {
+        this.exchangeId = exchangeId;
+    }
+
+    public String getExchangeId() {
+        return exchangeId;
     }
 }

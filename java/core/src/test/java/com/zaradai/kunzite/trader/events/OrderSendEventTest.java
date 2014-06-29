@@ -13,12 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders.execution;
+package com.zaradai.kunzite.trader.events;
 
-import com.zaradai.kunzite.trader.orders.model.OrderRequest;
+import com.zaradai.kunzite.trader.orders.model.Order;
+import org.junit.Test;
 
-public interface OrderCoordinator {
-    void add(OrderRequest orderRequest);
-    void process();
-    void clear();
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+
+public class OrderSendEventTest {
+    @Test
+    public void shouldAdd() throws Exception {
+        Order order = mock(Order.class);
+        OrderSendEvent uut = OrderSendEvent.newInstance();
+
+        uut.add(order);
+
+        assertThat(uut.hasOrders(), is(true));
+    }
 }

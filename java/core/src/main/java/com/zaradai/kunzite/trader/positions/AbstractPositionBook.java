@@ -16,7 +16,7 @@
 package com.zaradai.kunzite.trader.positions;
 
 import com.zaradai.kunzite.trader.events.StartOfDay;
-import com.zaradai.kunzite.trader.events.Trade;
+import com.zaradai.kunzite.trader.events.TradeEvent;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 
 import java.util.Iterator;
@@ -39,10 +39,10 @@ public abstract class AbstractPositionBook implements PositionBook {
     }
 
     @Override
-    public void onTrade(Trade trade) {
+    public void onTrade(TradeEvent event) {
         // assume trade is for us and has been filtered by the instrument manager or book container
-        Position position = getPositionFor(trade.getPortfolioId());
-        positionUpdater.update(position, trade);
+        Position position = getPositionFor(event.getPortfolioId());
+        positionUpdater.update(position, event);
     }
 
     @Override

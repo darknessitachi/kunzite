@@ -16,7 +16,7 @@
 package com.zaradai.kunzite.trader.positions;
 
 import com.zaradai.kunzite.trader.events.StartOfDay;
-import com.zaradai.kunzite.trader.events.Trade;
+import com.zaradai.kunzite.trader.events.TradeEvent;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -26,14 +26,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class DefaultPositionUpdater implements PositionUpdater {
     @Override
-    public void update(Position position, Trade trade) {
+    public void update(Position position, TradeEvent event) {
         checkNotNull(position, "Invalid Position");
-        checkNotNull(trade, "Invalid Trade");
-        checkArgument(trade.getInstrumentId().equals(position.getInstrumentId()), "Trade is not for this position");
-        checkArgument(trade.getPortfolioId().equals(position.getPortfolioId()), "Trade is not for this position");
+        checkNotNull(event, "Invalid Trade");
+        checkArgument(event.getInstrumentId().equals(position.getInstrumentId()), "Trade is not for this position");
+        checkArgument(event.getPortfolioId().equals(position.getPortfolioId()), "Trade is not for this position");
 
-        long quantity = trade.getQuantity();
-        double price = trade.getPrice();
+        long quantity = event.getQuantity();
+        double price = event.getPrice();
         double cashFlow = price * quantity * position.getInstrument().getMultiplier();
 
         if (quantity < 0) {
@@ -57,6 +57,4 @@ public class DefaultPositionUpdater implements PositionUpdater {
         position.setStartOfDay(startOfDay.getPosition());
         position.setStartOfDayCashFlow(startOfDay.getCashFlow());
     }
-
-
 }

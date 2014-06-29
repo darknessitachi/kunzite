@@ -17,4 +17,39 @@ package com.zaradai.kunzite.trader.events;
 
 public class OrderStatusEvent {
     private OrderStatus orderStatus;
+    private String exchangeId;
+    private long execQty;
+    private double lastPx;
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public String getExchangeId() {
+        return exchangeId;
+    }
+
+    public void setExchangeId(String exchangeId) {
+        this.exchangeId = exchangeId;
+    }
+
+    public long getExecQty() {
+        return execQty;
+    }
+
+    public void setExecQty(long execQty) {
+        this.execQty = execQty;
+    }
+
+    public double getLastPx() {
+        return lastPx;
+    }
+
+    public void setLastPx(double lastPx) {
+        this.lastPx = lastPx;
+    }
 }

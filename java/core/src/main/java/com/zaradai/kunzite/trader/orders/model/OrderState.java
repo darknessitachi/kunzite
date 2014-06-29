@@ -17,6 +17,8 @@ package com.zaradai.kunzite.trader.orders.model;
 
 import org.joda.time.DateTime;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class OrderState {
     private double price;
     private boolean pending;
@@ -24,6 +26,17 @@ public class OrderState {
     private long quantity;
     private long execQty;
     private OrderEntry entry;
+    private Order order;
+
+    private OrderState(Order order) {
+        this.order = order;
+    }
+
+    public static OrderState newInstance(Order order) {
+        checkNotNull(order, "Invalid Order, cannot create state");
+
+        return new OrderState(order);
+    }
 
     public double getPrice() {
         return price;
@@ -89,5 +102,17 @@ public class OrderState {
 
     public boolean isMarketOrder() {
         return getEntry().getType() == OrderType.Market;
+    }
+
+    public long getPendingOrOnMarket() {
+        if (isAlive()) {
+            return getQuantity() - getExecQty();
+        }
+
+        return 0L;
+    }
+
+    public Order getOrder() {
+        return order;
     }
 }

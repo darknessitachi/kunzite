@@ -15,17 +15,24 @@
  */
 package com.zaradai.kunzite.trader.orders.model;
 
+import com.google.common.base.Strings;
+
 import java.util.Comparator;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class Order {
     private final OrderRefData refData;
     private final OrderState state;
 
-    private Order(OrderRefData refData) {
+    Order(OrderRefData refData) {
         this.refData = refData;
-        state = new OrderState();
+        state = createOrderState();
+    }
+
+    protected OrderState createOrderState() {
+        return OrderState.newInstance(this);
     }
 
     public static Order newInstance(OrderRefData refData) {
@@ -46,7 +53,7 @@ public class Order {
     }
 
     public long getPendingOrOnMarket() {
-        return state.getQuantity();
+        return state.getPendingOrOnMarket();
     }
 
     public boolean isBuy() {
@@ -87,32 +94,52 @@ public class Order {
         final OrderRefData refData = new OrderRefData();
 
         public OrderBuilder id(String id) {
+            checkArgument(!Strings.isNullOrEmpty(id), "Invalid Order id");
+
             refData.setOrderId(id);
             return this;
         }
 
         public OrderBuilder instrument(String instrumentId) {
+            checkArgument(!Strings.isNullOrEmpty(instrumentId), "Invalid Instrument id");
+
             refData.setInstrumentId(instrumentId);
             return this;
         }
 
         public OrderBuilder portfolio(String portfolioId) {
+            checkArgument(!Strings.isNullOrEmpty(portfolioId), "Invalid Portfolio id");
+
             refData.setPortfolioId(portfolioId);
             return this;
         }
+
         public OrderBuilder client(String id) {
+            checkArgument(!Strings.isNullOrEmpty(id), "Invalid Client id");
+
             refData.setClientOrderId(id);
             return this;
         }
+
         public OrderBuilder broker(String id) {
+            checkArgument(!Strings.isNullOrEmpty(id), "Invalid Broker id");
+
             refData.setBrokerId(id);
             return this;
         }
+
         public OrderBuilder market(String id) {
+            checkArgument(!Strings.isNullOrEmpty(id), "Invalid Market id");
+
             refData.setMarketId(id);
             return this;
         }
+
         public OrderBuilder field(String key, String value) {
+            checkArgument(!Strings.isNullOrEmpty(key), "Invalid Field key");
+            checkArgument(!Strings.isNullOrEmpty(value), "Invalid Value key");
+
+
             refData.addField(key, value);
             return this;
         }

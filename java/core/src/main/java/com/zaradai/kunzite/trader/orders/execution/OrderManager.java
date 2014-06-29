@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.control;
+package com.zaradai.kunzite.trader.orders.execution;
 
-import com.zaradai.kunzite.trader.instruments.Instrument;
-import com.zaradai.kunzite.trader.marketdata.MarketBook;
 import com.zaradai.kunzite.trader.orders.book.OrderBook;
-import com.zaradai.kunzite.trader.orders.execution.OrderManager;
-import com.zaradai.kunzite.trader.positions.PositionBook;
+import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 
-public interface TradingState {
-    Instrument getInstrument();
-    MarketBook getMarketBook();
-    PositionBook getPositionBook();
-    OrderBook getOrderBook();
-    OrderManager getOrderManager();
+public interface OrderManager {
+    void add(OrderRequest orderRequest);
+    void process();
+    void clear();
+
+    OrderBook getBook();
 }

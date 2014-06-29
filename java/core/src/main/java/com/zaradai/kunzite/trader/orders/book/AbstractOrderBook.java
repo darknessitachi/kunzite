@@ -24,12 +24,8 @@ public abstract class AbstractOrderBook implements OrderBook {
     private final Map<Double, PriceEntry> limitOrders;
     private final PriceEntry marketOrders;
     private final Map<String, Order> ordersByOrderId;
-    private final Map<String, Order> ordersByClientId;
-    private final Map<String, Order> ordersByExchangeId;
 
     public AbstractOrderBook() {
-        ordersByExchangeId = createOrderMap();
-        ordersByClientId = createOrderMap();
         ordersByOrderId = createOrderMap();
         marketOrders = PriceEntry.newEntry(0);
         limitOrders = createEntryMap();
@@ -116,31 +112,13 @@ public abstract class AbstractOrderBook implements OrderBook {
         return ordersByOrderId.get(orderId);
     }
 
-    @Override
-    public Order getByClientId(String orderId) {
-        return ordersByClientId.get(orderId);
-    }
-
-    @Override
-    public Order getByExchangeId(String orderId) {
-        return ordersByExchangeId.get(orderId);
-    }
-
     protected Map<Double, PriceEntry> getLimitOrders() {
         return limitOrders;
     }
 
     private void rememberOrder(Order order) {
-        String orderId = order.getRefData().getExchangeOrderId();
-        String clientId = order.getRefData().getClientOrderId();
-        String exchangeId = order.getRefData().getExchangeOrderId();
+        String orderId = order.getRefData().getOrderId();
 
-        if (!Strings.isNullOrEmpty(exchangeId)) {
-            ordersByExchangeId.put(exchangeId, order);
-        }
-        if (!Strings.isNullOrEmpty(clientId)) {
-            ordersByClientId.put(clientId, order);
-        }
         if (!Strings.isNullOrEmpty(orderId)) {
             ordersByOrderId.put(orderId, order);
         }
@@ -148,16 +126,8 @@ public abstract class AbstractOrderBook implements OrderBook {
 
 
     private void forgetOrder(Order order) {
-        String orderId = order.getRefData().getExchangeOrderId();
-        String clientId = order.getRefData().getClientOrderId();
-        String exchangeId = order.getRefData().getExchangeOrderId();
+        String orderId = order.getRefData().getOrderId();
 
-        if (!Strings.isNullOrEmpty(exchangeId)) {
-            ordersByExchangeId.remove(exchangeId);
-        }
-        if (!Strings.isNullOrEmpty(clientId)) {
-            ordersByClientId.remove(clientId);
-        }
         if (!Strings.isNullOrEmpty(orderId)) {
             ordersByOrderId.remove(orderId);
         }

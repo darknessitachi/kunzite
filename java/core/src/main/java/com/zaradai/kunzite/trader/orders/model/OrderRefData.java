@@ -20,7 +20,6 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 
 public class OrderRefData {
-    private String exchangeOrderId;
     private String orderId;
     private String clientOrderId;
     private String instrumentId;
@@ -35,14 +34,6 @@ public class OrderRefData {
 
     private Map<String, String> createFieldList() {
         return Maps.newHashMap();
-    }
-
-    public String getExchangeOrderId() {
-        return exchangeOrderId;
-    }
-
-    public void setExchangeOrderId(String exchangeOrderId) {
-        this.exchangeOrderId = exchangeOrderId;
     }
 
     public String getOrderId() {

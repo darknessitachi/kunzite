@@ -15,7 +15,7 @@
  */
 package com.zaradai.kunzite.trader.orders.model;
 
-import com.zaradai.kunzite.trader.orders.model.*;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,6 +31,8 @@ public class OrderRequestTest {
     private static final OrderType TEST_TYPE = OrderType.Stop_Limit;
     private static final OrderRejectReason TEST_REJECT_REASON = OrderRejectReason.MaxLong;
     private static final boolean TEST_VALID = false;
+    private static final OrderTimeInForce TEST_TIME_IN_FORCE = OrderTimeInForce.AtTheClose;
+    private static final DateTime TEST_DATE_TIME = DateTime.now();
 
     private OrderRequest uut;
 
@@ -143,5 +145,34 @@ public class OrderRequestTest {
         uut.setMarketId(TEST_STRING);
 
         assertThat(uut.getMarketId(), is(TEST_STRING));
+    }
+
+    @Test
+    public void shouldGetDependentOrderId() throws Exception {
+        uut.setDependentOrderId(TEST_STRING);
+
+        assertThat(uut.getDependentOrderId(), is(TEST_STRING));
+    }
+
+    @Test
+    public void shouldGetBrokerId() throws Exception {
+        uut.setBrokerId(TEST_STRING);
+
+        assertThat(uut.getBrokerId(), is(TEST_STRING));
+    }
+
+
+    @Test
+    public void shouldGetTimeInForce() throws Exception {
+        uut.setTimeInForce(TEST_TIME_IN_FORCE);
+
+        assertThat(uut.getTimeInForce(), is(TEST_TIME_IN_FORCE));
+    }
+
+    @Test
+    public void shouldGetCreated() throws Exception {
+        uut.setCreated(TEST_DATE_TIME);
+
+        assertThat(uut.getCreated(), is(TEST_DATE_TIME));
     }
 }

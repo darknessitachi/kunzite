@@ -16,7 +16,7 @@
 package com.zaradai.kunzite.trader.positions;
 
 import com.zaradai.kunzite.trader.events.StartOfDay;
-import com.zaradai.kunzite.trader.events.Trade;
+import com.zaradai.kunzite.trader.events.TradeEvent;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.mocks.InstrumentMocker;
 import com.zaradai.kunzite.trader.mocks.PortfolioMocker;
@@ -26,9 +26,7 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ConcurrentPositionBookTest {
     private static final String TEST_INST_ID = "test";
@@ -84,7 +82,7 @@ public class ConcurrentPositionBookTest {
 
     @Test
     public void shouldUpdateTrade() throws Exception {
-        Trade testTrade = Trade.newTrade(TEST_PTF_ID, TEST_INST_ID, 1050, 12.5);
+        TradeEvent testTrade = TradeEvent.newTrade(TEST_PTF_ID, TEST_INST_ID, 1050, 12.5);
 
         uut.onTrade(testTrade);
 

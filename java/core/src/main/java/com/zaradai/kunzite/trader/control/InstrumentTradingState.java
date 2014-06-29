@@ -21,7 +21,8 @@ import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.marketdata.MarketBook;
 import com.zaradai.kunzite.trader.marketdata.MarketBookFactory;
 import com.zaradai.kunzite.trader.orders.book.OrderBook;
-import com.zaradai.kunzite.trader.orders.book.OrderBookFactory;
+import com.zaradai.kunzite.trader.orders.execution.OrderManager;
+import com.zaradai.kunzite.trader.orders.execution.OrderManagerFactory;
 import com.zaradai.kunzite.trader.positions.PositionBook;
 import com.zaradai.kunzite.trader.positions.PositionBookFactory;
 
@@ -29,15 +30,15 @@ public class InstrumentTradingState implements TradingState {
     private final Instrument instrument;
     private final MarketBook marketBook;
     private final PositionBook positionBook;
-    private final OrderBook orderBook;
+    private final OrderManager orderManager;
 
     @Inject
     InstrumentTradingState(MarketBookFactory marketBookFactory, PositionBookFactory positionBookFactory,
-                           OrderBookFactory orderBookFactory, @Assisted Instrument instrument) {
+                           OrderManagerFactory orderManagerFactory, @Assisted Instrument instrument) {
         this.instrument = instrument;
         marketBook = marketBookFactory.create(instrument);
         positionBook = positionBookFactory.create(instrument);
-        orderBook = orderBookFactory.create();
+        orderManager = orderManagerFactory.create(this);
     }
 
     @Override
@@ -57,6 +58,11 @@ public class InstrumentTradingState implements TradingState {
 
     @Override
     public OrderBook getOrderBook() {
-        return orderBook;
+        return orderManager.getBook();
+    }
+
+    @Override
+    public OrderManager getOrderManager() {
+        return orderManager;
     }
 }

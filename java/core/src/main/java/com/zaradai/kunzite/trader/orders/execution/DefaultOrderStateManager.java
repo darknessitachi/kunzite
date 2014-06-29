@@ -15,14 +15,26 @@
  */
 package com.zaradai.kunzite.trader.orders.execution;
 
+import com.google.inject.Inject;
+import com.zaradai.kunzite.events.EventAggregator;
+import com.zaradai.kunzite.logging.ContextLogger;
+import com.zaradai.kunzite.logging.LogHelper;
 import com.zaradai.kunzite.trader.events.OrderStatusEvent;
-import com.zaradai.kunzite.trader.orders.model.OrderState;
-import com.zaradai.kunzite.trader.orders.model.Order;
-import com.zaradai.kunzite.trader.orders.model.OrderEntry;
-import com.zaradai.kunzite.trader.orders.model.OrderRequest;
-import com.zaradai.kunzite.trader.orders.model.OrderRequestType;
+import com.zaradai.kunzite.trader.events.TradeEvent;
+import com.zaradai.kunzite.trader.orders.model.*;
 
 public class DefaultOrderStateManager implements OrderStateManager {
+    private final ContextLogger logger;
+    private final EventAggregator eventAggregator;
+    private final OrderManager orderManager;
+
+    @Inject
+    DefaultOrderStateManager(ContextLogger logger, EventAggregator eventAggregator, OrderManager orderManager) {
+        this.logger = logger;
+        this.eventAggregator = eventAggregator;
+        this.orderManager = orderManager;
+    }
+
     @Override
     public void newRequest(Order order, OrderRequest request) {
         OrderEntry entry = createEntry(request);
@@ -42,18 +54,16 @@ public class DefaultOrderStateManager implements OrderStateManager {
         // now set the new order entry in the state to be used by this state manager when
         // market statuses return
         state.setEntry(entry);
+        // if this is a new order request then add to order book
+        if (request.getOrderRequestType() == OrderRequestType.Create) {
+            orderManager.getBook().add(order);
+        }
     }
-
-    @Override
-    public void onOrderStatus(Order order, OrderStatusEvent event) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
 
     private OrderEntry createEntry(OrderRequest request) {
         OrderRequestType requestType = request.getOrderRequestType();
 
-        OrderEntry entry = new OrderEntry(request.getCreated());
+        OrderEntry entry = OrderEntry.newInstanceWithCreated(request.getCreated());
         entry.setRequestType(requestType);
 
         if (requestType != OrderRequestType.Cancel) {
@@ -66,4 +76,167 @@ public class DefaultOrderStateManager implements OrderStateManager {
 
         return entry;
     }
+
+    @Override
+    public void onOrderStatus(Order order, OrderStatusEvent event) {
+        OrderState state = order.getState();
+
+        switch (event.getOrderStatus()) {
+            case New:   // Outstanding order with no executions
+                onNew(state, event);
+                break;
+            case PartiallyFilled:   // Outstanding order with executions and remaining quantity
+                onPartiallyFilled(state, event);
+                break;
+            case Filled:
+                onFilled(state, event);
+                break;
+            case DoneForDay:
+                onDoneForDay(state, event);
+                break;
+            case Cancelled:
+                onCancelled(state, event);
+                break;
+            case Replaced:
+                onReplace(state, event);
+                break;
+            case PendingCancelReplace:
+                onPendingCancelReplace(state, event);
+                break;
+            case Stopped:
+                onStopped(state, event);
+                break;
+            case Rejected:
+                onRejected(state, event);
+                break;
+            case Suspended:
+                onSuspended(state, event);
+                break;
+            case PendingNew:
+                onPendingNew(state, event);
+                break;
+            case Calculated:
+                onCalculated(state, event);
+                break;
+            case Expired:
+                onExpired(state, event);
+                break;
+        }
+    }
+
+    /**
+     * Order has been accepted,
+     * @param state
+     * @param event
+     */
+    private void onNew(OrderState state, OrderStatusEvent event) {
+        // live order now
+        state.setPending(false);
+        // market is now same as request
+        OrderEntry entry = state.getEntry();
+        state.setQuantity(entry.getQuantity());
+        state.setPrice(entry.getPrice());
+        // update the entry exchange Id
+        entry.setExchangeId(event.getExchangeId());
+    }
+
+    private void onPartiallyFilled(OrderState state, OrderStatusEvent event) {
+        // update executed quantity
+        state.setExecQty(event.getExecQty());
+        // fire a trade event
+        fireTradeEvent(state, event);
+    }
+
+    private void onFilled(OrderState state, OrderStatusEvent event) {
+        // update executed quantity
+        state.setExecQty(event.getExecQty());
+        // order not alive
+        state.setAlive(false);
+        // remove from order book
+        orderManager.getBook().remove(state.getOrder());
+        // fire the trade event
+        fireTradeEvent(state, event);
+    }
+
+    private void onDoneForDay(OrderState state, OrderStatusEvent event) {
+        // order not alive
+        state.setAlive(false);
+        // remove from order book
+        orderManager.getBook().remove(state.getOrder());
+    }
+
+    private void onCancelled(OrderState state, OrderStatusEvent event) {
+        // order not alive
+        state.setAlive(false);
+        // remove from order book
+        orderManager.getBook().remove(state.getOrder());
+    }
+
+    private void onReplace(OrderState state, OrderStatusEvent event) {
+        if (state.isPending()) {
+            state.setPending(false);
+        }
+        // market is now same as request
+        OrderEntry entry = state.getEntry();
+        state.setQuantity(entry.getQuantity());
+        state.setPrice(entry.getPrice());
+        // update the entry exchange Id
+        entry.setExchangeId(event.getExchangeId());
+    }
+
+    private void onPendingCancelReplace(OrderState state, OrderStatusEvent event) {
+        // Do nothing
+    }
+
+    private void onStopped(OrderState state, OrderStatusEvent event) {
+        LogHelper.warn(logger)
+                .addContext("Unhandled Order Status")
+                .add("Status", "Stopped")
+                .log();
+    }
+
+    private void onRejected(OrderState state, OrderStatusEvent event) {
+        // order not alive
+        state.setAlive(false);
+        // remove from order book
+        orderManager.getBook().remove(state.getOrder());
+    }
+
+    private void onSuspended(OrderState state, OrderStatusEvent event) {
+        LogHelper.warn(logger)
+                .addContext("Unhandled Order Status")
+                .add("Status", "Stopped")
+                .log();
+    }
+
+    private void onPendingNew(OrderState state, OrderStatusEvent event) {
+        // Do nothing
+    }
+
+    private void onCalculated(OrderState state, OrderStatusEvent event) {
+        LogHelper.warn(logger)
+                .addContext("Unhandled Order Status")
+                .add("Status", "Stopped")
+                .log();
+    }
+
+    private void onExpired(OrderState state, OrderStatusEvent event) {
+        // order not alive
+        state.setAlive(false);
+        // remove from order book
+        orderManager.getBook().remove(state.getOrder());
+    }
+
+
+    private void fireTradeEvent(OrderState state, OrderStatusEvent event) {
+        TradeEvent trade = TradeEvent.newTrade(
+                state.getOrder().getRefData().getPortfolioId(),
+                state.getOrder().getRefData().getInstrumentId(),
+                event.getExecQty(),
+                event.getLastPx()
+                );
+
+        eventAggregator.publish(trade);
+    }
+
 }

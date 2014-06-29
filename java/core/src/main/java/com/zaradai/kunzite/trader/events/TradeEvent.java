@@ -19,25 +19,25 @@ import com.google.common.base.Strings;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public final class Trade {
+public final class TradeEvent {
     private final String portfolioId;
     private final String instrumentId;
     private final long quantity;
     private final double price;
 
-    private Trade(String portfolioId, String instrumentId, long quantity, double price) {
+    private TradeEvent(String portfolioId, String instrumentId, long quantity, double price) {
         this.portfolioId = portfolioId;
         this.instrumentId = instrumentId;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public static Trade newTrade(String portfolioId, String instrumentId, long quantity, double price) {
+    public static TradeEvent newTrade(String portfolioId, String instrumentId, long quantity, double price) {
         checkArgument(!Strings.isNullOrEmpty(portfolioId), "Invalid portfolio");
         checkArgument(!Strings.isNullOrEmpty(instrumentId), "Invalid instrument");
         checkArgument(!Double.isNaN(price), "Invalid price");
 
-        return new Trade(portfolioId, instrumentId, quantity, price);
+        return new TradeEvent(portfolioId, instrumentId, quantity, price);
     }
 
     public long getQuantity() {
