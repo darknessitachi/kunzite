@@ -38,4 +38,8 @@ public class OrderSendEvent {
     public void add(Order order) {
         orders.add(order);
     }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
 }
