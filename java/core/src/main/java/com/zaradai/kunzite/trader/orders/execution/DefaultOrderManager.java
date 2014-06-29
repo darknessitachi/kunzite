@@ -21,6 +21,7 @@ import com.zaradai.kunzite.events.EventAggregator;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.logging.LogHelper;
 import com.zaradai.kunzite.trader.control.TradingState;
+import com.zaradai.kunzite.trader.events.OrderRequestRejectEvent;
 import com.zaradai.kunzite.trader.events.OrderSendEvent;
 import com.zaradai.kunzite.trader.filters.Filter;
 import com.zaradai.kunzite.trader.filters.FilterManager;
@@ -91,15 +92,17 @@ public class DefaultOrderManager implements OrderManager {
     }
 
     private void processRejects() {
+        OrderRequestRejectEvent event = OrderRequestRejectEvent.newInstance();
+
         for (OrderRequest orderRequest : pending) {
             if (!orderRequest.isValid()) {
-                processReject(orderRequest);
+                event.add(orderRequest);
             }
         }
-    }
-
-    private void processReject(OrderRequest orderRequest) {
-        //To be implemented
+        // only publish if we have rejects
+        if (event.hasRequests()) {
+            eventAggregator.publish(event);
+        }
     }
 
     private void processPending() {

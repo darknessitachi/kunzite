@@ -15,22 +15,22 @@
  */
 package com.zaradai.kunzite.trader.events;
 
-import com.zaradai.kunzite.trader.orders.model.Order;
+import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class OrderSendEventTest {
+public class OrderRequestRejectEventTest {
     @Test
     public void shouldAdd() throws Exception {
-        Order order = mock(Order.class);
-        OrderSendEvent uut = OrderSendEvent.newInstance();
+        OrderRequest request = mock(OrderRequest.class);
+        OrderRequestRejectEvent uut = OrderRequestRejectEvent.newInstance();
 
-        uut.add(order);
+        uut.add(request);
 
-        assertThat(uut.hasOrders(), is(true));
-        assertThat(uut.getOrders().size(), is(1));
+        assertThat(uut.hasRequests(), is(true));
+        assertThat(uut.getRejects().size(), is(1));
     }
 }

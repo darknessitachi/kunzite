@@ -18,6 +18,7 @@ package com.zaradai.kunzite.trader.orders.execution;
 import com.zaradai.kunzite.events.EventAggregator;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.trader.control.TradingState;
+import com.zaradai.kunzite.trader.events.OrderRequestRejectEvent;
 import com.zaradai.kunzite.trader.events.OrderSendEvent;
 import com.zaradai.kunzite.trader.filters.Filter;
 import com.zaradai.kunzite.trader.filters.FilterManager;
@@ -26,6 +27,7 @@ import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
 import com.zaradai.kunzite.trader.orders.book.OrderBook;
 import com.zaradai.kunzite.trader.orders.book.OrderBookFactory;
 import com.zaradai.kunzite.trader.orders.model.Order;
+import com.zaradai.kunzite.trader.orders.model.OrderRejectReason;
 import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 import com.zaradai.kunzite.trader.orders.model.OrderRequestType;
 import com.zaradai.kunzite.trader.orders.utils.OrderIdGenerator;
@@ -63,6 +65,8 @@ public class DefaultOrderManagerTest {
     ArgumentCaptor<OrderRequest> orderRequestArgumentCaptor;
     @Captor
     ArgumentCaptor<OrderSendEvent> orderSendEventArgumentCaptor;
+    @Captor
+    ArgumentCaptor<OrderRequestRejectEvent> orderRequestRejectEventArgumentCaptor;
 
     @Before
     public void setUp() throws Exception {
@@ -185,6 +189,24 @@ public class DefaultOrderManagerTest {
         uut.process();  // should not create any additional requests
 
         verify(eventAggregator).publish(any(OrderSendEvent.class));
+    }
+
+    @Test
+    public void shouldProcessRejectedOrders() throws Exception {
+        OrderRequest request = new OrderRequest();
+        request.setOrderRequestType(OrderRequestType.Create);
+        when(orderFilter.check(request)).thenReturn(false);
+        request.reject(OrderRejectReason.MaxNotional);
+
+        uut.add(request);
+        uut.process();
+
+
+        verify(eventAggregator).publish(orderRequestRejectEventArgumentCaptor.capture());
+        OrderRequestRejectEvent event = orderRequestRejectEventArgumentCaptor.getValue();
+
+        assertThat(event.hasRequests(), is(true));
+        assertThat(event.getRejects().get(0), is(request));
     }
 
     @Test(expected = NullPointerException.class)

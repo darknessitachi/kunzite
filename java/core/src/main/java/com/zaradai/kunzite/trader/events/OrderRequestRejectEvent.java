@@ -15,22 +15,31 @@
  */
 package com.zaradai.kunzite.trader.events;
 
-import com.zaradai.kunzite.trader.orders.model.Order;
-import org.junit.Test;
+import com.google.common.collect.Lists;
+import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
+import java.util.List;
 
-public class OrderSendEventTest {
-    @Test
-    public void shouldAdd() throws Exception {
-        Order order = mock(Order.class);
-        OrderSendEvent uut = OrderSendEvent.newInstance();
+public class OrderRequestRejectEvent {
+    private final List<OrderRequest> rejects;
 
-        uut.add(order);
+    private OrderRequestRejectEvent() {
+        rejects = Lists.newArrayList();
+    }
 
-        assertThat(uut.hasOrders(), is(true));
-        assertThat(uut.getOrders().size(), is(1));
+    public static OrderRequestRejectEvent newInstance() {
+        return new OrderRequestRejectEvent();
+    }
+
+    public boolean hasRequests() {
+        return rejects.size() > 0;
+    }
+
+    public void add(OrderRequest request) {
+        rejects.add(request);
+    }
+
+    public List<OrderRequest> getRejects() {
+        return rejects;
     }
 }
