@@ -18,9 +18,10 @@ package com.zaradai.kunzite.trader.algo;
 import com.zaradai.kunzite.trader.control.TradingState;
 import com.zaradai.kunzite.trader.events.MarketBookUpdateEventHandler;
 import com.zaradai.kunzite.trader.events.OrderRejectHandler;
+import com.zaradai.kunzite.trader.events.PositionChangeHandler;
 import com.zaradai.kunzite.trader.events.TradeEventHandler;
 
-public interface Algo extends MarketBookUpdateEventHandler, OrderRejectHandler, TradeEventHandler {
+public interface Algo extends MarketBookUpdateEventHandler, OrderRejectHandler, TradeEventHandler, PositionChangeHandler {
     String getId();
     String getName();
     TradingState getState();

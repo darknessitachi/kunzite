@@ -15,18 +15,21 @@
  */
 package com.zaradai.kunzite.trader.positions;
 
-import com.zaradai.kunzite.trader.events.StartOfDay;
-import com.zaradai.kunzite.trader.events.TradeEvent;
+import com.zaradai.kunzite.events.EventAggregator;
+import com.zaradai.kunzite.trader.events.*;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.mocks.InstrumentMocker;
 import com.zaradai.kunzite.trader.mocks.PortfolioMocker;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.MockitoAnnotations;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class DefaultPositionUpdaterTest {
     private static final String TEST_PORTFOLIO_ID = "ptr";
@@ -47,14 +50,27 @@ public class DefaultPositionUpdaterTest {
     private Portfolio portfolio;
     private Instrument instrument;
     private DefaultPositionUpdater uut;
+    private EventAggregator eventAggregator;
+
+    @Captor
+    ArgumentCaptor<PositionInitiatedEvent> initiatedCaptor;
+    @Captor
+    ArgumentCaptor<PositionChangedEvent> changedCaptor;
+    @Captor
+    ArgumentCaptor<PositionLiquidatedEvent> liquidatedCaptor;
+
+
 
     @Before
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
+        eventAggregator = mock(EventAggregator.class);
         portfolio = PortfolioMocker.create(TEST_PORTFOLIO_ID);
         instrument = InstrumentMocker.create(TEST_INS_ID);
         when(instrument.getMultiplier()).thenReturn(TEST_MULTIPLIER);
         position = new Position(portfolio, instrument);
-        uut = new DefaultPositionUpdater();
+        uut = new DefaultPositionUpdater(eventAggregator);
     }
 
     @Test(expected = NullPointerException.class)
@@ -155,5 +171,58 @@ public class DefaultPositionUpdaterTest {
         assertThat(position.getIntradayShortCashFlow(), is(0.0));
         assertThat(position.getNet(), is(TEST_START_POS));
         assertThat(position.getNetCashFlow(), is(TEST_START_CASH));
+    }
+
+    @Test
+    public void shouldInitiateAPosition() throws Exception {
+        TradeEvent testTrade = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_LONG_POS, TEST_PRICE,
+                TEST_DATE_TIME);
+
+        uut.update(position, testTrade);
+
+        assertThat(position.getEntryPrice(), is(TEST_PRICE));
+        assertThat(position.getOpened(), is(TEST_DATE_TIME));
+        assertThat(position.isActive(), is(true));
+
+        verify(eventAggregator).publish(initiatedCaptor.capture());
+        assertThat(initiatedCaptor.getValue().getPosition(), is(position));
+    }
+
+    @Test
+    public void shouldChangeAPosition() throws Exception {
+        TradeEvent initial = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_LONG_POS, TEST_PRICE,
+                TEST_DATE_TIME);
+        uut.update(position, initial);
+        // do an update
+        TradeEvent update = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_LONG_POS, TEST_PRICE,
+                TEST_DATE_TIME);
+
+        uut.update(position, update);
+
+        assertThat(position.getEntryPrice(), is(TEST_PRICE));
+        assertThat(position.getOpened(), is(TEST_DATE_TIME));
+        assertThat(position.isActive(), is(true));
+        assertThat(position.getNet(), is(TEST_LONG_POS*2));
+
+        verify(eventAggregator, times(2)).publish(changedCaptor.capture());
+        assertThat(changedCaptor.getValue().getPosition(), is(position));
+    }
+
+    @Test
+    public void shouldLiquidateAPosition() throws Exception {
+        TradeEvent initial = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_LONG_POS, TEST_PRICE,
+                TEST_DATE_TIME);
+        uut.update(position, initial);
+        // do an update
+        TradeEvent update = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, -TEST_LONG_POS, TEST_PRICE,
+                TEST_DATE_TIME);
+
+        uut.update(position, update);
+
+        assertThat(position.isActive(), is(false));
+        assertThat(position.getNet(), is(0L));
+
+        verify(eventAggregator, times(2)).publish(liquidatedCaptor.capture());
+        assertThat(liquidatedCaptor.getValue().getPosition(), is(position));
     }
 }
