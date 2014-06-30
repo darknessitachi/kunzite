@@ -56,5 +56,7 @@ public class DefaultPositionUpdater implements PositionUpdater {
         position.reset();
         position.setStartOfDay(startOfDay.getPosition());
         position.setStartOfDayCashFlow(startOfDay.getCashFlow());
+        position.setOpened(startOfDay.getOpened());
+        position.setEntryPrice(startOfDay.getEntryPrice());
     }
 }

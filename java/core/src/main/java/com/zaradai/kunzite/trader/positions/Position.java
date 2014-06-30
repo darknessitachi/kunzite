@@ -19,6 +19,7 @@ import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.zaradai.kunzite.trader.instruments.Instrument;
+import org.joda.time.DateTime;
 
 public class Position {
     private final Portfolio portfolio;
@@ -31,6 +32,9 @@ public class Position {
     private double startOfDayCashFlow;
     private double intradayLongCashFlow;
     private double intradayShortCashFlow;
+
+    private double entryPrice;
+    private DateTime opened;
 
     @Inject
     Position(@Assisted Portfolio portfolio, @Assisted Instrument instrument) {
@@ -111,13 +115,35 @@ public class Position {
         intradayShortCashFlow += cash;
     }
 
+    public double getEntryPrice() {
+        return entryPrice;
+    }
+
+    public void setEntryPrice(double entryPrice) {
+        this.entryPrice = entryPrice;
+    }
+
     public boolean isLong() {
         return getNet() >= 0;
+    }
+
+    public boolean isActive() {
+        return getNet() != 0;
+    }
+
+    public DateTime getOpened() {
+        return opened;
+    }
+
+    public void setOpened(DateTime opened) {
+        this.opened = opened;
     }
 
     public void reset() {
         startOfDay = intradayLong = intradayShort = 0L;
         startOfDayCashFlow = intradayLongCashFlow = intradayShortCashFlow = 0.0;
+        entryPrice = 0.0;
+        opened = null;
     }
 
     @Override

@@ -40,6 +40,8 @@ public class DefaultPositionUpdaterTest {
     private static final long TEST_START_POS = 9500;
     private static final double TEST_START_CASH = 3400.5;
     private static final DateTime TEST_DATE_TIME = DateTime.now();
+    private static final double TEST_ENTRY_PRICE = 23.45;
+    private static final DateTime TEST_OPENED_DATE_TIME = DateTime.now();
 
     private Position position;
     private Portfolio portfolio;
@@ -76,14 +78,16 @@ public class DefaultPositionUpdaterTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailUpdateStartWithInvalidPortfolioId() throws Exception {
-        StartOfDay startOfDay = StartOfDay.newStartOfDay(null, TEST_INS_ID, TEST_START_POS, TEST_START_CASH);
+        StartOfDay startOfDay = StartOfDay.newStartOfDay(null, TEST_INS_ID, TEST_START_POS, TEST_START_CASH,
+                TEST_ENTRY_PRICE, TEST_OPENED_DATE_TIME);
 
         uut.update(position, startOfDay);
     }
 
     @Test(expected = NullPointerException.class)
     public void shouldFailUpdateStartWithInvalidPosition() throws Exception {
-        StartOfDay startOfDay = StartOfDay.newStartOfDay(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_START_POS, TEST_START_CASH);
+        StartOfDay startOfDay = StartOfDay.newStartOfDay(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_START_POS,
+                TEST_START_CASH, TEST_ENTRY_PRICE, TEST_OPENED_DATE_TIME);
 
         uut.update(null, startOfDay);
     }
@@ -95,7 +99,8 @@ public class DefaultPositionUpdaterTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailUpdateStartWithInvalidInstrumentId() throws Exception {
-        StartOfDay startOfDay = StartOfDay.newStartOfDay(TEST_PORTFOLIO_ID, null, TEST_START_POS, TEST_START_CASH);
+        StartOfDay startOfDay = StartOfDay.newStartOfDay(TEST_PORTFOLIO_ID, null, TEST_START_POS, TEST_START_CASH,
+                TEST_ENTRY_PRICE, TEST_OPENED_DATE_TIME);
 
         uut.update(position, startOfDay);
     }
@@ -135,7 +140,7 @@ public class DefaultPositionUpdaterTest {
     @Test
     public void shouldUpdateStartOfDay() throws Exception {
         StartOfDay startOfDay = StartOfDay.newStartOfDay(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_START_POS,
-                TEST_START_CASH);
+                TEST_START_CASH, TEST_ENTRY_PRICE, TEST_OPENED_DATE_TIME);
         TradeEvent testTrade = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_SHORT_POS, TEST_PRICE,
                 TEST_DATE_TIME);
         uut.update(position, testTrade);

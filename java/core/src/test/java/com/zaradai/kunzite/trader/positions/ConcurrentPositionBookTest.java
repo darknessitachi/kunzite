@@ -92,7 +92,7 @@ public class ConcurrentPositionBookTest {
 
     @Test
     public void shouldUpdateStartOfDay() throws Exception {
-        StartOfDay startOfDay = StartOfDay.newStartOfDay(TEST_PTF_ID, TEST_INST_ID, 0, 0);
+        StartOfDay startOfDay = StartOfDay.newStartOfDay(TEST_PTF_ID, TEST_INST_ID, 0, 0, 23.23, DateTime.now());
 
         uut.onStartOfDay(startOfDay);
 

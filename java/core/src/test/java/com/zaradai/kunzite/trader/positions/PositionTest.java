@@ -18,6 +18,7 @@ package com.zaradai.kunzite.trader.positions;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.mocks.InstrumentMocker;
 import com.zaradai.kunzite.trader.mocks.PortfolioMocker;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -87,6 +88,37 @@ public class PositionTest {
         uut.setStartOfDayCashFlow(START_OF_DAY_CASH_FLOW);
 
         assertThat(uut.getStartOfDayCashFlow(), is(START_OF_DAY_CASH_FLOW));
+    }
+
+    @Test
+    public void shouldGetEntryPrice() throws Exception {
+        double entryPrice = 32.56;
+        uut.setEntryPrice(entryPrice);
+
+        assertThat(uut.getEntryPrice(), is(entryPrice));
+    }
+
+    @Test
+    public void shouldGetOpened() throws Exception {
+        DateTime opened = DateTime.now();
+        uut.setOpened(opened);
+
+        assertThat(uut.getOpened(), is(opened));
+    }
+
+    @Test
+    public void shouldBeInactiveForZeroPosition() throws Exception {
+        assertThat(uut.isActive(), is(false));
+
+        uut.addLong(10);
+
+        assertThat(uut.isActive(), is(true));
+
+        uut.reset();
+
+        uut.addShort(10);
+
+        assertThat(uut.isActive(), is(true));
     }
 
     @Test

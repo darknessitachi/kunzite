@@ -91,7 +91,7 @@ public class DefaultPositionBookTest {
 
     @Test
     public void shouldUpdateStartOfDay() throws Exception {
-        StartOfDay startOfDay = StartOfDay.newStartOfDay(TEST_PTF_ID, TEST_INST_ID, 0, 0);
+        StartOfDay startOfDay = StartOfDay.newStartOfDay(TEST_PTF_ID, TEST_INST_ID, 0, 0, 12.5, DateTime.now());
 
         uut.onStartOfDay(startOfDay);
 
