@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.strategies;
+package com.zaradai.kunzite.trader.algo;
 
-public class StrategyException extends Exception {
-    public StrategyException(String message) {
-        super(message);
-    }
-
-    public StrategyException(String message, Throwable cause) {
-        super(message, cause);
-    }
+public enum AlgoState {
+    Off,
+    On,
+    Suspended,
+    Starting,
+    Stopping
 }

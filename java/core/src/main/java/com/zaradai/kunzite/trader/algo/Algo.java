@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.strategies;
+package com.zaradai.kunzite.trader.algo;
 
 import com.zaradai.kunzite.trader.control.TradingState;
 import com.zaradai.kunzite.trader.events.MarketBookUpdateEventHandler;
 import com.zaradai.kunzite.trader.events.OrderRejectHandler;
 import com.zaradai.kunzite.trader.events.TradeEventHandler;
 
-public interface Strategy extends MarketBookUpdateEventHandler, OrderRejectHandler, TradeEventHandler {
+public interface Algo extends MarketBookUpdateEventHandler, OrderRejectHandler, TradeEventHandler {
     String getId();
     String getName();
     TradingState getState();
 
-    void initialize() throws StrategyException;
-    void Start() throws StrategyException;
-    void Stop() throws StrategyException;
+    void initialize() throws AlgoException;
+    void Start() throws AlgoException;
+    void Stop() throws AlgoException;
 
 
+    boolean isRunning();
 }
