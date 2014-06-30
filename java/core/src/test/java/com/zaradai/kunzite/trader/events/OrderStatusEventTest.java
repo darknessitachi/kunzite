@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.events;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -25,6 +26,7 @@ public class OrderStatusEventTest {
     private static final String TEST_STRING = "test";
     private static final long TEST_QTY = 1234L;
     private static final double TEST_DOUBLE = 12.34;
+    private static final DateTime TEST_DATE_TIME = DateTime.now();
 
     @Test
     public void shouldGetOrderStatus() throws Exception {
@@ -56,5 +58,13 @@ public class OrderStatusEventTest {
         uut.setLastPx(TEST_DOUBLE);
 
         assertThat(uut.getLastPx(), is(TEST_DOUBLE));
+    }
+
+    @Test
+    public void shouldGetTimestamp() throws Exception {
+        OrderStatusEvent uut = new OrderStatusEvent();
+        uut.setTimestamp(TEST_DATE_TIME);
+
+        assertThat(uut.getTimestamp(), is(TEST_DATE_TIME));
     }
 }

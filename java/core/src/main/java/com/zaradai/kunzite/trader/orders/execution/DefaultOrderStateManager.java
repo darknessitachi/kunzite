@@ -233,7 +233,8 @@ public class DefaultOrderStateManager implements OrderStateManager {
                 state.getOrder().getRefData().getPortfolioId(),
                 state.getOrder().getRefData().getInstrumentId(),
                 event.getExecQty(),
-                event.getLastPx()
+                event.getLastPx(),
+                event.getTimestamp()
                 );
 
         eventAggregator.publish(trade);

@@ -15,11 +15,14 @@
  */
 package com.zaradai.kunzite.trader.events;
 
+import org.joda.time.DateTime;
+
 public class OrderStatusEvent {
     private OrderStatus orderStatus;
     private String exchangeId;
     private long execQty;
     private double lastPx;
+    private DateTime timestamp;
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
@@ -51,5 +54,13 @@ public class OrderStatusEvent {
 
     public void setLastPx(double lastPx) {
         this.lastPx = lastPx;
+    }
+
+    public DateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(DateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

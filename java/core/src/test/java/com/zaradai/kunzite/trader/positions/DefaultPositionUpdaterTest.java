@@ -20,6 +20,7 @@ import com.zaradai.kunzite.trader.events.TradeEvent;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.mocks.InstrumentMocker;
 import com.zaradai.kunzite.trader.mocks.PortfolioMocker;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,6 +39,7 @@ public class DefaultPositionUpdaterTest {
     private static final double TEST_SHORT_CASH = TEST_SHORT_POS * TEST_MULTIPLIER * TEST_PRICE;
     private static final long TEST_START_POS = 9500;
     private static final double TEST_START_CASH = 3400.5;
+    private static final DateTime TEST_DATE_TIME = DateTime.now();
 
     private Position position;
     private Portfolio portfolio;
@@ -55,7 +57,7 @@ public class DefaultPositionUpdaterTest {
 
     @Test(expected = NullPointerException.class)
     public void shouldFailUpdateTradeWithInvalidPosition() throws Exception {
-        TradeEvent testTrade = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, 10, 10.0);
+        TradeEvent testTrade = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, 10, 10.0, TEST_DATE_TIME);
 
         uut.update(null, testTrade);
     }
@@ -67,7 +69,7 @@ public class DefaultPositionUpdaterTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailUpdateTradeWithInvalidInstrumentId() throws Exception {
-        TradeEvent testTrade = TradeEvent.newTrade(TEST_PORTFOLIO_ID, "Unknown", 10, 10.0);
+        TradeEvent testTrade = TradeEvent.newTrade(TEST_PORTFOLIO_ID, "Unknown", 10, 10.0, TEST_DATE_TIME);
 
         uut.update(position, testTrade);
     }
@@ -100,7 +102,7 @@ public class DefaultPositionUpdaterTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailUpdateTradeWithInvalidPortfolioId() throws Exception {
-        TradeEvent testTrade = TradeEvent.newTrade("Unknown", TEST_INS_ID, 10, 10.0);
+        TradeEvent testTrade = TradeEvent.newTrade("Unknown", TEST_INS_ID, 10, 10.0, TEST_DATE_TIME);
 
         uut.update(position, testTrade);
     }
@@ -108,7 +110,8 @@ public class DefaultPositionUpdaterTest {
 
     @Test
     public void shouldUpdateLong() throws Exception {
-        TradeEvent testTrade = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_LONG_POS, TEST_PRICE);
+        TradeEvent testTrade = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_LONG_POS, TEST_PRICE,
+                TEST_DATE_TIME);
 
         uut.update(position, testTrade);
 
@@ -119,7 +122,8 @@ public class DefaultPositionUpdaterTest {
 
     @Test
     public void shouldUpdateShort() throws Exception {
-        TradeEvent testTrade = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_SHORT_POS, TEST_PRICE);
+        TradeEvent testTrade = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_SHORT_POS, TEST_PRICE,
+                TEST_DATE_TIME);
 
         uut.update(position, testTrade);
 
@@ -130,8 +134,10 @@ public class DefaultPositionUpdaterTest {
 
     @Test
     public void shouldUpdateStartOfDay() throws Exception {
-        StartOfDay startOfDay = StartOfDay.newStartOfDay(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_START_POS, TEST_START_CASH);
-        TradeEvent testTrade = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_SHORT_POS, TEST_PRICE);
+        StartOfDay startOfDay = StartOfDay.newStartOfDay(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_START_POS,
+                TEST_START_CASH);
+        TradeEvent testTrade = TradeEvent.newTrade(TEST_PORTFOLIO_ID, TEST_INS_ID, TEST_SHORT_POS, TEST_PRICE,
+                TEST_DATE_TIME);
         uut.update(position, testTrade);
 
         uut.update(position, startOfDay);

@@ -34,7 +34,6 @@ public class Position {
 
     @Inject
     Position(@Assisted Portfolio portfolio, @Assisted Instrument instrument) {
-        //TODO: check whether Guice checks assisted objects for null otherwise need preconditions here.
         this.portfolio = portfolio;
         this.instrument = instrument;
         reset();

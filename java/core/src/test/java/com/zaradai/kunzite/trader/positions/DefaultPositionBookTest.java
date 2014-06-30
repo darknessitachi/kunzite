@@ -21,6 +21,7 @@ import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.mocks.InstrumentMocker;
 import com.zaradai.kunzite.trader.mocks.PortfolioMocker;
 import com.zaradai.kunzite.trader.mocks.PositionMocker;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -81,7 +82,7 @@ public class DefaultPositionBookTest {
 
     @Test
     public void shouldUpdateTrade() throws Exception {
-        TradeEvent testTrade = TradeEvent.newTrade(TEST_PTF_ID, TEST_INST_ID, 1050, 12.5);
+        TradeEvent testTrade = TradeEvent.newTrade(TEST_PTF_ID, TEST_INST_ID, 1050, 12.5, DateTime.now());
 
         uut.onTrade(testTrade);
 

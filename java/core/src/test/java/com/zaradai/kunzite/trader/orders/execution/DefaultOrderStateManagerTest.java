@@ -173,6 +173,7 @@ public class DefaultOrderStateManagerTest {
         event.setOrderStatus(OrderStatus.PartiallyFilled);
         event.setExecQty(TEST_QTY);
         event.setLastPx(TEST_PRC);
+        event.setTimestamp(DateTime.now());
 
         uut.onOrderStatus(order, event);
 
@@ -192,6 +193,7 @@ public class DefaultOrderStateManagerTest {
         event.setOrderStatus(OrderStatus.Filled);
         event.setExecQty(TEST_QTY);
         event.setLastPx(TEST_PRC);
+        event.setTimestamp(DateTime.now());
 
         uut.onOrderStatus(order, event);
 

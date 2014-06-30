@@ -16,28 +16,34 @@
 package com.zaradai.kunzite.trader.events;
 
 import com.google.common.base.Strings;
+import org.joda.time.DateTime;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class TradeEvent {
     private final String portfolioId;
     private final String instrumentId;
     private final long quantity;
     private final double price;
+    private final DateTime timestamp;
 
-    private TradeEvent(String portfolioId, String instrumentId, long quantity, double price) {
+    private TradeEvent(String portfolioId, String instrumentId, long quantity, double price, DateTime timestamp) {
         this.portfolioId = portfolioId;
         this.instrumentId = instrumentId;
         this.quantity = quantity;
         this.price = price;
+        this.timestamp = timestamp;
     }
 
-    public static TradeEvent newTrade(String portfolioId, String instrumentId, long quantity, double price) {
+    public static TradeEvent newTrade(String portfolioId, String instrumentId, long quantity, double price,
+                                      DateTime timestamp) {
         checkArgument(!Strings.isNullOrEmpty(portfolioId), "Invalid portfolio");
         checkArgument(!Strings.isNullOrEmpty(instrumentId), "Invalid instrument");
         checkArgument(!Double.isNaN(price), "Invalid price");
+        checkNotNull(timestamp, "Invalid timestamp");
 
-        return new TradeEvent(portfolioId, instrumentId, quantity, price);
+        return new TradeEvent(portfolioId, instrumentId, quantity, price, timestamp);
     }
 
     public long getQuantity() {
@@ -54,5 +60,9 @@ public final class TradeEvent {
 
     public String getPortfolioId() {
         return portfolioId;
+    }
+
+    public DateTime getTimestamp() {
+        return timestamp;
     }
 }
