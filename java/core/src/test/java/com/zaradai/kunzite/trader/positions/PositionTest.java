@@ -32,6 +32,8 @@ public class PositionTest {
     private static final DateTime TEST_OPEN = new DateTime(2014,7, 11, 14, 3);
     private static final double TEST_ENTRY_PRICE = 12.34;
     private static final int TEST_HASH_CODE = 890697266;
+    private static final int PTF_HASH = 234;
+    private static final int INST_HASH = 543;
     private final long START_OF_DAY = 1000;
     private final long INTRADAY_LONG = 2000;
     private final long INTRADAY_SHORT = 500;
@@ -160,15 +162,5 @@ public class PositionTest {
         uut = new Position(portfolio, instrument);
 
         assertThat(uut.equals(new Object()), is(false));
-    }
-
-    @Test
-    public void shouldGenerateHash() throws Exception {
-        Portfolio portfolio = PortfolioMocker.create(TEST_PORTFOLIO_ID);
-        Instrument instrument = InstrumentMocker.create(TEST_INS_ID);
-        uut = new Position(portfolio, instrument);
-
-        assertThat(uut.hashCode(), is(TEST_HASH_CODE));
-
     }
 }
