@@ -28,15 +28,14 @@ import static org.junit.Assert.assertThat;
 public class PositionTest {
     private static final String TEST_PORTFOLIO_ID = "ptf_1";
     private static final String TEST_INS_ID = "ins_1";
-    private static final String TEST_STRING = "Position{Instrument=ins_1, Portfolio=ptf_1, Net=2500, Net Cash=2500.0, Day Long=2000, Day Long Cash=1500.0, Day Short=500, Day Short Cash=1000.0}";
+    private static final String TEST_STRING = "Position{Instrument=ins_1, Portfolio=ptf_1, Net=2500, Opened=2014-07-11 14:03:00.000, Entry=12.34}";
+    private static final DateTime TEST_OPEN = new DateTime(2014,7, 11, 14, 3);
+    private static final double TEST_ENTRY_PRICE = 12.34;
+    private static final int TEST_HASH_CODE = 890697266;
     private final long START_OF_DAY = 1000;
     private final long INTRADAY_LONG = 2000;
     private final long INTRADAY_SHORT = 500;
-    private final double START_OF_DAY_CASH_FLOW = 2000.0;
-    private final double INTRADAY_LONG_CASH_FLOW = 1500.0;
-    private final double INTRADAY_SHORT_CASH_FLOW = 1000.0;
     private final long NET_POS = START_OF_DAY + INTRADAY_LONG - INTRADAY_SHORT;
-    private final double NET_CASH_FLOW = START_OF_DAY_CASH_FLOW + INTRADAY_LONG_CASH_FLOW - INTRADAY_SHORT_CASH_FLOW;
 
     private Position uut;
 
@@ -62,32 +61,14 @@ public class PositionTest {
     @Test
     public void newPositionShouldHaveZeroNetPos() throws Exception {
         assertThat(uut.getNet(), is(0L));
-        assertThat(uut.getNetCashFlow(), is(0.0));
-    }
-
-    @Test
-    public void shouldGetStartOfDay() throws Exception {
-        uut.setStartOfDay(START_OF_DAY);
-
-        assertThat(uut.getStartOfDay(), is(START_OF_DAY));
     }
 
     @Test
     public void shouldAddPositions() throws Exception {
-        uut.setStartOfDay(START_OF_DAY);
-        uut.addLong(INTRADAY_LONG);
-        uut.addShort(INTRADAY_SHORT);
+        uut.add(INTRADAY_LONG);
+        uut.add(INTRADAY_SHORT);
 
         assertThat(uut.getNet(), is(NET_POS));
-        assertThat(uut.getIntradayLong(), is(INTRADAY_LONG));
-        assertThat(uut.getIntradayShort(), is(INTRADAY_SHORT));
-    }
-
-    @Test
-    public void shouldGetStartOfDayCash() throws Exception {
-        uut.setStartOfDayCashFlow(START_OF_DAY_CASH_FLOW);
-
-        assertThat(uut.getStartOfDayCashFlow(), is(START_OF_DAY_CASH_FLOW));
     }
 
     @Test
@@ -110,26 +91,15 @@ public class PositionTest {
     public void shouldBeInactiveForZeroPosition() throws Exception {
         assertThat(uut.isActive(), is(false));
 
-        uut.addLong(10);
+        uut.add(10);
 
         assertThat(uut.isActive(), is(true));
 
         uut.reset();
 
-        uut.addShort(10);
+        uut.add(-10);
 
         assertThat(uut.isActive(), is(true));
-    }
-
-    @Test
-    public void shouldAddCash() throws Exception {
-        uut.setStartOfDayCashFlow(START_OF_DAY_CASH_FLOW);
-        uut.addLongCashFlow(INTRADAY_LONG_CASH_FLOW);
-        uut.addShortCashFlow(INTRADAY_SHORT_CASH_FLOW);
-
-        assertThat(uut.getNetCashFlow(), is(NET_CASH_FLOW));
-        assertThat(uut.getIntradayLongCashFlow(), is(INTRADAY_LONG_CASH_FLOW));
-        assertThat(uut.getIntradayShortCashFlow(), is(INTRADAY_SHORT_CASH_FLOW));
     }
 
     @Test
@@ -139,14 +109,14 @@ public class PositionTest {
 
     @Test
     public void shouldBeLongIfGreaterThaZero() throws Exception {
-        uut.addLong(INTRADAY_LONG);
+        uut.add(INTRADAY_LONG);
 
         assertThat(uut.isLong(), is(true));
     }
 
     @Test
     public void shouldBeShortIfLessThaZero() throws Exception {
-        uut.addShort(INTRADAY_SHORT);
+        uut.add(-INTRADAY_SHORT);
 
         assertThat(uut.isLong(), is(false));
     }
@@ -156,12 +126,10 @@ public class PositionTest {
         Portfolio portfolio = PortfolioMocker.create(TEST_PORTFOLIO_ID);
         Instrument instrument = InstrumentMocker.create(TEST_INS_ID);
         uut = new Position(portfolio, instrument);
-        uut.setStartOfDay(START_OF_DAY);
-        uut.addLong(INTRADAY_LONG);
-        uut.addShort(INTRADAY_SHORT);
-        uut.setStartOfDayCashFlow(START_OF_DAY_CASH_FLOW);
-        uut.addLongCashFlow(INTRADAY_LONG_CASH_FLOW);
-        uut.addShortCashFlow(INTRADAY_SHORT_CASH_FLOW);
+        uut.add(INTRADAY_LONG);
+        uut.add(INTRADAY_SHORT);
+        uut.setOpened(TEST_OPEN);
+        uut.setEntryPrice(TEST_ENTRY_PRICE);
 
         assertThat(uut.toString(), is(TEST_STRING));
     }
@@ -192,5 +160,15 @@ public class PositionTest {
         uut = new Position(portfolio, instrument);
 
         assertThat(uut.equals(new Object()), is(false));
+    }
+
+    @Test
+    public void shouldGenerateHash() throws Exception {
+        Portfolio portfolio = PortfolioMocker.create(TEST_PORTFOLIO_ID);
+        Instrument instrument = InstrumentMocker.create(TEST_INS_ID);
+        uut = new Position(portfolio, instrument);
+
+        assertThat(uut.hashCode(), is(TEST_HASH_CODE));
+
     }
 }

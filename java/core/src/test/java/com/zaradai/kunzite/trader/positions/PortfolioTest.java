@@ -29,9 +29,6 @@ public class PortfolioTest {
     private static final Long TEST_NET_POS_1 = 1234L;
     private static final Long TEST_NET_POS_2 = 1234L;
     private static final Long TEST_NET_NET = TEST_NET_POS_1 + TEST_NET_POS_2;
-    private static final double TEST_NET_CASH_1 = 12.34;
-    private static final double TEST_NET_CASH_2 = 56.78;
-    private static final double TEST_CASH_NET = TEST_NET_CASH_1 + TEST_NET_CASH_2;
 
     @Test
     public void shouldCreateWithId() throws Exception {
@@ -81,20 +78,6 @@ public class PortfolioTest {
         uut.addPosition(position2);
 
         assertThat(uut.getNetPosition(), is(TEST_NET_NET));
-    }
-
-    @Test
-    public void shouldGetNetCashFlow() throws Exception {
-        Portfolio uut = createPortfolio();
-        Position position1 = createPosition(TEST_ID, TEST_INS_ID_1);
-        when(position1.getNetCashFlow()).thenReturn(TEST_NET_CASH_1);
-        Position position2 = createPosition(TEST_ID, TEST_INS_ID_2);
-        when(position2.getNetCashFlow()).thenReturn(TEST_NET_CASH_2);
-
-        uut.addPosition(position1);
-        uut.addPosition(position2);
-
-        assertThat(uut.getNetCashFlow(), is(TEST_CASH_NET));
     }
 
     private Portfolio createPortfolio() {

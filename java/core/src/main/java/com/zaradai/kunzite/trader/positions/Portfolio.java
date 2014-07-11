@@ -61,16 +61,6 @@ public class Portfolio {
         return res;
     }
 
-    public double getNetCashFlow() {
-        double res = 0;
-
-        for (Map.Entry<String, Position> entry : positionByInstrument.entrySet()) {
-            res += entry.getValue().getNetCashFlow();
-        }
-
-        return res;
-    }
-
     public boolean hasPosition(String instrumentId) {
         return positionByInstrument.get(instrumentId) != null;
     }

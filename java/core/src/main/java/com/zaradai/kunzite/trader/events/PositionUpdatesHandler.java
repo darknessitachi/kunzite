@@ -16,6 +16,5 @@
 package com.zaradai.kunzite.trader.events;
 
 public interface PositionUpdatesHandler {
-    void onStartOfDay(StartOfDay startOfDay);
     void onTrade(TradeEvent event);
 }

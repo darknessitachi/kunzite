@@ -15,10 +15,8 @@
  */
 package com.zaradai.kunzite.trader.positions;
 
-import com.zaradai.kunzite.trader.events.StartOfDay;
 import com.zaradai.kunzite.trader.events.TradeEvent;
 
 public interface PositionUpdater {
     void update(Position position, TradeEvent event);
-    void update(Position position, StartOfDay startOfDay);
 }

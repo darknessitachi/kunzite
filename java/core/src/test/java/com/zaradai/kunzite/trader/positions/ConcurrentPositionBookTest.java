@@ -15,7 +15,6 @@
  */
 package com.zaradai.kunzite.trader.positions;
 
-import com.zaradai.kunzite.trader.events.StartOfDay;
 import com.zaradai.kunzite.trader.events.TradeEvent;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.mocks.InstrumentMocker;
@@ -33,7 +32,6 @@ public class ConcurrentPositionBookTest {
     private static final String TEST_INST_ID = "test";
     private static final String TEST_PTF_ID = "ptf";
     private static final long TEST_NET_POS = 2500L;
-    private static final double TEST_NET_CASH = 25.55;
 
     private PositionFactory positionFactory;
     private PortfolioResolver portfolioResolver;
@@ -74,28 +72,11 @@ public class ConcurrentPositionBookTest {
     }
 
     @Test
-    public void shouldGetNetCashFlows() throws Exception {
-        when(position.getNetCashFlow()).thenReturn(TEST_NET_CASH);
-
-        assertThat(uut.getNetCashFlow(TEST_PTF_ID), is(TEST_NET_CASH));
-        assertThat(uut.getTotalNetCashFlow(), is(TEST_NET_CASH));
-    }
-
-    @Test
     public void shouldUpdateTrade() throws Exception {
         TradeEvent testTrade = TradeEvent.newTrade(TEST_PTF_ID, TEST_INST_ID, 1050, 12.5, DateTime.now());
 
         uut.onTrade(testTrade);
 
         verify(positionUpdater).update(position, testTrade);
-    }
-
-    @Test
-    public void shouldUpdateStartOfDay() throws Exception {
-        StartOfDay startOfDay = StartOfDay.newStartOfDay(TEST_PTF_ID, TEST_INST_ID, 0, 0, 23.23, DateTime.now());
-
-        uut.onStartOfDay(startOfDay);
-
-        verify(positionUpdater).update(position, startOfDay);
     }
 }

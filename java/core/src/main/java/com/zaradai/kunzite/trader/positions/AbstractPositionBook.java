@@ -15,7 +15,6 @@
  */
 package com.zaradai.kunzite.trader.positions;
 
-import com.zaradai.kunzite.trader.events.StartOfDay;
 import com.zaradai.kunzite.trader.events.TradeEvent;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 
@@ -46,12 +45,6 @@ public abstract class AbstractPositionBook implements PositionBook {
     }
 
     @Override
-    public void onStartOfDay(StartOfDay startOfDay) {
-        Position position = getPositionFor(startOfDay.getPortfolioId());
-        positionUpdater.update(position, startOfDay);
-    }
-
-    @Override
     public long getNetPosition(String portfolioId) {
         return getPositionFor(portfolioId).getNet();
     }
@@ -63,23 +56,6 @@ public abstract class AbstractPositionBook implements PositionBook {
 
         while (iter.hasNext()) {
             res += iter.next().getNet();
-        }
-
-        return res;
-    }
-
-    @Override
-    public double getNetCashFlow(String portfolioId) {
-        return getPositionFor(portfolioId).getNetCashFlow();
-    }
-
-    @Override
-    public double getTotalNetCashFlow() {
-        double res = 0;
-        Iterator<Position> iter = positionsByPortfolio.values().iterator();
-
-        while (iter.hasNext()) {
-            res += iter.next().getNetCashFlow();
         }
 
         return res;

@@ -25,14 +25,7 @@ public class Position {
     private final Portfolio portfolio;
     private final Instrument instrument;
 
-    private long startOfDay;
-    private long intradayLong;
-    private long intradayShort;
-
-    private double startOfDayCashFlow;
-    private double intradayLongCashFlow;
-    private double intradayShortCashFlow;
-
+    private long volume;
     private double entryPrice;
     private DateTime opened;
 
@@ -60,59 +53,11 @@ public class Position {
     }
 
     public long getNet() {
-        return getStartOfDay() + getIntradayLong() - getIntradayShort();
+        return volume;
     }
 
-    public double getNetCashFlow() {
-        return getStartOfDayCashFlow() + getIntradayLongCashFlow() - getIntradayShortCashFlow();
-    }
-
-    public long getStartOfDay() {
-        return startOfDay;
-    }
-
-    public void setStartOfDay(long startOfDay) {
-        this.startOfDay = startOfDay;
-    }
-
-    public long getIntradayLong() {
-        return intradayLong;
-    }
-
-    public void addLong(long position) {
-        intradayLong += position;
-    }
-
-    public long getIntradayShort() {
-        return intradayShort;
-    }
-
-    public void addShort(long position) {
-        intradayShort += position;
-    }
-
-    public double getStartOfDayCashFlow() {
-        return startOfDayCashFlow;
-    }
-
-    public void setStartOfDayCashFlow(double startOfDayCashFlow) {
-        this.startOfDayCashFlow = startOfDayCashFlow;
-    }
-
-    public double getIntradayLongCashFlow() {
-        return intradayLongCashFlow;
-    }
-
-    public void addLongCashFlow(double cash) {
-        intradayLongCashFlow += cash;
-    }
-
-    public double getIntradayShortCashFlow() {
-        return intradayShortCashFlow;
-    }
-
-    public void addShortCashFlow(double cash) {
-        intradayShortCashFlow += cash;
+    public void add(long position) {
+        volume += position;
     }
 
     public double getEntryPrice() {
@@ -140,8 +85,7 @@ public class Position {
     }
 
     public void reset() {
-        startOfDay = intradayLong = intradayShort = 0L;
-        startOfDayCashFlow = intradayLongCashFlow = intradayShortCashFlow = 0.0;
+        volume = 0L;
         entryPrice = 0.0;
         opened = null;
     }
@@ -152,11 +96,8 @@ public class Position {
                 .add("Instrument", getInstrumentId())
                 .add("Portfolio", getPortfolioId())
                 .add("Net", getNet())
-                .add("Net Cash", getNetCashFlow())
-                .add("Day Long", intradayLong)
-                .add("Day Long Cash", intradayLongCashFlow)
-                .add("Day Short", intradayShort)
-                .add("Day Short Cash", intradayShortCashFlow)
+                .add("Opened", getOpened().toString("YYYY-MM-dd HH:mm:ss.SSS"))
+                .add("Entry", getEntryPrice())
                 .toString();
     }
 

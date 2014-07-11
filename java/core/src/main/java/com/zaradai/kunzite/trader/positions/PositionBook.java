@@ -24,6 +24,4 @@ public interface PositionBook extends PositionUpdatesHandler {
     Position getPositionFor(String portfolioId);    // always succeeds
     long getNetPosition(String portfolioId);
     long getTotalNetPosition();
-    double getNetCashFlow(String portfolioId);
-    double getTotalNetCashFlow();
 }

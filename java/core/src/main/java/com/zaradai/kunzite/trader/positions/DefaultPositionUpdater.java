@@ -69,30 +69,6 @@ public class DefaultPositionUpdater implements PositionUpdater {
     }
 
     private void updatePosition(Position position, double price, long quantity) {
-        double cashFlow = price * quantity * position.getInstrument().getMultiplier();
-
-        if (quantity < 0) {
-            // quantity is negative but intraday short is absolute so add the quantity negated.
-            position.addShort(-quantity);
-            position.addShortCashFlow(-cashFlow);
-
-        } else {
-            position.addLong(quantity);
-            position.addLongCashFlow(cashFlow);
-        }
-    }
-
-    @Override
-    public void update(Position position, StartOfDay startOfDay) {
-        checkNotNull(position, "Invalid Position");
-        checkNotNull(startOfDay, "Invalid Start of Day Position");
-        checkArgument(startOfDay.getInstrumentId().equals(position.getInstrumentId()), "Start of day position is not for this position");
-        checkArgument(startOfDay.getPortfolioId().equals(position.getPortfolioId()), "Start of day position is not for this position");
-
-        position.reset();
-        position.setStartOfDay(startOfDay.getPosition());
-        position.setStartOfDayCashFlow(startOfDay.getCashFlow());
-        position.setOpened(startOfDay.getOpened());
-        position.setEntryPrice(startOfDay.getEntryPrice());
+        position.add(quantity);
     }
 }
