@@ -23,7 +23,6 @@ import com.zaradai.kunzite.trader.events.TradeEventHandler;
 
 public interface Algo extends MarketBookUpdateEventHandler, OrderRejectHandler, TradeEventHandler, PositionChangeHandler {
     String getId();
-    String getName();
     TradingState getState();
 
     void initialize() throws AlgoException;
