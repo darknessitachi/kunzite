@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!--
+    Copyright 2014 Zaradai
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<statics>
+    <markets>
+        <market id="Exchange1">
+            <ticks>
+                <tick min="0.0" max="0.1" value="0.001" />
+                <tick min="0.1" max="0.5" value="0.005" />
+                <tick min="0.5" max="9999" value="0.01" />
+            </ticks>
+        </market>
+        <market id="Exchange2">
+            <ticks>
+                <tick min="0.0" max="0.1" value="0.001" />
+                <tick min="0.1" max="0.5" value="0.005" />
+                <tick min="0.5" max="9999" value="0.01" />
+            </ticks>
+        </market>
+    </markets>
+    <portfolios>
+        <portfolio id="ptf1" />
+        <portfolio id="ptf2" />
+    </portfolios>
+    <instruments>
+        <instrument id="AAPL" name="Apple" multiplier="1.0" lotSize="1" marketId="Exchange1" type="Stock">
+            <partof>
+                <security>IXIC</security>
+            </partof>
+        </instrument>
+        <instrument id="INTC" name="Intel" multiplier="1.0" lotSize="1" marketId="Exchange1" type="Stock">
+            <partof>
+                <security>IXIC</security>
+            </partof>
+        </instrument>
+        <instrument id="IXIC" name="NASDAQ Composite" marketId="Exchange1" type="Index">
+            <members>
+                <security>AAPL</security>
+                <security>INTC</security>
+            </members>
+        </instrument>
+        <instrument id="00005" name="HSBC HOLDING" multiplier="1.0" lotSize="1" marketId="Exchange2" type="Stock" />
+        <instrument id="Watch" name="My Watch List" marketId="Exchange1" type="Basket">
+            <basket>
+                <security>AAPL</security>
+                <security>INTC</security>
+            </basket>
+        </instrument>
+        <instrument id="CPB19" name="Campbell Soup Co" marketId="Exchange2" bondIssue="1-Jul-2009" type="Bond"
+                    bondMaturity="15-Aug-2014" bondFirstCoupon="15-Feb-2010" bondCoupon="3.375" bondNotional="100000" />
+
+        <instrument id="AAPLG19144400000" name="AAPLG19144400000" multiplier="100" lotSize="1" marketId="Exchange1"
+                    type="Option" underlyingId="AAPL" maturity="19-Jul-2014" optionType="Call" strike="40.0" />
+
+        <instrument id="11106" name="GS-HSBC@EC1408A" multiplier="100" lotSize="4000" marketId="Exchange2"
+                    type="Warrant" underlyingId="00005" maturity="01-Aug-2014" optionType="Call" strike="96.88"
+                    conversionRaio="10" issueSize="80000000" issuer="Goldman Sachs Structured Products (Asia) Ltd."
+                    issueDate="4-Dec-2013" />
+
+    </instruments>
+</statics>

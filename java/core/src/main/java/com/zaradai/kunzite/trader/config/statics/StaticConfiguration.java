@@ -15,8 +15,42 @@
  */
 package com.zaradai.kunzite.trader.config.statics;
 
-public interface StaticConfiguration {
-    Iterable<InstrumentConfig> getInstruments();
-    Iterable<MarketConfig> getMarkets();
-    Iterable<PortfolioConfig> getPortfolios();
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
+public class StaticConfiguration {
+    private final List<InstrumentConfig> instruments;
+    private final List<MarketConfig> markets;
+    private final List<PortfolioConfig> portfolios;
+
+    public StaticConfiguration() {
+        instruments = Lists.newArrayList();
+        markets = Lists.newArrayList();
+        portfolios = Lists.newArrayList();
+    }
+
+    public Iterable<InstrumentConfig> getInstruments() {
+        return instruments;
+    }
+
+    public void add(InstrumentConfig instrument) {
+        instruments.add(instrument);
+    }
+
+    public Iterable<MarketConfig> getMarkets() {
+        return markets;
+    }
+
+    public void add(MarketConfig market) {
+        markets.add(market);
+    }
+
+    public Iterable<PortfolioConfig> getPortfolios() {
+        return portfolios;
+    }
+
+    public void add(PortfolioConfig portfolio) {
+        portfolios.add(portfolio);
+    }
 }
