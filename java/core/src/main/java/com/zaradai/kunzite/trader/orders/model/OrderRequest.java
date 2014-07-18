@@ -22,7 +22,7 @@ public class OrderRequest {
     private String portfolioId;
     private String instrumentId;
     private String clientOrderId;
-    private String strategyId;
+    private String algoId;
     private long quantity;
     private double price;
     private OrderSide side;
@@ -71,12 +71,12 @@ public class OrderRequest {
         this.clientOrderId = clientOrderId;
     }
 
-    public String getStrategyId() {
-        return strategyId;
+    public String getAlgoId() {
+        return algoId;
     }
 
-    public void setStrategyId(String strategyId) {
-        this.strategyId = strategyId;
+    public void setAlgoId(String algoId) {
+        this.algoId = algoId;
     }
 
     public long getQuantity() {

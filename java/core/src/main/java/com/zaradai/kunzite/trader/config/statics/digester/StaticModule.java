@@ -51,9 +51,5 @@ public class StaticModule  extends AbstractRulesModule {
         // handle instrument baskets
         forPattern("statics/instruments/instrument/basket/security")
                 .callMethod("addBasketConstituent").usingElementBodyAsArgument();
-
-
-
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

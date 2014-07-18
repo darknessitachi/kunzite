@@ -71,9 +71,9 @@ public class OrderRequestTest {
 
     @Test
     public void shouldGetStrategyId() throws Exception {
-        uut.setStrategyId(TEST_STRING);
+        uut.setAlgoId(TEST_STRING);
 
-        assertThat(uut.getStrategyId(), is(TEST_STRING));
+        assertThat(uut.getAlgoId(), is(TEST_STRING));
     }
 
     @Test

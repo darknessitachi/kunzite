@@ -20,6 +20,7 @@ import com.zaradai.kunzite.trader.events.MarketBookUpdateEventHandler;
 import com.zaradai.kunzite.trader.events.OrderRejectHandler;
 import com.zaradai.kunzite.trader.events.PositionChangeHandler;
 import com.zaradai.kunzite.trader.events.TradeEventHandler;
+import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 
 public interface Algo extends MarketBookUpdateEventHandler, OrderRejectHandler, TradeEventHandler, PositionChangeHandler {
     String getId();
@@ -29,6 +30,7 @@ public interface Algo extends MarketBookUpdateEventHandler, OrderRejectHandler, 
     void start() throws AlgoException;
     void stop() throws AlgoException;
 
+    void onReject(OrderRequest orderRequest);
 
     boolean isRunning();
 }
