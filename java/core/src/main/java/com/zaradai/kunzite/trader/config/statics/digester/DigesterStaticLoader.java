@@ -55,11 +55,11 @@ public class DigesterStaticLoader implements StaticLoader {
         ConvertUtils.register(new InstrumentTypeConverter(), InstrumentType.class);
     }
 
-    private InputStream getStream(String sourceUri) {
+    protected InputStream getStream(String sourceUri) {
         return StaticModule.class.getClassLoader().getResourceAsStream(sourceUri);
     }
 
-    private Digester getDigester() {
+    protected Digester getDigester() {
         DigesterLoader loader = DigesterLoader.newLoader(new StaticModule());
 
         return loader.newDigester();
