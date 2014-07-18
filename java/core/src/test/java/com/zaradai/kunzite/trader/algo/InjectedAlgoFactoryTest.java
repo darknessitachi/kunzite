@@ -18,6 +18,7 @@ package com.zaradai.kunzite.trader.algo;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
 import com.google.inject.ProvisionException;
+import com.zaradai.kunzite.trader.control.TradingState;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,6 +27,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 public class InjectedAlgoFactoryTest {
+    private static final TradingState TEST_STATE = mock(TradingState.class);
     private static Class<Algo> ALGO_CLASS = Algo.class;
     private static final String TEST_NAME = ALGO_CLASS.getName();
     private static final Algo TEST_ALGO = mock(ALGO_CLASS);
@@ -42,7 +44,7 @@ public class InjectedAlgoFactoryTest {
     @Test
     public void shouldCreate() throws Exception {
         when(injector.getInstance(ALGO_CLASS)).thenReturn(TEST_ALGO);
-        Algo res = uut.create(TEST_NAME);
+        Algo res = uut.create(TEST_NAME, TEST_STATE);
 
         assertThat(res, is(TEST_ALGO));
     }
@@ -51,25 +53,25 @@ public class InjectedAlgoFactoryTest {
     public void shouldCaptureConfigurationException() throws Exception {
         doThrow(ConfigurationException.class).when(injector).getInstance(ALGO_CLASS);
 
-        uut.create(TEST_NAME);
+        uut.create(TEST_NAME, TEST_STATE);
     }
 
     @Test(expected = AlgoException.class)
     public void shouldCaptureProvisionException() throws Exception {
         doThrow(ProvisionException.class).when(injector).getInstance(ALGO_CLASS);
 
-        uut.create(TEST_NAME);
+        uut.create(TEST_NAME, TEST_STATE);
     }
 
     @Test(expected = AlgoException.class)
     public void shouldCaptureClassNotFoundException() throws Exception {
         doThrow(ClassNotFoundException.class).when(injector).getInstance(ALGO_CLASS);
 
-        uut.create(TEST_NAME);
+        uut.create(TEST_NAME, TEST_STATE);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfCreateWithInvalidName() throws Exception {
-        uut.create(null);
+        uut.create(null, TEST_STATE);
     }
 }

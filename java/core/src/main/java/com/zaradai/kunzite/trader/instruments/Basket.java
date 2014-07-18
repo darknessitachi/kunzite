@@ -23,7 +23,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public final class Basket extends MembershipInstrument {
+public class Basket extends MembershipInstrument {
     private final List<Instrument> constituents;
 
     @Inject

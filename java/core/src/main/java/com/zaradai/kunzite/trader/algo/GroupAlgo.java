@@ -58,6 +58,11 @@ public class GroupAlgo implements Algo {
     }
 
     @Override
+    public void setState(TradingState tradingState) {
+
+    }
+
+    @Override
     public void initialize() throws AlgoException {
         for (Algo algo : algoByInstrument.values()) {
             algo.initialize();

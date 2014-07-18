@@ -25,6 +25,7 @@ import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 public interface Algo extends MarketBookUpdateEventHandler, OrderRejectHandler, TradeEventHandler, PositionChangeHandler {
     String getId();
     TradingState getState();
+    void setState(TradingState tradingState);
 
     void initialize() throws AlgoException;
     void start() throws AlgoException;

@@ -20,79 +20,45 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.logging.LogHelper;
-import com.zaradai.kunzite.trader.config.statics.InstrumentConfig;
-import com.zaradai.kunzite.trader.config.statics.MarketConfig;
-import com.zaradai.kunzite.trader.config.statics.PortfolioConfig;
+import com.zaradai.kunzite.trader.algo.Algo;
+import com.zaradai.kunzite.trader.algo.AlgoResolver;
 import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
-import com.zaradai.kunzite.trader.instruments.*;
+import com.zaradai.kunzite.trader.instruments.Instrument;
+import com.zaradai.kunzite.trader.instruments.InstrumentResolver;
+import com.zaradai.kunzite.trader.instruments.Market;
+import com.zaradai.kunzite.trader.instruments.MarketResolver;
 import com.zaradai.kunzite.trader.positions.Portfolio;
-import com.zaradai.kunzite.trader.positions.PortfolioFactory;
 import com.zaradai.kunzite.trader.positions.PortfolioResolver;
 
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public class TradingManager implements InstrumentResolver, TradingStateResolver, MarketResolver, PortfolioResolver {
+public class TradingManager implements InstrumentResolver, TradingStateResolver, MarketResolver, PortfolioResolver,
+        AlgoResolver {
     private final Map<String, Portfolio> portfolioByPortfolioId;
     private final Map<String, Market> marketByMarketId;
     private final Map<String, Instrument> instrumentByInstrumentId;
     private final Map<String, TradingState> tradingStateByInstrumentId;
+    private final Map<String, Algo> algoByAlgoId;
     private final ContextLogger logger;
-    private final StaticConfiguration configuration;
-    private final PortfolioFactory portfolioFactory;
-    private final MarketFactory marketFactory;
-    private final TradingStateFactory tradingStateFactory;
-    private final InstrumentFactory instrumentFactory;
+    private final TradingBuilder builder;
+
 
     @Inject
-    TradingManager(ContextLogger logger, StaticConfiguration configuration, PortfolioFactory portfolioFactory,
-                   MarketFactory marketFactory, TradingStateFactory tradingStateFactory,
-                   InstrumentFactory instrumentFactory) {
+    TradingManager(ContextLogger logger, TradingBuilder builder) {
         this.logger = logger;
-        this.configuration = configuration;
-        this.portfolioFactory = portfolioFactory;
-        this.marketFactory = marketFactory;
-        this.tradingStateFactory = tradingStateFactory;
-        this.instrumentFactory = instrumentFactory;
-        tradingStateByInstrumentId = createStateMap();
-        instrumentByInstrumentId = createInstrumentsMap();
-        marketByMarketId = createMarketsMap();
-        portfolioByPortfolioId = createPortfoliosMap();
+        this.builder = builder;
+        tradingStateByInstrumentId = Maps.newHashMap();
+        instrumentByInstrumentId = Maps.newHashMap();
+        marketByMarketId = Maps.newHashMap();
+        portfolioByPortfolioId = Maps.newHashMap();
+        algoByAlgoId = Maps.newHashMap();
     }
 
-    private Map<String, Portfolio> createPortfoliosMap() {
-        return Maps.newHashMap();
-    }
-
-    private Map<String, Market> createMarketsMap() {
-        return Maps.newHashMap();
-    }
-
-    private Map<String, Instrument> createInstrumentsMap() {
-        return Maps.newHashMap();
-    }
-
-    private Map<String, TradingState> createStateMap() {
-        return Maps.newHashMap();
-    }
-
-    public void build() throws TradingException {
-
-        try {
-            //1. build portfolios
-            buildPortfolios();
-            //2. build the markets
-            buildMarkets();
-            //3. build the instruments
-            buildInstruments();
-            //4. Build states
-            buildTradingStates();
-            //5. log done
-            logBuilt();
-        } catch (Exception e) {
-            throw new TradingException("Unable to build Trading manager", e);
-        }
+    public void build(StaticConfiguration configuration) {
+        builder.build(this, configuration);
+        logBuilt();
     }
 
     private void logBuilt() {
@@ -101,168 +67,9 @@ public class TradingManager implements InstrumentResolver, TradingStateResolver,
                 .add("Portfolios", portfolioByPortfolioId.size())
                 .add("Markets", marketByMarketId.size())
                 .add("Instruments", instrumentByInstrumentId.size())
+                .add("Algos", algoByAlgoId.size())
                 .add("States", tradingStateByInstrumentId.size())
                 .log();
-    }
-
-    private void buildPortfolios() {
-        for (PortfolioConfig config : configuration.getPortfolios()) {
-            String id = config.getId();
-            portfolioByPortfolioId.put(id, portfolioFactory.create(id));
-        }
-    }
-
-    private void buildMarkets() {
-        for (MarketConfig config : configuration.getMarkets()) {
-            String id = config.getId();
-            Market market = marketFactory.create(id);
-            // config the market ticks
-            for (TickDefinition tickDefinition : config.getTickDefinitions()) {
-                market.addTickDefinition(tickDefinition);
-            }
-            marketByMarketId.put(market.getId(), market);
-        }
-    }
-
-    private void buildInstruments() {
-        // Need 2 pass construction due to membership resolving
-        // 1. Build and fill with basic information
-        for (InstrumentConfig config : configuration.getInstruments()) {
-            Instrument instrument = createInstrument(config);
-            instrumentByInstrumentId.put(instrument.getId(), instrument);
-        }
-        // 2. Fixup any membership references
-        for (InstrumentConfig config : configuration.getInstruments()) {
-            Instrument instrument = resolveInstrument(config.getId());
-            fixupReferences((MembershipInstrument) instrument, config);
-        }
-    }
-
-    private Instrument createInstrument(InstrumentConfig config) {
-
-        switch (config.getType()) {
-            case Basket:
-                return createBasket(config);
-            case Bond:
-                return createBond(config);
-            case Forward:
-                return createForward(config);
-            case Future:
-                return createFuture(config);
-            case Index:
-                return createIndex(config);
-            case Option:
-                return createOption(config);
-            case Stock:
-                return createStock(config);
-            case Warrant:
-                return createWarrant(config);
-        }
-
-        return null;
-    }
-
-    private Instrument createBasket(InstrumentConfig config) {
-        Basket res = instrumentFactory.createBasket();
-        setMembershipMembers(res, config);
-
-        return res;
-    }
-
-    private Instrument createBond(InstrumentConfig config) {
-        Bond res = instrumentFactory.createBond();
-        setMembershipMembers(res, config);
-        // set bond specific
-        res.setCoupon(config.getBondCoupon());
-        res.setFirstCoupon(config.getBondFirstCoupon());
-        res.setIssue(config.getBondIssue());
-        res.setMaturity(config.getBondMaturity());
-        res.setNotional(config.getBondNotional());
-
-        return res;
-    }
-
-    private Instrument createForward(InstrumentConfig config) {
-        Forward res = instrumentFactory.createForward();
-        setMembershipMembers(res, config);
-
-        return res;
-    }
-
-    private Instrument createFuture(InstrumentConfig config) {
-        Future res = instrumentFactory.createFuture();
-        setMembershipMembers(res, config);
-
-        return res;
-    }
-
-    private Instrument createIndex(InstrumentConfig config) {
-        Index res = instrumentFactory.createIndex();
-        setMembershipMembers(res, config);
-
-        return res;
-    }
-
-    private Instrument createOption(InstrumentConfig config) {
-        Option res = instrumentFactory.createOption();
-        setMembershipMembers(res, config);
-        // set option specific
-        res.setStrike(config.getStrike());
-        res.setOptionType(config.getOptionType());
-
-        return res;
-    }
-
-    private Instrument createStock(InstrumentConfig config) {
-        Stock res = instrumentFactory.createStock();
-        setMembershipMembers(res, config);
-
-        return res;
-    }
-
-    private Instrument createWarrant(InstrumentConfig config) {
-        Warrant res = instrumentFactory.createWarrant();
-        setMembershipMembers(res, config);
-        // set option specific
-        res.setIssueDate(config.getIssueDate());
-        res.setIssuer(config.getIssuer());
-        res.setIssueSize(config.getIssueSize());
-        res.setConversionRatio(config.getConversionRatio());
-
-        return res;
-    }
-
-    private void setMembershipMembers(MembershipInstrument res, InstrumentConfig config) {
-        res.setId(config.getId());
-        res.setMarketId(config.getMarketId());
-        res.setLotSize(config.getLotSize());
-        res.setMultiplier(config.getMultiplier());
-        res.setName(config.getName());
-    }
-
-    private void fixupReferences(MembershipInstrument instrument, InstrumentConfig config) {
-        for (String id : config.getMembers()) {
-            instrument.add(id);
-        }
-        for (String id : config.getPartOf()) {
-            instrument.addTo(id);
-        }
-        if (instrument instanceof Basket) {
-            Basket basket = (Basket) instrument;
-
-            for (String id : config.getBasketConstituents()) {
-                basket.addToBasket(id);
-            }
-        }
-    }
-
-    private void buildTradingStates() {
-        for (Map.Entry<String, Instrument> entry : instrumentByInstrumentId.entrySet()) {
-            Instrument instrument = entry.getValue();
-            TradingState state = tradingStateFactory.create(instrument);
-
-            tradingStateByInstrumentId.put(instrument.getId(), state);
-        }
     }
 
     @Override
@@ -291,5 +98,32 @@ public class TradingManager implements InstrumentResolver, TradingStateResolver,
         checkArgument(!Strings.isNullOrEmpty(instrumentId));
 
         return tradingStateByInstrumentId.get(instrumentId);
+    }
+
+    @Override
+    public Algo resolveAlgo(String id) {
+        checkArgument(!Strings.isNullOrEmpty(id));
+
+        return algoByAlgoId.get(id);
+    }
+
+    public void add(Portfolio portfolio) {
+        portfolioByPortfolioId.put(portfolio.getId(), portfolio);
+    }
+
+    public void add(Market market) {
+        marketByMarketId.put(market.getId(), market);
+    }
+
+    public void add(Instrument instrument) {
+        instrumentByInstrumentId.put(instrument.getId(), instrument);
+    }
+
+    public void add(TradingState state) {
+        tradingStateByInstrumentId.put(state.getInstrument().getId(), state);
+    }
+
+    public void add(Algo algo) {
+        algoByAlgoId.put(algo.getId(), algo);
     }
 }

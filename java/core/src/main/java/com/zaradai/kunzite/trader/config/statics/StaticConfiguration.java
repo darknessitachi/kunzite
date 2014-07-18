@@ -23,11 +23,13 @@ public class StaticConfiguration {
     private final List<InstrumentConfig> instruments;
     private final List<MarketConfig> markets;
     private final List<PortfolioConfig> portfolios;
+    private final List<AlgoConfig> algos;
 
     public StaticConfiguration() {
         instruments = Lists.newArrayList();
         markets = Lists.newArrayList();
         portfolios = Lists.newArrayList();
+        algos = Lists.newArrayList();
     }
 
     public Iterable<InstrumentConfig> getInstruments() {
@@ -42,6 +44,10 @@ public class StaticConfiguration {
         return markets;
     }
 
+    public Iterable<AlgoConfig> getAlgos() {
+        return algos;
+    }
+
     public void add(MarketConfig market) {
         markets.add(market);
     }
@@ -52,5 +58,9 @@ public class StaticConfiguration {
 
     public void add(PortfolioConfig portfolio) {
         portfolios.add(portfolio);
+    }
+
+    public void add(AlgoConfig algo) {
+        algos.add(algo);
     }
 }
