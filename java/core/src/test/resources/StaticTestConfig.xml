@@ -69,6 +69,19 @@
                     type="Warrant" underlyingId="00005" maturity="01-Aug-2014" optionType="Call" strike="96.88"
                     conversionRaio="10" issueSize="80000000" issuer="Goldman Sachs Structured Products (Asia) Ltd."
                     issueDate="4-Dec-2013" />
-
     </instruments>
+    <algos>
+        <algo name="good" algo="com.zaradai.kunzite.algos.test1">
+            <instruments>
+                <security>AAPL</security>
+                <security>INTC</security>
+            </instruments>
+        </algo>
+        <algo name="bad" algo="com.zaradai.kunzite.algos.test2">
+            <instruments>
+                <security>AAPL</security>
+                <security>INTC</security>
+            </instruments>
+        </algo>
+    </algos>
 </statics>

@@ -15,8 +15,6 @@
  */
 package com.zaradai.kunzite.trader.algo;
 
-import com.zaradai.kunzite.trader.control.TradingState;
-
 public interface AlgoFactory {
-    Algo create(String name, TradingState tradingState) throws AlgoException;
+    Algo create(String name) throws AlgoException;
 }

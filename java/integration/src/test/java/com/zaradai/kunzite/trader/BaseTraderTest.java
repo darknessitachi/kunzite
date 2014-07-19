@@ -13,10 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders.execution;
+package com.zaradai.kunzite.trader;
 
-import com.zaradai.kunzite.trader.instruments.Instrument;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import org.junit.Before;
 
-public interface OrderManagerFactory {
-    OrderManager create(Instrument instrument);
+public class BaseTraderTest {
+    private Injector injector;
+
+    @Before
+    public void setUp() throws Exception {
+        injector = Guice.createInjector(getTraderModule());
+    }
+
+    protected Module getTraderModule() {
+        return new TraderModule();
+    }
+
+    protected Injector getInjector() {
+        return injector;
+    }
 }

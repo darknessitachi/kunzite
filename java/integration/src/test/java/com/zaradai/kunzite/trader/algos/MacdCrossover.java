@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders.execution;
+package com.zaradai.kunzite.trader.algos;
 
-import com.zaradai.kunzite.trader.instruments.Instrument;
+import com.zaradai.kunzite.trader.algo.AbstractAlgo;
+import com.zaradai.kunzite.trader.algo.AlgoException;
 
-public interface OrderManagerFactory {
-    OrderManager create(Instrument instrument);
+public class MacdCrossover extends AbstractAlgo {
+    @Override
+    public void initialize() throws AlgoException {
+        // initialize the algo before it runs
+    }
 }

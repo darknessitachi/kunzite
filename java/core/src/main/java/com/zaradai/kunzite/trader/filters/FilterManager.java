@@ -16,7 +16,8 @@
 package com.zaradai.kunzite.trader.filters;
 
 import com.zaradai.kunzite.trader.control.TradingState;
+import com.zaradai.kunzite.trader.instruments.Instrument;
 
 public interface FilterManager {
-    Filter createFor(TradingState state);
+    Filter createFor(Instrument state);
 }

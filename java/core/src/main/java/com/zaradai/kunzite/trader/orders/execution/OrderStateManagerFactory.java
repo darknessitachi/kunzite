@@ -15,8 +15,6 @@
  */
 package com.zaradai.kunzite.trader.orders.execution;
 
-import com.zaradai.kunzite.trader.control.TradingState;
-
 public interface OrderStateManagerFactory {
-    OrderStateManager create(TradingState tradingState);
+    OrderStateManager create(OrderManager orderManager);
 }

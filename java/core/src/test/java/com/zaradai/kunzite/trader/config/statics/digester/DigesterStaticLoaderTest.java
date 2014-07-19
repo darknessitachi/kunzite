@@ -16,10 +16,7 @@
 package com.zaradai.kunzite.trader.config.statics.digester;
 
 import com.google.common.collect.Maps;
-import com.zaradai.kunzite.trader.config.statics.InstrumentConfig;
-import com.zaradai.kunzite.trader.config.statics.MarketConfig;
-import com.zaradai.kunzite.trader.config.statics.PortfolioConfig;
-import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
+import com.zaradai.kunzite.trader.config.statics.*;
 import org.junit.Test;
 
 import java.util.Map;
@@ -39,6 +36,7 @@ public class DigesterStaticLoaderTest {
         assertMarkets(res);
         assertPortfolios(res);
         assertInstruments(res);
+        assertAlgos(res);
     }
 
     private void assertInstruments(StaticConfiguration res) {
@@ -70,5 +68,16 @@ public class DigesterStaticLoaderTest {
         }
 
         assertThat(marketsById.size(), is(2));
+    }
+
+
+    private void assertAlgos(StaticConfiguration res) {
+        Map<String, AlgoConfig> algoBy = Maps.newHashMap();
+
+        for (AlgoConfig config : res.getAlgos()) {
+            algoBy.put(config.getName(), config);
+        }
+
+        assertThat(algoBy.size(), is(2));
     }
 }

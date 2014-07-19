@@ -15,10 +15,7 @@
  */
 package com.zaradai.kunzite.trader.config.statics.digester;
 
-import com.zaradai.kunzite.trader.config.statics.InstrumentConfig;
-import com.zaradai.kunzite.trader.config.statics.MarketConfig;
-import com.zaradai.kunzite.trader.config.statics.PortfolioConfig;
-import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
+import com.zaradai.kunzite.trader.config.statics.*;
 import com.zaradai.kunzite.trader.instruments.TickDefinition;
 import org.apache.commons.digester3.binder.AbstractRulesModule;
 
@@ -51,5 +48,13 @@ public class StaticModule  extends AbstractRulesModule {
         // handle instrument baskets
         forPattern("statics/instruments/instrument/basket/security")
                 .callMethod("addBasketConstituent").usingElementBodyAsArgument();
+        // algos
+        forPattern("statics/algos/algo").createObject().ofType(AlgoConfig.class)
+                .then().setProperties()
+                .then().setNext("add");
+        // algo instruments
+        forPattern("statics/algos/algo/instruments/security")
+                .callMethod("addInstrument").usingElementBodyAsArgument();
+
     }
 }

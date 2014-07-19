@@ -51,7 +51,7 @@ public class InstrumentTradingStateTest {
         when(positionBookFactory.create(instrument)).thenReturn(positionBook);
         orderManager = mock(OrderManager.class);
         OrderManagerFactory orderManagerFactory = mock(OrderManagerFactory.class);
-        when(orderManagerFactory.create(any(InstrumentTradingState.class))).thenReturn(orderManager);
+        when(orderManagerFactory.create(any(Instrument.class))).thenReturn(orderManager);
         orderBook = mock(OrderBook.class);
         when(orderManager.getBook()).thenReturn(orderBook);
 

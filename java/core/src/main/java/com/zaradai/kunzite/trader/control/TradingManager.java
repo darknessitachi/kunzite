@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.logging.LogHelper;
 import com.zaradai.kunzite.trader.algo.Algo;
+import com.zaradai.kunzite.trader.algo.AlgoException;
 import com.zaradai.kunzite.trader.algo.AlgoResolver;
 import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
 import com.zaradai.kunzite.trader.instruments.Instrument;
@@ -56,7 +57,23 @@ public class TradingManager implements InstrumentResolver, TradingStateResolver,
         algoByAlgoId = Maps.newHashMap();
     }
 
-    public void build(StaticConfiguration configuration) {
+    public void run(StaticConfiguration configuration) throws TradingException {
+        build(configuration);
+        initAlgos();
+        // pump messages
+    }
+
+    private void initAlgos() throws TradingException {
+        for (Algo algo : algoByAlgoId.values()) {
+            try {
+                algo.initialize();
+            } catch (AlgoException e) {
+                throw new TradingException("Unable to initialize algos", e);
+            }
+        }
+    }
+
+    private void build(StaticConfiguration configuration) {
         builder.build(this, configuration);
         logBuilt();
     }

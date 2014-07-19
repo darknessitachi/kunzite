@@ -38,7 +38,7 @@ public class InstrumentTradingState implements TradingState {
         this.instrument = instrument;
         marketBook = marketBookFactory.create(instrument);
         positionBook = positionBookFactory.create(instrument);
-        orderManager = orderManagerFactory.create(this);
+        orderManager = orderManagerFactory.create(instrument);
     }
 
     @Override

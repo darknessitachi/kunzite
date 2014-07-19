@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.control;
 
+import com.google.inject.Inject;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.logging.LogHelper;
 import com.zaradai.kunzite.trader.algo.Algo;
@@ -49,7 +50,8 @@ public class TradingBuilder {
     private final InstrumentFactory instrumentFactory;
     private final AlgoFactory algoFactory;
 
-    public TradingBuilder(ContextLogger logger, PortfolioFactory portfolioFactory, MarketFactory marketFactory,
+    @Inject
+    TradingBuilder(ContextLogger logger, PortfolioFactory portfolioFactory, MarketFactory marketFactory,
                           TradingStateFactory tradingStateFactory, InstrumentFactory instrumentFactory,
                           AlgoFactory algoFactory) {
         this.logger = logger;
@@ -236,7 +238,10 @@ public class TradingBuilder {
         for (AlgoConfig config : algos) {
             for (String instrumentId : config.getInstruments()) {
                 Algo algo = buildAlgoForInstrument(manager, config, instrumentId);
-                manager.add(algo);
+
+                if (algo != null) {
+                    manager.add(algo);
+                }
             }
         }
     }
@@ -248,7 +253,9 @@ public class TradingBuilder {
         TradingState tradingState = manager.resolveTradingState(instrumentId);
 
         try {
-            res = algoFactory.create(config.getAlgo(), tradingState);
+            res = algoFactory.create(config.getAlgo());
+            res.setId(algoId);
+            res.setState(tradingState);
         } catch (AlgoException e) {
             logFailedToBuildAlgo(algoId);
         }

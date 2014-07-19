@@ -251,7 +251,7 @@ public class TradingBuilderTest {
         algoConfig.addInstrument(TEST_ID);
         configuration.add(algoConfig);
         Algo algo = mock(Algo.class);
-        when(algoFactory.create(TEST_ALGO_NAME, tradingState)).thenReturn(algo);
+        when(algoFactory.create(TEST_ALGO_NAME)).thenReturn(algo);
 
         uut.build(tradingManager, configuration);
 

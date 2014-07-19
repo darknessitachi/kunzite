@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.orders.execution;
+package com.zaradai.kunzite.trader.filters;
 
 import com.zaradai.kunzite.trader.instruments.Instrument;
 
-public interface OrderManagerFactory {
-    OrderManager create(Instrument instrument);
+public class DefaultFilterManager implements FilterManager {
+    @Override
+    public Filter createFor(Instrument state) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

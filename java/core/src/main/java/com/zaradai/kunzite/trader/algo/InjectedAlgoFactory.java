@@ -20,7 +20,6 @@ import com.google.inject.ConfigurationException;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.ProvisionException;
-import com.zaradai.kunzite.trader.control.TradingState;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -33,14 +32,13 @@ public class InjectedAlgoFactory implements AlgoFactory {
     }
 
     @Override
-    public Algo create(String name, TradingState tradingState) throws AlgoException {
+    public Algo create(String name) throws AlgoException {
         checkArgument(!Strings.isNullOrEmpty(name), "A valid algo name needs to be supplied");
 
         Algo res = null;
 
         try {
             res = (Algo) injector.getInstance(Class.forName(name));
-            res.setState(tradingState);
         } catch (ConfigurationException e) {
             throw new AlgoException("Creating Algo", e);
         } catch (ProvisionException e) {

@@ -62,10 +62,10 @@ public class TradingManagerTest {
     }
 
     @Test
-    public void shouldBuild() throws Exception {
+    public void shouldRun() throws Exception {
         StaticConfiguration configuration = new StaticConfiguration();
 
-        uut.build(configuration);
+        uut.run(configuration);
 
         verify(builder).build(uut, configuration);
         verify(logger).info();

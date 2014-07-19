@@ -44,7 +44,7 @@ public class InjectedAlgoFactoryTest {
     @Test
     public void shouldCreate() throws Exception {
         when(injector.getInstance(ALGO_CLASS)).thenReturn(TEST_ALGO);
-        Algo res = uut.create(TEST_NAME, TEST_STATE);
+        Algo res = uut.create(TEST_NAME);
 
         assertThat(res, is(TEST_ALGO));
     }
@@ -53,25 +53,25 @@ public class InjectedAlgoFactoryTest {
     public void shouldCaptureConfigurationException() throws Exception {
         doThrow(ConfigurationException.class).when(injector).getInstance(ALGO_CLASS);
 
-        uut.create(TEST_NAME, TEST_STATE);
+        uut.create(TEST_NAME);
     }
 
     @Test(expected = AlgoException.class)
     public void shouldCaptureProvisionException() throws Exception {
         doThrow(ProvisionException.class).when(injector).getInstance(ALGO_CLASS);
 
-        uut.create(TEST_NAME, TEST_STATE);
+        uut.create(TEST_NAME);
     }
 
     @Test(expected = AlgoException.class)
     public void shouldCaptureClassNotFoundException() throws Exception {
         doThrow(ClassNotFoundException.class).when(injector).getInstance(ALGO_CLASS);
 
-        uut.create(TEST_NAME, TEST_STATE);
+        uut.create(TEST_NAME);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfCreateWithInvalidName() throws Exception {
-        uut.create(null, TEST_STATE);
+        uut.create(null);
     }
 }

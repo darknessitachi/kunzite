@@ -88,11 +88,10 @@ public class DefaultOrderManagerTest {
         TradingState tradingState = mock(TradingState.class);
         when(tradingState.getInstrument()).thenReturn(instrument);
         orderFilter = mock(Filter.class);
-        when(filterManager.createFor(tradingState)).thenReturn(orderFilter);
-        when(orderStateManagerFactory.create(tradingState)).thenReturn(orderStateManager);
-
+        when(filterManager.createFor(instrument)).thenReturn(orderFilter);
+        when(orderStateManagerFactory.create(any(OrderManager.class))).thenReturn(orderStateManager);
         uut = new DefaultOrderManager(logger, eventAggregator, orderIdGenerator, orderStateManagerFactory,
-                orderBookFactory, filterManager, tradingState);
+                orderBookFactory, filterManager, instrument);
     }
 
     @Test

@@ -16,15 +16,16 @@
 package com.zaradai.kunzite.trader.orders.execution;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.zaradai.kunzite.events.EventAggregator;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.logging.LogHelper;
-import com.zaradai.kunzite.trader.control.TradingState;
 import com.zaradai.kunzite.trader.events.OrderRequestRejectEvent;
 import com.zaradai.kunzite.trader.events.OrderSendEvent;
 import com.zaradai.kunzite.trader.filters.Filter;
 import com.zaradai.kunzite.trader.filters.FilterManager;
+import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.orders.book.OrderBook;
 import com.zaradai.kunzite.trader.orders.book.OrderBookFactory;
 import com.zaradai.kunzite.trader.orders.model.Order;
@@ -49,19 +50,20 @@ public class DefaultOrderManager implements OrderManager {
     private final String instrumentId;
     private final String marketId;
 
-    public DefaultOrderManager(ContextLogger logger, EventAggregator eventAggregator, OrderIdGenerator idGenerator,
+    @Inject
+    DefaultOrderManager(ContextLogger logger, EventAggregator eventAggregator, OrderIdGenerator idGenerator,
                                OrderStateManagerFactory orderStateManagerFactory, OrderBookFactory orderBookFactory,
-                               FilterManager filterManager, @Assisted TradingState tradingState) {
+                               FilterManager filterManager, @Assisted Instrument instrument) {
         this.logger = logger;
         this.eventAggregator = eventAggregator;
         this.idGenerator = idGenerator;
-        orderStateManager = orderStateManagerFactory.create(tradingState);
+        orderStateManager = orderStateManagerFactory.create(this);
         orderBook = orderBookFactory.create();
 
         pending = createPendingList();
-        instrumentId = tradingState.getInstrument().getId();
-        marketId = tradingState.getInstrument().getMarketId();
-        orderFilter = filterManager.createFor(tradingState);
+        instrumentId = instrument.getId();
+        marketId = instrument.getMarketId();
+        orderFilter = filterManager.createFor(instrument);
     }
 
     private List<OrderRequest> createPendingList() {

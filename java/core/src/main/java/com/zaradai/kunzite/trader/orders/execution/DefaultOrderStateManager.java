@@ -16,6 +16,7 @@
 package com.zaradai.kunzite.trader.orders.execution;
 
 import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import com.zaradai.kunzite.events.EventAggregator;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.logging.LogHelper;
@@ -29,7 +30,7 @@ public class DefaultOrderStateManager implements OrderStateManager {
     private final OrderManager orderManager;
 
     @Inject
-    DefaultOrderStateManager(ContextLogger logger, EventAggregator eventAggregator, OrderManager orderManager) {
+    DefaultOrderStateManager(ContextLogger logger, EventAggregator eventAggregator, @Assisted OrderManager orderManager) {
         this.logger = logger;
         this.eventAggregator = eventAggregator;
         this.orderManager = orderManager;
