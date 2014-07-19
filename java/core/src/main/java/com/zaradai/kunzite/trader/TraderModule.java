@@ -52,7 +52,7 @@ public class TraderModule extends AbstractModule {
 
     public TraderModule() {
         logger = LoggerFactory.getLogger("trader");
-        eventBus = new EventBus("Trader");
+        eventBus = new EventBus("TraderService");
         orderIdGenerator = KunziteOrderIdGenerator.newInstance();
     }
 

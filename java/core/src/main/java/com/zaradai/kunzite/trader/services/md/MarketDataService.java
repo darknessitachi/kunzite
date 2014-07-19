@@ -13,10 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.orders;
+package com.zaradai.kunzite.trader.services.md;
 
-import com.zaradai.kunzite.trader.events.OrderSendEvent;
+import com.google.common.util.concurrent.AbstractExecutionThreadService;
+import com.google.inject.Inject;
 
-public interface OrderManagerBridge {
-    void onOrderSend(OrderSendEvent event);
+public class MarketDataService extends AbstractExecutionThreadService {
+    @Inject
+    MarketDataService() {
+
+    }
+
+    @Override
+    protected void run() throws Exception {
+        while (isRunning()) {
+            // process market data events
+        }
+    }
 }
