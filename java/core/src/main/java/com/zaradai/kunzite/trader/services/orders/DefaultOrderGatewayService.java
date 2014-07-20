@@ -24,7 +24,7 @@ import com.zaradai.kunzite.logging.LogHelper;
 import com.zaradai.kunzite.trader.events.OrderSendEvent;
 import com.zaradai.kunzite.trader.events.OrderStatus;
 import com.zaradai.kunzite.trader.events.OrderStatusEvent;
-import com.zaradai.kunzite.trader.orders.model.Order;
+import com.zaradai.kunzite.trader.orders.model.NewOrder;
 import com.zaradai.kunzite.trader.services.AbstractQueueBridge;
 import com.zaradai.kunzite.trader.services.trader.TraderService;
 import org.joda.time.DateTime;
@@ -32,7 +32,7 @@ import org.joda.time.DateTime;
 import java.util.Map;
 
 public class DefaultOrderGatewayService extends AbstractQueueBridge implements OrderGatewayService {
-    static final String SERVICE_NAME = "DefaultOrderGatewayService";
+    static final String SERVICE_NAME = "OrderGatewayService";
 
     private final EventAggregator eventAggregator;
     private final TraderService traderService;
@@ -77,7 +77,7 @@ public class DefaultOrderGatewayService extends AbstractQueueBridge implements O
      */
     private void processSendOrder(OrderSendEvent event) {
         // iterate the orders
-        for (Order order : event.getOrders()) {
+        for (NewOrder order : event.getOrders()) {
             // lookup the order gateway for the intended market
             OrderGateway gateway = getGateway(order.getRefData().getMarketId());
 
@@ -89,7 +89,7 @@ public class DefaultOrderGatewayService extends AbstractQueueBridge implements O
         }
     }
 
-    private void processInvalidGateway(Order order) {
+    private void processInvalidGateway(NewOrder order) {
         OrderStatusEvent statusEvent = new OrderStatusEvent();
         statusEvent.setOrderStatus(OrderStatus.NoExchange);
         statusEvent.setTimestamp(DateTime.now());

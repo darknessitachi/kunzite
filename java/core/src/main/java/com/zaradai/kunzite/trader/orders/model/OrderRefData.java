@@ -15,9 +15,12 @@
  */
 package com.zaradai.kunzite.trader.orders.model;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class OrderRefData {
     private String orderId;
@@ -30,7 +33,7 @@ public class OrderRefData {
     private String exchangeId;
     private final Map<String, String> fields;
 
-    public OrderRefData() {
+    private OrderRefData() {
         fields = createFieldList();
     }
 
@@ -108,5 +111,53 @@ public class OrderRefData {
 
     public void setExchangeId(String exchangeId) {
         this.exchangeId = exchangeId;
+    }
+
+    public static OrderRefDataBuilder builder() {
+        return new OrderRefDataBuilder();
+    }
+
+    public static class OrderRefDataBuilder {
+        final OrderRefData refData = new OrderRefData();
+
+        public OrderRefDataBuilder id(String id) {
+            checkArgument(!Strings.isNullOrEmpty(id), "Invalid Order id");
+            refData.setOrderId(id);
+            return this;
+        }
+
+        public OrderRefDataBuilder instrument(String instrumentId) {
+            checkArgument(!Strings.isNullOrEmpty(instrumentId), "Invalid Instrument id");
+            refData.setInstrumentId(instrumentId);
+            return this;
+        }
+
+        public OrderRefDataBuilder portfolio(String portfolioId) {
+            checkArgument(!Strings.isNullOrEmpty(portfolioId), "Invalid Portfolio id");
+            refData.setPortfolioId(portfolioId);
+            return this;
+        }
+
+        public OrderRefDataBuilder client(String id) {
+            checkArgument(!Strings.isNullOrEmpty(id), "Invalid Client id");
+            refData.setClientOrderId(id);
+            return this;
+        }
+
+        public OrderRefDataBuilder broker(String id) {
+            checkArgument(!Strings.isNullOrEmpty(id), "Invalid Broker id");
+            refData.setBrokerId(id);
+            return this;
+        }
+
+        public OrderRefDataBuilder market(String id) {
+            checkArgument(!Strings.isNullOrEmpty(id), "Invalid Market id");
+            refData.setMarketId(id);
+            return this;
+        }
+
+        public OrderRefData build() {
+            return refData;
+        }
     }
 }

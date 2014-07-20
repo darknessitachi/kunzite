@@ -15,7 +15,8 @@
  */
 package com.zaradai.kunzite.trader.events;
 
-import com.zaradai.kunzite.trader.orders.model.Order;
+import com.zaradai.kunzite.trader.orders.model.NewOrder;
+import org.hamcrest.collection.IsIterableWithSize;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -25,12 +26,12 @@ import static org.mockito.Mockito.mock;
 public class OrderSendEventTest {
     @Test
     public void shouldAdd() throws Exception {
-        Order order = mock(Order.class);
+        NewOrder order = mock(NewOrder.class);
         OrderSendEvent uut = OrderSendEvent.newInstance();
 
         uut.add(order);
 
         assertThat(uut.hasOrders(), is(true));
-        assertThat(uut.getOrders().size(), is(1));
+        assertThat(uut.getOrders(), IsIterableWithSize.<NewOrder>iterableWithSize(1));
     }
 }

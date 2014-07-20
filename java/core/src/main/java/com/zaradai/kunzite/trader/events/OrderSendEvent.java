@@ -16,12 +16,12 @@
 package com.zaradai.kunzite.trader.events;
 
 import com.google.common.collect.Lists;
-import com.zaradai.kunzite.trader.orders.model.Order;
+import com.zaradai.kunzite.trader.orders.model.NewOrder;
 
 import java.util.List;
 
 public class OrderSendEvent {
-    private final List<Order> orders;
+    private final List<NewOrder> orders;
 
     private OrderSendEvent() {
         orders = Lists.newArrayList();
@@ -35,11 +35,11 @@ public class OrderSendEvent {
         return orders.size() > 0;
     }
 
-    public void add(Order order) {
+    public void add(NewOrder order) {
         orders.add(order);
     }
 
-    public List<Order> getOrders() {
+    public Iterable<NewOrder> getOrders() {
         return orders;
     }
 }

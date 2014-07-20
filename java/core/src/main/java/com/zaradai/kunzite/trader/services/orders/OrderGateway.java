@@ -15,8 +15,8 @@
  */
 package com.zaradai.kunzite.trader.services.orders;
 
-import com.zaradai.kunzite.trader.orders.model.Order;
+import com.zaradai.kunzite.trader.orders.model.NewOrder;
 
 public interface OrderGateway {
-    void processOrder(Order order);
+    void processOrder(NewOrder order);
 }

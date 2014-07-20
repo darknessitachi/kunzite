@@ -28,10 +28,7 @@ import com.zaradai.kunzite.trader.filters.FilterManager;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.orders.book.OrderBook;
 import com.zaradai.kunzite.trader.orders.book.OrderBookFactory;
-import com.zaradai.kunzite.trader.orders.model.Order;
-import com.zaradai.kunzite.trader.orders.model.OrderRejectReason;
-import com.zaradai.kunzite.trader.orders.model.OrderRequest;
-import com.zaradai.kunzite.trader.orders.model.OrderRequestType;
+import com.zaradai.kunzite.trader.orders.model.*;
 import com.zaradai.kunzite.trader.orders.utils.OrderIdGenerator;
 
 import java.util.List;
@@ -136,7 +133,7 @@ public class DefaultOrderManager implements OrderManager {
             }
         }
         // create the order based on a valid request
-        Order order = createOrder(request);
+        NewOrder order = createOrder(request);
 
         if (order != null) {
             // add to the send event if a valid order was created
@@ -144,12 +141,12 @@ public class DefaultOrderManager implements OrderManager {
         }
     }
 
-    private Order createOrder(OrderRequest request) {
+    private NewOrder createOrder(OrderRequest request) {
         Order order;
         boolean newOrder = request.getOrderRequestType() == OrderRequestType.Create;
 
         if (newOrder) {
-            order = Order.builder()
+            OrderRefData refData = OrderRefData.builder()
                     // set a new unique id
                     .id(idGenerator.generate())
                     .instrument(request.getInstrumentId())
@@ -158,6 +155,7 @@ public class DefaultOrderManager implements OrderManager {
                     .client(request.getClientOrderId())
                     .broker(request.getBrokerId())
                     .build();
+            order = new Order(refData);
         } else {
             // get from the book
             order = orderBook.get(request.getDependentOrderId());
@@ -168,9 +166,8 @@ public class DefaultOrderManager implements OrderManager {
             }
         }
         // ask the state manager to update the order based on the request
-        orderStateManager.newRequest(order, request);
-
-        return order;
+        // and return a new order to send to the market
+        return orderStateManager.newRequest(order, request);
     }
 
     private void failedToGetDependentOrder(OrderRequest request) {

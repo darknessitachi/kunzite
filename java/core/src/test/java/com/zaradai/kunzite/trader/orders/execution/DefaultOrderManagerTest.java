@@ -26,10 +26,7 @@ import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
 import com.zaradai.kunzite.trader.orders.book.OrderBook;
 import com.zaradai.kunzite.trader.orders.book.OrderBookFactory;
-import com.zaradai.kunzite.trader.orders.model.Order;
-import com.zaradai.kunzite.trader.orders.model.OrderRejectReason;
-import com.zaradai.kunzite.trader.orders.model.OrderRequest;
-import com.zaradai.kunzite.trader.orders.model.OrderRequestType;
+import com.zaradai.kunzite.trader.orders.model.*;
 import com.zaradai.kunzite.trader.orders.utils.OrderIdGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,10 +34,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class DefaultOrderManagerTest {
@@ -102,6 +98,7 @@ public class DefaultOrderManagerTest {
         request.setClientOrderId(CLIENT_ID);
         request.setBrokerId(BROKER_ID);
         when(orderFilter.check(request)).thenReturn(true);
+        when(orderStateManager.newRequest(any(Order.class), any(OrderRequest.class))).thenReturn(mock(NewOrder.class));
 
         uut.add(request);
         uut.process();
@@ -123,7 +120,6 @@ public class DefaultOrderManagerTest {
         OrderSendEvent orderSendEvent = orderSendEventArgumentCaptor.getValue();
 
         assertThat(orderSendEvent.hasOrders(), is(true));
-        assertThat(orderSendEvent.getOrders().get(0), is(order));
     }
 
     @Test
@@ -134,6 +130,7 @@ public class DefaultOrderManagerTest {
         when(orderFilter.check(request)).thenReturn(true);
         Order amendedOrder = mock(Order.class);
         when(orderBook.get(DEP_ID)).thenReturn(amendedOrder);
+        when(orderStateManager.newRequest(amendedOrder, request)).thenReturn(mock(NewOrder.class));
 
         uut.add(request);
         uut.process();
@@ -147,7 +144,6 @@ public class DefaultOrderManagerTest {
         OrderSendEvent orderSendEvent = orderSendEventArgumentCaptor.getValue();
 
         assertThat(orderSendEvent.hasOrders(), is(true));
-        assertThat(orderSendEvent.getOrders().get(0), is(amendedOrder));
     }
 
     @Test
@@ -182,6 +178,7 @@ public class DefaultOrderManagerTest {
         when(orderFilter.check(request)).thenReturn(true);
         Order amendedOrder = mock(Order.class);
         when(orderBook.get(DEP_ID)).thenReturn(amendedOrder);
+        when(orderStateManager.newRequest(amendedOrder, request)).thenReturn(mock(NewOrder.class));
 
         uut.add(request);
         uut.process();

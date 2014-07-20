@@ -85,7 +85,7 @@ public class DefaultOrderStateManagerTest {
         OrderSide side = OrderSide.Buy;
         OrderType type = OrderType.Limit;
         OrderTimeInForce tif = OrderTimeInForce.AtTheOpen;
-        Order order = Order.newInstance(new OrderRefData());
+        Order order = new Order(OrderRefData.builder().build());
         OrderRequest request = new OrderRequest();
         request.setPrice(prc);
         request.setQuantity(qty);
@@ -122,7 +122,7 @@ public class DefaultOrderStateManagerTest {
         OrderSide side = OrderSide.Buy;
         OrderType type = OrderType.Limit;
         OrderTimeInForce tif = OrderTimeInForce.AtTheOpen;
-        Order order = Order.newInstance(new OrderRefData());
+        Order order = new Order(OrderRefData.builder().build());
         OrderRequest request = new OrderRequest();
         request.setPrice(prc);
         request.setQuantity(qty);

@@ -16,10 +16,11 @@
 package com.zaradai.kunzite.trader.orders.execution;
 
 import com.zaradai.kunzite.trader.events.OrderStatusEvent;
+import com.zaradai.kunzite.trader.orders.model.NewOrder;
 import com.zaradai.kunzite.trader.orders.model.Order;
 import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 
 public interface OrderStateManager {
-    void newRequest(Order order, OrderRequest request);
+    NewOrder newRequest(Order order, OrderRequest request);
     void onOrderStatus(Order order, OrderStatusEvent event);
 }

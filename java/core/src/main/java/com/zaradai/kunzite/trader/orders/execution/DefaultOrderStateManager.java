@@ -37,7 +37,7 @@ public class DefaultOrderStateManager implements OrderStateManager {
     }
 
     @Override
-    public void newRequest(Order order, OrderRequest request) {
+    public NewOrder newRequest(Order order, OrderRequest request) {
         OrderEntry entry = createEntry(request);
         // update the state
         OrderState state = order.getState();
@@ -59,6 +59,19 @@ public class DefaultOrderStateManager implements OrderStateManager {
         if (request.getOrderRequestType() == OrderRequestType.Create) {
             orderManager.getBook().add(order);
         }
+        // create the new order request
+        return createNewOrder(order, entry);
+    }
+
+    private NewOrder createNewOrder(Order order, OrderEntry entry) {
+        NewOrder newOrder = new NewOrder();
+        newOrder.setRefData(order.getRefData());
+        newOrder.setPrice(entry.getPrice());
+        newOrder.setQuantity(entry.getQuantity());
+        newOrder.setSide(entry.getSide());
+        newOrder.setTimeInForce(entry.getTimeInForce());
+        newOrder.setType(entry.getType());
+        return newOrder;
     }
 
     private OrderEntry createEntry(OrderRequest request) {
