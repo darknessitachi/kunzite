@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.algo;
+package com.zaradai.kunzite.trader.services.orders;
 
 import com.google.common.base.Strings;
 import com.google.inject.ConfigurationException;
@@ -23,26 +23,26 @@ import com.google.inject.ProvisionException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public class InjectedAlgoFactory implements AlgoFactory {
+public class InjectedGatewayFactory implements OrderGatewayFactory {
     private final Injector injector;
 
     @Inject
-    InjectedAlgoFactory(Injector injector) {
+    InjectedGatewayFactory(Injector injector) {
         this.injector = injector;
     }
 
     @Override
-    public Algo create(String name) throws AlgoException {
-        checkArgument(!Strings.isNullOrEmpty(name), "A valid algo name needs to be supplied");
+    public OrderGateway create(String name) throws GatewayException {
+        checkArgument(!Strings.isNullOrEmpty(name), "A valid gateway class name needs to be supplied");
 
         try {
-            return  (Algo) injector.getInstance(Class.forName(name));
+            return  (OrderGateway) injector.getInstance(Class.forName(name));
         } catch (ConfigurationException e) {
-            throw new AlgoException("Creating Algo", e);
+            throw new GatewayException("Config issue", e);
         } catch (ProvisionException e) {
-            throw new AlgoException("Creating Algo", e);
+            throw new GatewayException("Guice provision error", e);
         } catch (ClassNotFoundException e) {
-            throw new AlgoException("Creating Algo", e);
+            throw new GatewayException("Gateway class not found", e);
         }
     }
 }

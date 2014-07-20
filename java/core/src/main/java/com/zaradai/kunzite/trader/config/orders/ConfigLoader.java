@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.orders;
+package com.zaradai.kunzite.trader.config.orders;
 
-import com.google.common.util.concurrent.Service;
-import com.zaradai.kunzite.trader.config.orders.OrderGatewayConfiguration;
-import com.zaradai.kunzite.trader.events.OrderSendEvent;
-import com.zaradai.kunzite.trader.events.OrderStatusEvent;
+import com.zaradai.kunzite.trader.config.ConfigException;
 
-public interface OrderGatewayService extends Service {
-    void load(OrderGatewayConfiguration configuration);
-    void onOrderSend(OrderSendEvent event);
-    void onOrderStatus(OrderStatusEvent event);
+public interface ConfigLoader {
+    OrderGatewayConfiguration load(String sourceUri) throws ConfigException;
 }

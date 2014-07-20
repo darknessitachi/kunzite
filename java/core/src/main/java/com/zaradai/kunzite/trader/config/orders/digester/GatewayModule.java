@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.orders;
+package com.zaradai.kunzite.trader.config.orders.digester;
 
-import com.google.common.util.concurrent.Service;
+import com.zaradai.kunzite.trader.config.orders.GatewayConfig;
 import com.zaradai.kunzite.trader.config.orders.OrderGatewayConfiguration;
-import com.zaradai.kunzite.trader.events.OrderSendEvent;
-import com.zaradai.kunzite.trader.events.OrderStatusEvent;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
 
-public interface OrderGatewayService extends Service {
-    void load(OrderGatewayConfiguration configuration);
-    void onOrderSend(OrderSendEvent event);
-    void onOrderStatus(OrderStatusEvent event);
+public class GatewayModule extends AbstractRulesModule {
+    @Override
+    protected void configure() {
+        forPattern("gateways").createObject().ofType(OrderGatewayConfiguration.class);
+        // Gateway
+        forPattern("gateways/gateway").createObject().ofType(GatewayConfig.class)
+                .then().setProperties()
+                .then().setNext("add");
+    }
 }

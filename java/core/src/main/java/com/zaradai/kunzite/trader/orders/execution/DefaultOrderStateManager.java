@@ -71,6 +71,7 @@ public class DefaultOrderStateManager implements OrderStateManager {
         newOrder.setSide(entry.getSide());
         newOrder.setTimeInForce(entry.getTimeInForce());
         newOrder.setType(entry.getType());
+        newOrder.setRequestType(entry.getRequestType());
         return newOrder;
     }
 

@@ -22,6 +22,7 @@ public class NewOrder {
     private OrderSide side;
     private OrderType type;
     private OrderTimeInForce timeInForce;
+    private OrderRequestType requestType;
 
     public OrderRefData getRefData() {
         return refData;
@@ -69,5 +70,13 @@ public class NewOrder {
 
     public void setTimeInForce(OrderTimeInForce timeInForce) {
         this.timeInForce = timeInForce;
+    }
+
+    public void setRequestType(OrderRequestType requestType) {
+        this.requestType = requestType;
+    }
+
+    public OrderRequestType getRequestType() {
+        return requestType;
     }
 }

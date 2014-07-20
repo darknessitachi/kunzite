@@ -15,8 +15,10 @@
  */
 package com.zaradai.kunzite.trader.services.orders;
 
+import com.google.common.util.concurrent.Service;
 import com.zaradai.kunzite.trader.orders.model.NewOrder;
 
-public interface OrderGateway {
+public interface OrderGateway extends Service {
     void processOrder(NewOrder order);
+    String getName();
 }

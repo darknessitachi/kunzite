@@ -15,13 +15,12 @@
  */
 package com.zaradai.kunzite.trader.services.orders;
 
-import com.google.common.util.concurrent.Service;
-import com.zaradai.kunzite.trader.config.orders.OrderGatewayConfiguration;
-import com.zaradai.kunzite.trader.events.OrderSendEvent;
-import com.zaradai.kunzite.trader.events.OrderStatusEvent;
+public class GatewayException extends Exception {
+    public GatewayException(String message) {
+        super(message);
+    }
 
-public interface OrderGatewayService extends Service {
-    void load(OrderGatewayConfiguration configuration);
-    void onOrderSend(OrderSendEvent event);
-    void onOrderStatus(OrderStatusEvent event);
+    public GatewayException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

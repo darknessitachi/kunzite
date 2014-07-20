@@ -13,15 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.orders;
+package com.zaradai.kunzite.trader.config.orders;
 
-import com.google.common.util.concurrent.Service;
-import com.zaradai.kunzite.trader.config.orders.OrderGatewayConfiguration;
-import com.zaradai.kunzite.trader.events.OrderSendEvent;
-import com.zaradai.kunzite.trader.events.OrderStatusEvent;
+public class GatewayConfig {
+    private String marketId;
+    private String gatewayClass;
 
-public interface OrderGatewayService extends Service {
-    void load(OrderGatewayConfiguration configuration);
-    void onOrderSend(OrderSendEvent event);
-    void onOrderStatus(OrderStatusEvent event);
+    public String getMarketId() {
+        return marketId;
+    }
+
+    public void setMarketId(String marketId) {
+        this.marketId = marketId;
+    }
+
+    public String getGatewayClass() {
+        return gatewayClass;
+    }
+
+    public void setGatewayClass(String gatewayClass) {
+        this.gatewayClass = gatewayClass;
+    }
 }
