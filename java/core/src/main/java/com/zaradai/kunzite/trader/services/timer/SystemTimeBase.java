@@ -15,9 +15,19 @@
  */
 package com.zaradai.kunzite.trader.services.timer;
 
-import com.google.common.util.concurrent.Service;
+import com.google.common.util.concurrent.Uninterruptibles;
+import org.joda.time.DateTime;
 
-public interface TimerService extends Service {
-    void submit(TimerRequest request);
-    void cancel(TimerCancelRequest request);
+import java.util.concurrent.TimeUnit;
+
+public class SystemTimeBase implements TimeBase {
+    @Override
+    public void sleep(long duration, TimeUnit unit) {
+        Uninterruptibles.sleepUninterruptibly(duration, unit);
+    }
+
+    @Override
+    public long now() {
+        return DateTime.now().getMillis();
+    }
 }

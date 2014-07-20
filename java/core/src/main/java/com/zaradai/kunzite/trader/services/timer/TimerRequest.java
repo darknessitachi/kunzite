@@ -76,7 +76,7 @@ public class TimerRequest {
     // Add an oldest first comparator
     public static final Comparator<TimerRequest> OLDEST_FIRST = new Comparator<TimerRequest>() {
         public int compare(TimerRequest o1, TimerRequest o2) {
-            return Long.compare(o2.timeout, o1.timeout);
+            return Long.compare(o1.timeout, o2.timeout);
         }
     };
 }

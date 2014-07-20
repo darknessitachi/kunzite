@@ -15,9 +15,9 @@
  */
 package com.zaradai.kunzite.trader.services.timer;
 
-import com.google.common.util.concurrent.Service;
+import java.util.concurrent.TimeUnit;
 
-public interface TimerService extends Service {
-    void submit(TimerRequest request);
-    void cancel(TimerCancelRequest request);
+public interface TimeBase {
+    void sleep(long duration, TimeUnit unit);
+    long now();
 }

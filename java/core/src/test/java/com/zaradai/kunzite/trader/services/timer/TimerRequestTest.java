@@ -73,8 +73,8 @@ public class TimerRequestTest {
         TimerRequest oldest = TimerRequest.newInstance(TEST_ID, 1000, TEST_DURATION, TEST_UNIT, TEST_REPEAT);
         TimerRequest newest = TimerRequest.newInstance(TEST_ID, 2000, TEST_DURATION, TEST_UNIT, TEST_REPEAT);
 
-        assertThat(TimerRequest.OLDEST_FIRST.compare(oldest, newest), greaterThan(0));
-        assertThat(TimerRequest.OLDEST_FIRST.compare(newest, oldest), lessThan(0));
+        assertThat(TimerRequest.OLDEST_FIRST.compare(oldest, newest), lessThan(0));
+        assertThat(TimerRequest.OLDEST_FIRST.compare(newest, oldest), greaterThan(0));
         assertThat(TimerRequest.OLDEST_FIRST.compare(oldest, oldest), is(0));
     }
 }
