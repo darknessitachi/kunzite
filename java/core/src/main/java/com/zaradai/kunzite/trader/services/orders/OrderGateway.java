@@ -13,21 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.events;
+package com.zaradai.kunzite.trader.services.orders;
 
-public enum OrderStatus {
-    New,
-    PartiallyFilled,
-    Filled,
-    DoneForDay,
-    Cancelled,
-    Replaced,
-    PendingCancelReplace,
-    Stopped,
-    Rejected,
-    Suspended,
-    PendingNew,
-    Calculated,
-    Expired,
-    NoExchange
+import com.zaradai.kunzite.trader.orders.model.Order;
+
+public interface OrderGateway {
+    void processOrder(Order order);
 }

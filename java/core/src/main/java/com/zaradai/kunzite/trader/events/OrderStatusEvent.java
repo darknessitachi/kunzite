@@ -20,6 +20,8 @@ import org.joda.time.DateTime;
 public class OrderStatusEvent {
     private OrderStatus orderStatus;
     private String exchangeId;
+    private String orderId;
+    private String algoId;
     private long execQty;
     private double lastPx;
     private DateTime timestamp;
@@ -62,5 +64,21 @@ public class OrderStatusEvent {
 
     public void setTimestamp(DateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getAlgoId() {
+        return algoId;
+    }
+
+    public void setAlgoId(String algoId) {
+        this.algoId = algoId;
     }
 }

@@ -15,39 +15,11 @@
  */
 package com.zaradai.kunzite.trader.services.orders;
 
-import com.google.common.eventbus.Subscribe;
-import com.google.inject.Inject;
-import com.zaradai.kunzite.events.EventAggregator;
-import com.zaradai.kunzite.logging.ContextLogger;
+import com.google.common.util.concurrent.Service;
 import com.zaradai.kunzite.trader.events.OrderSendEvent;
-import com.zaradai.kunzite.trader.services.AbstractQueueBridge;
+import com.zaradai.kunzite.trader.events.OrderStatusEvent;
 
-public class OrderGatewayService extends AbstractQueueBridge {
-    static final String SERVICE_NAME = "OrderGatewayService";
-
-    private final EventAggregator eventAggregator;
-
-    @Inject
-    OrderGatewayService(ContextLogger contextLogger, EventAggregator eventAggregator) {
-        super(contextLogger);
-        this.eventAggregator = eventAggregator;
-
-        eventAggregator.subscribe(this);
-    }
-
-    @Override
-    public void handleEvent(Object event) {
-        // decode which market and send to the gateway
-    }
-
-    @Override
-    public String getName() {
-        return SERVICE_NAME;
-    }
-
-    @Subscribe
-    void onOrderSend(OrderSendEvent event) {
-        // add to the queue to be processed and return immediately
-        onEvent(event);
-    }
+public interface OrderGatewayService extends Service {
+    void onOrderSend(OrderSendEvent event);
+    void onOrderStatus(OrderStatusEvent event);
 }

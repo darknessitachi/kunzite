@@ -26,6 +26,8 @@ public class OrderRefData {
     private String portfolioId;
     private String marketId;
     private String brokerId;
+    private String algoId;
+    private String exchangeId;
     private final Map<String, String> fields;
 
     public OrderRefData() {
@@ -90,5 +92,21 @@ public class OrderRefData {
 
     String getField(String key) {
         return fields.get(key);
+    }
+
+    public String getAlgoId() {
+        return algoId;
+    }
+
+    public void setAlgoId(String algoId) {
+        this.algoId = algoId;
+    }
+
+    public String getExchangeId() {
+        return exchangeId;
+    }
+
+    public void setExchangeId(String exchangeId) {
+        this.exchangeId = exchangeId;
     }
 }

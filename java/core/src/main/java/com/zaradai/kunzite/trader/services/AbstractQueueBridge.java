@@ -23,6 +23,8 @@ import com.zaradai.kunzite.logging.LogHelper;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public abstract class AbstractQueueBridge extends AbstractExecutionThreadService implements Bridge {
     private static final long TIMEOUT = 1000;   // 1 Second
 
@@ -43,7 +45,7 @@ public abstract class AbstractQueueBridge extends AbstractExecutionThreadService
         while (isRunning()) {
             // get the next event from the queue
             Object event = events.poll(TIMEOUT, TimeUnit.MILLISECONDS);
-
+            // null will be returned if timed out
             if (event != null) {
                 // process the event within the service thread
                 handleEvent(event);
@@ -53,6 +55,7 @@ public abstract class AbstractQueueBridge extends AbstractExecutionThreadService
 
     @Override
     public void onEvent(Object event) {
+        checkNotNull(event, "Invalid event to be added to queue");
         // add to the queue
         try {
             events.put(event);
