@@ -36,13 +36,16 @@ public class DefaultTimerEngine implements TimerEngine {
     private final ContextLogger logger;
     private final EventAggregator eventAggregator;
     private final TimerService timerService;
+    private final TimeBase timeBase;
     private final Map<UUID, TimerListener> subscriptions;
 
     @Inject
-    DefaultTimerEngine(ContextLogger logger, EventAggregator eventAggregator, TimerService timerService) {
+    DefaultTimerEngine(ContextLogger logger, EventAggregator eventAggregator, TimerService timerService,
+                       TimeBase timeBase) {
         this.logger = logger;
         this.eventAggregator = eventAggregator;
         this.timerService = timerService;
+        this.timeBase = timeBase;
 
         eventAggregator.subscribe(this);
         subscriptions = createSubscriptionMap();
@@ -60,13 +63,18 @@ public class DefaultTimerEngine implements TimerEngine {
         // create a subscription
         UUID id = createSubscription(listener);
         // timeout = now + duration
-        long nextTimeout = DateTime.now().getMillis() + unit.toMillis(duration);
+        long nextTimeout = timeBase.now() + unit.toMillis(duration);
         // create the request
         TimerRequest request = TimerRequest.newInstance(id, nextTimeout, duration, unit, repeat);
         // add the request to the timer service
         timerService.submit(request);
         // all setup return the id so that the subscriber can unsubscribe
         return id;
+    }
+
+    @Override
+    public UUID subscribe(DateTime target, TimerListener listener) {
+        return subscribe(target.getMillis() - timeBase.now(), TimeUnit.MILLISECONDS, false, listener);
     }
 
     private UUID createSubscription(TimerListener listener) {

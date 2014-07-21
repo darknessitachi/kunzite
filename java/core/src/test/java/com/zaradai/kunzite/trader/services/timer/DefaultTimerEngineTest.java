@@ -20,6 +20,7 @@ import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.trader.events.TimerEvent;
 import com.zaradai.kunzite.trader.events.TimerListener;
 import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -56,6 +57,7 @@ public class DefaultTimerEngineTest {
     ArgumentCaptor<TimerRequest> requestArgumentCaptor;
     @Captor
     ArgumentCaptor<TimerCancelRequest> requestCancelArgumentCaptor;
+    private TimeBase timeBase;
 
 
     @Before
@@ -65,7 +67,8 @@ public class DefaultTimerEngineTest {
         logger = ContextLoggerMocker.create();
         eventAggregator = mock(EventAggregator.class);
         timerService = mock(TimerService.class);
-        uut = new DefaultTimerEngine(logger, eventAggregator, timerService) {
+        timeBase = mock(TimeBase.class);
+        uut = new DefaultTimerEngine(logger, eventAggregator, timerService, timeBase) {
             @Override
             protected Map<UUID, TimerListener> createSubscriptionMap() {
                 return mockMap;
@@ -100,10 +103,27 @@ public class DefaultTimerEngineTest {
         assertThat(res, not(nullValue()));
         verify(mockMap).put(res, TEST_LISTENER);
         verify(timerService).submit(requestArgumentCaptor.capture());
-
         assertThat(requestArgumentCaptor.getValue().isRepeat(), is(TEST_REPEAT));
         assertThat(requestArgumentCaptor.getValue().getUnit(), is(TEST_UNIT));
         assertThat(requestArgumentCaptor.getValue().getDuration(), is(TEST_DURATION));
+        assertThat(requestArgumentCaptor.getValue().getId(), is(res));
+    }
+
+    @Test
+    public void shouldSubscribeToAFixedTime() throws Exception {
+        long targetDuration = 1000;
+        DateTime now = DateTime.now();
+        DateTime target = now.plusMillis((int)targetDuration);
+        when(timeBase.now()).thenReturn(now.getMillis());
+
+        UUID res = uut.subscribe(target, TEST_LISTENER);
+
+        assertThat(res, not(nullValue()));
+        verify(mockMap).put(res, TEST_LISTENER);
+        verify(timerService).submit(requestArgumentCaptor.capture());
+        assertThat(requestArgumentCaptor.getValue().isRepeat(), is(false));
+        assertThat(requestArgumentCaptor.getValue().getUnit(), is(TimeUnit.MILLISECONDS));
+        assertThat(requestArgumentCaptor.getValue().getDuration(), is(targetDuration));
         assertThat(requestArgumentCaptor.getValue().getId(), is(res));
     }
 

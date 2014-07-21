@@ -90,7 +90,7 @@ public class DefaultOrderGatewayService extends AbstractQueueBridge implements O
         if (event instanceof OrderSendEvent) {
             processSendOrder((OrderSendEvent) event);
         } else if (event instanceof OrderStatusEvent) {
-            processOrderEvent((OrderStatusEvent) event);
+            processStatusEvent((OrderStatusEvent) event);
         }
     }
 
@@ -98,7 +98,7 @@ public class DefaultOrderGatewayService extends AbstractQueueBridge implements O
      * Order status received from gateway needs to be sent to the trader
      * @param event
      */
-    private void processOrderEvent(OrderStatusEvent event) {
+    private void processStatusEvent(OrderStatusEvent event) {
         traderService.onEvent(event);
     }
 

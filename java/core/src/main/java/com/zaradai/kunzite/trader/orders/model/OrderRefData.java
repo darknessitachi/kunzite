@@ -156,6 +156,12 @@ public class OrderRefData {
             return this;
         }
 
+        public OrderRefDataBuilder algo(String id) {
+            checkArgument(!Strings.isNullOrEmpty(id), "Invalid Algo id");
+            refData.setAlgoId(id);
+            return this;
+        }
+
         public OrderRefData build() {
             return refData;
         }

@@ -16,11 +16,13 @@
 package com.zaradai.kunzite.trader.services.timer;
 
 import com.zaradai.kunzite.trader.events.TimerListener;
+import org.joda.time.DateTime;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public interface TimerEngine {
     UUID subscribe(long duration, TimeUnit unit, boolean repeat, TimerListener listener);
+    UUID subscribe(DateTime target, TimerListener listener);
     void unsubscribe(UUID timerId);
 }
