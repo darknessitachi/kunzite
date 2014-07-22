@@ -40,6 +40,10 @@ public abstract class AbstractQueueBridge extends AbstractExecutionThreadService
         return Queues.newLinkedBlockingQueue();
     }
 
+    protected ContextLogger getLogger() {
+        return logger;
+    }
+
     @Override
     protected void run() throws Exception {
         while (isRunning()) {

@@ -15,9 +15,8 @@
  */
 package com.zaradai.kunzite.trader.services.md;
 
-import com.google.common.util.concurrent.Service;
-import com.zaradai.kunzite.trader.events.MarketData;
+import com.zaradai.kunzite.trader.config.md.MarketDataConfiguration;
 
-public interface MarketDataService extends Service {
-    void onMarketData(MarketData marketData);
+public interface MarketDataServiceFactory {
+    MarketDataService create(MarketDataConfiguration configuration);
 }

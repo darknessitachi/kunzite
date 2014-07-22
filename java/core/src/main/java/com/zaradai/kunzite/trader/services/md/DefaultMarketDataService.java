@@ -1,0 +1,167 @@
+/**
+ * Copyright 2014 Zaradai
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.zaradai.kunzite.trader.services.md;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+import com.zaradai.kunzite.logging.ContextLogger;
+import com.zaradai.kunzite.logging.LogHelper;
+import com.zaradai.kunzite.trader.config.md.ChannelConfig;
+import com.zaradai.kunzite.trader.config.md.MarketDataConfiguration;
+import com.zaradai.kunzite.trader.config.md.Subscription;
+import com.zaradai.kunzite.trader.events.MarketData;
+import com.zaradai.kunzite.trader.services.AbstractQueueBridge;
+import com.zaradai.kunzite.trader.services.trader.TraderService;
+
+import java.util.Map;
+
+public class DefaultMarketDataService extends AbstractQueueBridge implements MarketDataService {
+    static final String SERVICE_NAME = "Market Data Service";
+
+    private final MarketDataConfiguration configuration;
+    private final MarketDataChannelFactory marketDataChannelFactory;
+    private final TraderService traderService;
+    private final Map<String, MarketDataChannel> channelByName;
+    private final Map<String, ChannelConfig> channelConfigByName;
+    private final MappingManager mappingManager;
+    @Inject
+    DefaultMarketDataService(ContextLogger logger,
+                             MarketDataChannelFactory marketDataChannelFactory, TraderService traderService,
+                             @Assisted MarketDataConfiguration configuration) {
+        super(logger);
+        this.configuration = configuration;
+        this.marketDataChannelFactory = marketDataChannelFactory;
+        this.traderService = traderService;
+        channelByName = createChannelMap();
+        channelConfigByName = createChannelConfigMap();
+        mappingManager = new MappingManager(configuration.getMappings());
+
+        loadChannelConfig();
+    }
+
+    private void loadChannelConfig() {
+        for (ChannelConfig channelConfig : configuration.getChannels()) {
+            channelConfigByName.put(channelConfig.getName(), channelConfig);
+        }
+    }
+
+    private Map<String, ChannelConfig> createChannelConfigMap() {
+        return Maps.newHashMap();
+    }
+
+    private Map<String, MarketDataChannel> createChannelMap() {
+        return Maps.newHashMap();
+    }
+
+    @Override
+    public void onMarketData(MarketData marketData) {
+        onEvent(marketData);
+    }
+
+    @Override
+    protected void startUp() throws Exception {
+        for (Subscription subscription : configuration.getSubscriptions()) {
+            subscribe(subscription);
+        }
+    }
+
+    private void subscribe(Subscription subscription) {
+        MarketDataChannel channel = getChannel(subscription.getChannel());
+
+        if (channel != null) {
+            // get the sid for given id and mapper
+            String sid = mappingManager.getSid(subscription.getMap(), subscription.getId());
+            // subscribe for market data
+            channel.subscribe(sid);
+        }
+    }
+
+    /**
+     * Get the channel identified by channelName, lazily load the channel if not cached.
+     * @param channelName
+     * @return
+     */
+    private MarketDataChannel getChannel(String channelName) {
+        MarketDataChannel res = channelByName.get(channelName);
+
+        if (res == null) {
+            res = loadChannel(channelName);
+        }
+
+        return res;
+    }
+
+    private MarketDataChannel loadChannel(String channelName) {
+        ChannelConfig channelConfig = channelConfigByName.get(channelName);
+
+        try {
+            // create the channel
+            MarketDataChannel res = marketDataChannelFactory.create(channelConfig.getClazz());
+            // start it up
+            res.startAsync().awaitRunning();
+            // add to the cache
+            channelByName.put(channelName, res);
+            // and return
+            return res;
+        } catch (Exception e) {
+            LogHelper.error(getLogger())
+                    .addContext("Market Data Service")
+                    .addReason("Unable to load channel")
+                    .add("Name", channelName)
+                    .add("Clazz", channelConfig.getClazz())
+                    .log();
+        }
+
+        return null;
+    }
+
+    @Override
+    protected void shutDown() throws Exception {
+        closeChannels();
+    }
+
+    private void closeChannels() {
+        for (MarketDataChannel channel : channelByName.values()) {
+            channel.stopAsync().awaitTerminated();
+        }
+    }
+
+    @Override
+    public void handleEvent(Object event) {
+        MarketData marketData = (MarketData) event;
+        // convert the incoming sid to internal instrument id
+        String id = mappingManager.getId(marketData.getInstrumentId());
+
+        if (!Strings.isNullOrEmpty(id)) {
+            MarketData toProcess = MarketData.newInstance(id, marketData.getTimestamp(), marketData.getFields());
+            // send to the trader
+            traderService.onEvent(toProcess);
+        }  else {
+            LogHelper.warn(getLogger())
+                    .addContext("Market Data")
+                    .addReason("Unable to convert symbol")
+                    .add("SID", marketData.getInstrumentId())
+                    .log();
+        }
+    }
+
+    @Override
+    public String getName() {
+        return SERVICE_NAME;
+    }
+}

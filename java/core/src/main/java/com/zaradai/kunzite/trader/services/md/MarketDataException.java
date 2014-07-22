@@ -15,9 +15,12 @@
  */
 package com.zaradai.kunzite.trader.services.md;
 
-import com.google.common.util.concurrent.Service;
-import com.zaradai.kunzite.trader.events.MarketData;
+public class MarketDataException extends Exception {
+    public MarketDataException(String message) {
+        super(message);
+    }
 
-public interface MarketDataService extends Service {
-    void onMarketData(MarketData marketData);
+    public MarketDataException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
