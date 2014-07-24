@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 import com.zaradai.kunzite.events.EventAggregator;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.logging.LogHelper;
+import com.zaradai.kunzite.trader.config.ConfigException;
 import com.zaradai.kunzite.trader.config.orders.GatewayConfig;
 import com.zaradai.kunzite.trader.config.orders.OrderGatewayConfiguration;
 import com.zaradai.kunzite.trader.events.OrderSendEvent;
@@ -99,7 +100,7 @@ public class DefaultOrderGatewayService extends AbstractQueueBridge implements O
      * @param event
      */
     private void processStatusEvent(OrderStatusEvent event) {
-        traderService.onEvent(event);
+        traderService.onTraderEvent(event);
     }
 
     /**
@@ -150,7 +151,7 @@ public class DefaultOrderGatewayService extends AbstractQueueBridge implements O
     }
 
     @Override
-    public void load(OrderGatewayConfiguration configuration) {
+    public void build(OrderGatewayConfiguration configuration) throws ConfigException {
         for (GatewayConfig gatewayConfig : configuration.getGateways()) {
             try {
                 OrderGateway gateway = orderGatewayFactory.create(gatewayConfig.getGatewayClass());
@@ -162,6 +163,7 @@ public class DefaultOrderGatewayService extends AbstractQueueBridge implements O
                         .add("Gateway", gatewayConfig.getGatewayClass())
                         .add("Market", gatewayConfig.getMarketId())
                         .log();
+                throw new ConfigException("Unable to build gateway", e);
             }
         }
     }

@@ -17,7 +17,7 @@ package com.zaradai.kunzite.trader.config.statics.digester;
 
 import com.zaradai.kunzite.trader.config.ConfigException;
 import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
-import com.zaradai.kunzite.trader.config.statics.StaticLoader;
+import com.zaradai.kunzite.trader.config.statics.StaticDataLoader;
 import com.zaradai.kunzite.trader.instruments.InstrumentType;
 import com.zaradai.kunzite.trader.instruments.OptionType;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class DigesterStaticLoader implements StaticLoader {
+public class DigesterStaticDataLoader implements StaticDataLoader {
     @Override
     public StaticConfiguration load(String sourceUri) throws ConfigException {
         StaticConfiguration res = new StaticConfiguration();

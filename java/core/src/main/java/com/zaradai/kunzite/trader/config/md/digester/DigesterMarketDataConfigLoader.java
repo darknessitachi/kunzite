@@ -16,7 +16,7 @@
 package com.zaradai.kunzite.trader.config.md.digester;
 
 import com.zaradai.kunzite.trader.config.ConfigException;
-import com.zaradai.kunzite.trader.config.md.ConfigLoader;
+import com.zaradai.kunzite.trader.config.md.MarketDataConfigLoader;
 import com.zaradai.kunzite.trader.config.md.MarketDataConfiguration;
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.binder.DigesterLoader;
@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class MarketDataLoader implements ConfigLoader {
+public class DigesterMarketDataConfigLoader implements MarketDataConfigLoader {
     @Override
     public MarketDataConfiguration load(String sourceUri) throws ConfigException {
         InputStream inputStream = getStream(sourceUri);

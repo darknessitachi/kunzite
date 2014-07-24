@@ -17,26 +17,38 @@ package com.zaradai.kunzite.trader.services.trader;
 
 import com.zaradai.kunzite.events.EventAggregator;
 import com.zaradai.kunzite.logging.ContextLogger;
+import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
+import com.zaradai.kunzite.trader.control.TradingManager;
 import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.concurrent.BlockingQueue;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class TraderServiceTest {
+public class DefaultTraderServiceTest {
     private static final Object TEST_EVENT = new Object();
     private ContextLogger logger;
     private EventAggregator eventAggregator;
-    private TraderService uut;
+    private DefaultTraderService uut;
+    private TradingManager tradingManager;
+    @Mock
+    private BlockingQueue<Object> mockQueue;
 
     @Before
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
         logger = ContextLoggerMocker.create();
         eventAggregator = mock(EventAggregator.class);
-        uut = new TraderService(logger, eventAggregator);
+        tradingManager = mock(TradingManager.class);
+        uut = new DefaultTraderService(logger, eventAggregator, tradingManager);
     }
 
     @Test
@@ -47,7 +59,37 @@ public class TraderServiceTest {
     }
 
     @Test
+    public void shouldHandleEventForTrader() throws Exception {
+        uut = new DefaultTraderService(logger, eventAggregator, tradingManager) {
+            @Override
+            protected BlockingQueue<Object> createQueue() {
+                return mockQueue;
+            }
+        };
+
+        uut.onTraderEvent(TEST_EVENT);
+
+        verify(mockQueue).put(TEST_EVENT);
+    }
+
+    @Test
     public void shouldGetServiceName() throws Exception {
-        assertThat(uut.getName(), is(TraderService.SERVICE_NAME));
+        assertThat(uut.getName(), is(DefaultTraderService.SERVICE_NAME));
+    }
+
+    @Test
+    public void shouldBuild() throws Exception {
+        StaticConfiguration config = mock(StaticConfiguration.class);
+
+        uut.build(config);
+
+        verify(tradingManager).build(config);
+    }
+
+    @Test
+    public void shouldInitializeOnStartUp() throws Exception {
+        uut.startUp();
+
+        verify(tradingManager).initialize();
     }
 }

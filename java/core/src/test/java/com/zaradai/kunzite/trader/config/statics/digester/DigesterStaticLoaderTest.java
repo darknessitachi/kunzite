@@ -29,7 +29,7 @@ public class DigesterStaticLoaderTest {
 
     @Test
     public void shouldLoad() throws Exception {
-        DigesterStaticLoader uut = new DigesterStaticLoader();
+        DigesterStaticDataLoader uut = new DigesterStaticDataLoader();
 
         StaticConfiguration res = uut.load(STATIC_TEST_CONFIG_XML);
 

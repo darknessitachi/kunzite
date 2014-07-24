@@ -16,12 +16,13 @@
 package com.zaradai.kunzite.trader.services.orders;
 
 import com.google.common.util.concurrent.Service;
+import com.zaradai.kunzite.trader.config.ConfigException;
 import com.zaradai.kunzite.trader.config.orders.OrderGatewayConfiguration;
 import com.zaradai.kunzite.trader.events.OrderSendEvent;
 import com.zaradai.kunzite.trader.events.OrderStatusEvent;
 
 public interface OrderGatewayService extends Service {
-    void load(OrderGatewayConfiguration configuration);
+    void build(OrderGatewayConfiguration configuration) throws ConfigException;
     void onOrderSend(OrderSendEvent event);
     void onOrderStatus(OrderStatusEvent event);
 }

@@ -16,4 +16,7 @@
 package com.zaradai.kunzite.trader.config;
 
 public interface TraderConfiguration {
+    String getStaticConfigUri();
+    String getMarketDataConfigUri();
+    String getOrderGatewayConfigUri();
 }

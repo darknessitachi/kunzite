@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.algo;
+package com.zaradai.kunzite.trader.config.orders;
 
-public enum AlgoState {
-    Off,
-    On,
-    Suspended,
-    Starting,
-    Stopping
+import com.zaradai.kunzite.trader.config.ConfigException;
+
+public interface OrderGatewayConfigLoader {
+    OrderGatewayConfiguration load(String sourceUri) throws ConfigException;
 }

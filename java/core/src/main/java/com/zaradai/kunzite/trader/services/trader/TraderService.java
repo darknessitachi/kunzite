@@ -15,32 +15,11 @@
  */
 package com.zaradai.kunzite.trader.services.trader;
 
-import com.google.inject.Inject;
-import com.zaradai.kunzite.events.EventAggregator;
-import com.zaradai.kunzite.logging.ContextLogger;
-import com.zaradai.kunzite.trader.services.AbstractQueueBridge;
+import com.google.common.util.concurrent.Service;
+import com.zaradai.kunzite.trader.config.ConfigException;
+import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
 
-/**
- * Simple message pump for the trader
- */
-public class TraderService extends AbstractQueueBridge {
-    static final String SERVICE_NAME = "TraderService";
-
-    private final EventAggregator eventAggregator;
-
-    @Inject
-    TraderService(ContextLogger contextLogger, EventAggregator eventAggregator) {
-        super(contextLogger);
-        this.eventAggregator = eventAggregator;
-    }
-
-    @Override
-    public void handleEvent(Object event) {
-        eventAggregator.publish(event);
-    }
-
-    @Override
-    public String getName() {
-        return SERVICE_NAME;
-    }
+public interface TraderService extends Service {
+    void build(StaticConfiguration configuration) throws ConfigException;
+    void onTraderEvent(Object event);
 }

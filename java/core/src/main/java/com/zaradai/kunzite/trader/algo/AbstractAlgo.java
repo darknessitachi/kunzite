@@ -19,10 +19,9 @@ import com.zaradai.kunzite.trader.control.TradingState;
 import com.zaradai.kunzite.trader.events.*;
 import com.zaradai.kunzite.trader.orders.model.OrderRequest;
 
-public abstract class AbstractAlgo implements Algo{
+public abstract class AbstractAlgo implements Algo {
     private String id;
     private TradingState tradingState;
-    private boolean running;
 
     @Override
     public String getId() {
@@ -42,21 +41,6 @@ public abstract class AbstractAlgo implements Algo{
     @Override
     public void setState(TradingState tradingState) {
         this.tradingState = tradingState;
-    }
-
-    @Override
-    public void start() throws AlgoException {
-        running = true;
-    }
-
-    @Override
-    public void stop() throws AlgoException {
-        running = false;
-    }
-
-    @Override
-    public boolean isRunning() {
-        return running;
     }
 
     @Override

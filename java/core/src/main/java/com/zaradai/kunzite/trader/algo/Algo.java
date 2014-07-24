@@ -28,8 +28,4 @@ public interface Algo extends MarketBookUpdateEventHandler, OrderRejectHandler, 
     void setState(TradingState tradingState);
 
     void initialize() throws AlgoException;
-    void start() throws AlgoException;
-    void stop() throws AlgoException;
-
-    boolean isRunning();
 }

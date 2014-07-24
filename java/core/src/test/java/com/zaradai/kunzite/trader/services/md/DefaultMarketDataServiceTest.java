@@ -21,7 +21,7 @@ import com.zaradai.kunzite.trader.config.md.*;
 import com.zaradai.kunzite.trader.events.MarketData;
 import com.zaradai.kunzite.trader.events.MarketDataField;
 import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
-import com.zaradai.kunzite.trader.services.trader.TraderService;
+import com.zaradai.kunzite.trader.services.trader.DefaultTraderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -46,7 +46,7 @@ public class DefaultMarketDataServiceTest {
     private MarketDataConfiguration configuration;
     private ContextLogger logger;
     private MarketDataChannelFactory marketDataChannelFactory;
-    private TraderService traderService;
+    private DefaultTraderService traderService;
     private DefaultMarketDataService uut;
     private MarketDataChannel channel;
     @Captor
@@ -60,12 +60,12 @@ public class DefaultMarketDataServiceTest {
 
         logger = ContextLoggerMocker.create();
         marketDataChannelFactory = mock(MarketDataChannelFactory.class);
-        traderService = mock(TraderService.class);
+        traderService = mock(DefaultTraderService.class);
         configuration = createConfiguration();
         channel = mock(MarketDataChannel.class);
         when(channel.startAsync()).thenReturn(channel);
         when(channel.stopAsync()).thenReturn(channel);
-        uut = new DefaultMarketDataService(logger, marketDataChannelFactory, traderService, configuration);
+        uut = new DefaultMarketDataService(logger, marketDataChannelFactory, traderService);
     }
 
     private MarketDataConfiguration createConfiguration() {
@@ -93,6 +93,7 @@ public class DefaultMarketDataServiceTest {
     @Test
     public void shouldLoadChannelAndSubscribeOnStartup() throws Exception {
         when(marketDataChannelFactory.create(CHANNEL_1_CLASS)).thenReturn(channel);
+        uut.build(configuration);
 
         uut.startUp();
 
@@ -104,7 +105,7 @@ public class DefaultMarketDataServiceTest {
     @Test
     public void shouldLogIfUnableToLoadChannel() throws Exception {
         doThrow(MarketDataException.class).when(marketDataChannelFactory).create(CHANNEL_1_CLASS);
-
+        uut.build(configuration);
         uut.startUp();
 
         verify(logger).error();
@@ -114,6 +115,7 @@ public class DefaultMarketDataServiceTest {
     @Test
     public void shouldCloseStartedChannelsOnShutdown() throws Exception {
         when(marketDataChannelFactory.create(CHANNEL_1_CLASS)).thenReturn(channel);
+        uut.build(configuration);
         uut.startUp();
 
         uut.shutDown();
@@ -132,6 +134,7 @@ public class DefaultMarketDataServiceTest {
         when(marketDataChannelFactory.create(CHANNEL_1_CLASS)).thenReturn(channel);
         List<MarketDataField> fields = Lists.newArrayList();
         MarketData marketData = MarketData.newInstance(TEST_SID, fields);
+        uut.build(configuration);
         uut.startUp();
 
         uut.handleEvent(marketData);
@@ -147,6 +150,7 @@ public class DefaultMarketDataServiceTest {
     public void shouldWarnOnHandlingUnknownSid() throws Exception {
         List<MarketDataField> fields = Lists.newArrayList();
         MarketData marketData = MarketData.newInstance("Unknown", fields);
+        uut.build(configuration);
 
         uut.handleEvent(marketData);
 
@@ -157,7 +161,7 @@ public class DefaultMarketDataServiceTest {
     public void shouldQueueMarketDataFromChannel() throws Exception {
         List<MarketDataField> fields = Lists.newArrayList();
         MarketData marketData = MarketData.newInstance(TEST_ID, fields);
-        uut = new DefaultMarketDataService(logger, marketDataChannelFactory, traderService, configuration) {
+        uut = new DefaultMarketDataService(logger, marketDataChannelFactory, traderService) {
             @Override
             protected BlockingQueue<Object> createQueue() {
                 return mockQueue;

@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.algo;
+package com.zaradai.kunzite.trader.config.statics;
 
-public interface AlgoStateController {
-    void control(Algo controlled);
-    void start();
-    void stop();
-    void suspend(String reason);
-    AlgoState getState();
+import com.zaradai.kunzite.trader.config.ConfigException;
+
+public interface StaticDataLoader {
+    StaticConfiguration load(String sourceUri) throws ConfigException;
 }

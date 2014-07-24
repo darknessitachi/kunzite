@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.config.statics;
+package com.zaradai.kunzite.trader.config.md;
 
 import com.zaradai.kunzite.trader.config.ConfigException;
 
-public interface StaticLoader {
-    StaticConfiguration load(String sourceUri) throws ConfigException;
+public interface MarketDataConfigLoader {
+    MarketDataConfiguration load(String sourceUri) throws ConfigException;
 }

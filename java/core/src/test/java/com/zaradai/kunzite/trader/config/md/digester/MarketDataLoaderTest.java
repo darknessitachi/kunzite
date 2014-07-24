@@ -29,7 +29,7 @@ public class MarketDataLoaderTest {
 
     @Test
     public void shouldLoad() throws Exception {
-        MarketDataLoader uut = new MarketDataLoader();
+        DigesterMarketDataConfigLoader uut = new DigesterMarketDataConfigLoader();
         MarketDataConfiguration res = uut.load(CONFIG_XML);
 
         assertThat(res.getChannels(), IsIterableWithSize.<ChannelConfig>iterableWithSize(2));

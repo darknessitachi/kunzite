@@ -16,7 +16,7 @@
 package com.zaradai.kunzite.trader.config.orders.digester;
 
 import com.zaradai.kunzite.trader.config.ConfigException;
-import com.zaradai.kunzite.trader.config.orders.ConfigLoader;
+import com.zaradai.kunzite.trader.config.orders.OrderGatewayConfigLoader;
 import com.zaradai.kunzite.trader.config.orders.OrderGatewayConfiguration;
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.binder.DigesterLoader;
@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class GatewayLoader implements ConfigLoader {
+public class DigesterOrderGatewayConfigLoader implements OrderGatewayConfigLoader {
     @Override
     public OrderGatewayConfiguration load(String sourceUri) throws ConfigException {
         InputStream inputStream = getStream(sourceUri);

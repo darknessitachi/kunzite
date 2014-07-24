@@ -16,19 +16,19 @@
 package com.zaradai.kunzite.trader;
 
 import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
-import com.zaradai.kunzite.trader.config.statics.StaticLoader;
+import com.zaradai.kunzite.trader.config.statics.StaticDataLoader;
 import com.zaradai.kunzite.trader.control.TradingManager;
 import org.junit.Test;
 
 public class TraderTest extends BaseTraderTest {
     @Test
     public void shouldRun() throws Exception {
-        StaticLoader loader = getInjector().getInstance(StaticLoader.class);
+        StaticDataLoader loader = getInjector().getInstance(StaticDataLoader.class);
         // load the config
         StaticConfiguration configuration = loader.load("trader.xml");
         // get the manager
         TradingManager tradingManager = getInjector().getInstance(TradingManager.class);
         // build
-        tradingManager.run(configuration);
+        tradingManager.build(configuration);
     }
 }

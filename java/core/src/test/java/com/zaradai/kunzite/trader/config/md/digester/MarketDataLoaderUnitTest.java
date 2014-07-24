@@ -30,13 +30,13 @@ import static org.mockito.Mockito.mock;
 public class MarketDataLoaderUnitTest {
     private InputStream stream;
     private Digester digester;
-    private MarketDataLoader uut;
+    private DigesterMarketDataConfigLoader uut;
 
     @Before
     public void setUp() throws Exception {
         stream = mock(InputStream.class);
         digester = mock(Digester.class);
-        uut = new MarketDataLoader() {
+        uut = new DigesterMarketDataConfigLoader() {
             @Override
             protected InputStream getStream(String sourceUri) {
                 return stream;

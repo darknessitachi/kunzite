@@ -18,6 +18,7 @@ package com.zaradai.kunzite.trader.services.orders;
 import com.google.common.collect.Maps;
 import com.zaradai.kunzite.events.EventAggregator;
 import com.zaradai.kunzite.logging.ContextLogger;
+import com.zaradai.kunzite.trader.config.ConfigException;
 import com.zaradai.kunzite.trader.config.orders.GatewayConfig;
 import com.zaradai.kunzite.trader.config.orders.OrderGatewayConfiguration;
 import com.zaradai.kunzite.trader.events.OrderSendEvent;
@@ -26,7 +27,7 @@ import com.zaradai.kunzite.trader.events.OrderStatusEvent;
 import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
 import com.zaradai.kunzite.trader.orders.model.NewOrder;
 import com.zaradai.kunzite.trader.orders.model.OrderRefData;
-import com.zaradai.kunzite.trader.services.trader.TraderService;
+import com.zaradai.kunzite.trader.services.trader.DefaultTraderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -47,7 +48,7 @@ public class DefaultOrderGatewayServiceTest {
 
     private ContextLogger logger;
     private EventAggregator eventAggregator;
-    private TraderService traderService;
+    private DefaultTraderService traderService;
     private OrderGatewayFactory orderGatewayFactory;
     private DefaultOrderGatewayService uut;
     @Mock
@@ -63,7 +64,7 @@ public class DefaultOrderGatewayServiceTest {
 
         logger = ContextLoggerMocker.create();
         eventAggregator = mock(EventAggregator.class);
-        traderService = mock(TraderService.class);
+        traderService = mock(DefaultTraderService.class);
         orderGatewayFactory = mock(OrderGatewayFactory.class);
         uut = new DefaultOrderGatewayService(logger, eventAggregator, traderService, orderGatewayFactory) {
             @Override
@@ -89,7 +90,7 @@ public class DefaultOrderGatewayServiceTest {
 
         uut.handleEvent(orderStatusEvent);
 
-        verify(traderService).onEvent(orderStatusEvent);
+        verify(traderService).onTraderEvent(orderStatusEvent);
     }
 
     @Test
@@ -202,7 +203,7 @@ public class DefaultOrderGatewayServiceTest {
     }
 
     @Test
-    public void shouldCreateAndLoadConfiguredGateways() throws Exception {
+    public void shouldCreateAndBuildConfiguredGateways() throws Exception {
         GatewayConfig config = new GatewayConfig();
         config.setGatewayClass(TEST_GATEWAY_NAME);
         config.setMarketId(TEST_MARKET_ID);
@@ -217,7 +218,7 @@ public class DefaultOrderGatewayServiceTest {
             }
         };
 
-        uut.load(ogc);
+        uut.build(ogc);
 
         verify(gatewayMap).put(TEST_MARKET_ID, gateway);
     }
@@ -237,8 +238,31 @@ public class DefaultOrderGatewayServiceTest {
             }
         };
 
-        uut.load(ogc);
+        // catch the expected exception
+        try {
+            uut.build(ogc);
+        } catch (ConfigException e) {
+
+        }
 
         verify(logger).error();
+    }
+
+    @Test(expected = ConfigException.class)
+    public void shouldThrowIfUnableToBuildGateway() throws Exception {
+        GatewayConfig config = new GatewayConfig();
+        config.setGatewayClass(TEST_GATEWAY_NAME);
+        config.setMarketId(TEST_MARKET_ID);
+        OrderGatewayConfiguration ogc = new OrderGatewayConfiguration();
+        ogc.add(config);
+        doThrow(GatewayException.class).when(orderGatewayFactory).create(TEST_GATEWAY_NAME);
+        uut = new DefaultOrderGatewayService(logger, eventAggregator, traderService, orderGatewayFactory) {
+            @Override
+            protected Map<String, OrderGateway> createGatewayMap() {
+                return gatewayMap;
+            }
+        };
+
+        uut.build(ogc);
     }
 }

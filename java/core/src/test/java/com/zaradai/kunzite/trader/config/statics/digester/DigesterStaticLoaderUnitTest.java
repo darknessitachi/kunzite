@@ -36,13 +36,13 @@ import static org.mockito.Mockito.mock;
 public class DigesterStaticLoaderUnitTest {
     private InputStream stream;
     private Digester digester;
-    private DigesterStaticLoader uut;
+    private DigesterStaticDataLoader uut;
 
     @Before
     public void setUp() throws Exception {
         stream = mock(InputStream.class);
         digester = mock(Digester.class);
-        uut = new DigesterStaticLoader() {
+        uut = new DigesterStaticDataLoader() {
             @Override
             protected InputStream getStream(String sourceUri) {
                 return stream;

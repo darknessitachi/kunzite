@@ -18,46 +18,35 @@ package com.zaradai.kunzite.trader.services.md;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.logging.LogHelper;
+import com.zaradai.kunzite.trader.config.ConfigException;
 import com.zaradai.kunzite.trader.config.md.ChannelConfig;
 import com.zaradai.kunzite.trader.config.md.MarketDataConfiguration;
 import com.zaradai.kunzite.trader.config.md.Subscription;
 import com.zaradai.kunzite.trader.events.MarketData;
 import com.zaradai.kunzite.trader.services.AbstractQueueBridge;
-import com.zaradai.kunzite.trader.services.trader.TraderService;
+import com.zaradai.kunzite.trader.services.trader.DefaultTraderService;
 
 import java.util.Map;
 
 public class DefaultMarketDataService extends AbstractQueueBridge implements MarketDataService {
     static final String SERVICE_NAME = "Market Data Service";
 
-    private final MarketDataConfiguration configuration;
+    private MarketDataConfiguration configuration;
     private final MarketDataChannelFactory marketDataChannelFactory;
-    private final TraderService traderService;
+    private final DefaultTraderService traderService;
     private final Map<String, MarketDataChannel> channelByName;
     private final Map<String, ChannelConfig> channelConfigByName;
-    private final MappingManager mappingManager;
+    private MappingManager mappingManager;
     @Inject
-    DefaultMarketDataService(ContextLogger logger,
-                             MarketDataChannelFactory marketDataChannelFactory, TraderService traderService,
-                             @Assisted MarketDataConfiguration configuration) {
+    DefaultMarketDataService(ContextLogger logger,MarketDataChannelFactory marketDataChannelFactory,
+                             DefaultTraderService traderService) {
         super(logger);
-        this.configuration = configuration;
         this.marketDataChannelFactory = marketDataChannelFactory;
         this.traderService = traderService;
         channelByName = createChannelMap();
         channelConfigByName = createChannelConfigMap();
-        mappingManager = new MappingManager(configuration.getMappings());
-
-        loadChannelConfig();
-    }
-
-    private void loadChannelConfig() {
-        for (ChannelConfig channelConfig : configuration.getChannels()) {
-            channelConfigByName.put(channelConfig.getName(), channelConfig);
-        }
     }
 
     private Map<String, ChannelConfig> createChannelConfigMap() {
@@ -71,6 +60,19 @@ public class DefaultMarketDataService extends AbstractQueueBridge implements Mar
     @Override
     public void onMarketData(MarketData marketData) {
         onEvent(marketData);
+    }
+
+    @Override
+    public void build(MarketDataConfiguration configuration) throws ConfigException {
+        this.configuration = configuration;
+        loadChannelConfig();
+        mappingManager = new MappingManager(configuration.getMappings());
+    }
+
+    private void loadChannelConfig() {
+        for (ChannelConfig channelConfig : configuration.getChannels()) {
+            channelConfigByName.put(channelConfig.getName(), channelConfig);
+        }
     }
 
     @Override

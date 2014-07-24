@@ -19,7 +19,7 @@ import com.google.common.util.concurrent.Service;
 
 /**
  * Provides a multi-threaded bridge from one domain to another. E.g, trader is single threaded and processes events
- * one by one.  The TraderService will implement the bridge to allow events from other services to be dispatched
+ * one by one.  The DefaultTraderService will implement the bridge to allow events from other services to be dispatched
  * safely within the trader.
  */
 public interface Bridge extends Service {

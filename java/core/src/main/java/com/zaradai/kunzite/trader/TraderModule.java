@@ -26,8 +26,8 @@ import com.zaradai.kunzite.logging.disruptor.DisruptorLogger;
 import com.zaradai.kunzite.trader.algo.AlgoFactory;
 import com.zaradai.kunzite.trader.algo.AlgoResolver;
 import com.zaradai.kunzite.trader.algo.InjectedAlgoFactory;
-import com.zaradai.kunzite.trader.config.statics.StaticLoader;
-import com.zaradai.kunzite.trader.config.statics.digester.DigesterStaticLoader;
+import com.zaradai.kunzite.trader.config.statics.StaticDataLoader;
+import com.zaradai.kunzite.trader.config.statics.digester.DigesterStaticDataLoader;
 import com.zaradai.kunzite.trader.control.*;
 import com.zaradai.kunzite.trader.filters.DefaultFilterManager;
 import com.zaradai.kunzite.trader.filters.FilterManager;
@@ -52,7 +52,7 @@ public class TraderModule extends AbstractModule {
 
     public TraderModule() {
         logger = LoggerFactory.getLogger("trader");
-        eventBus = new EventBus("TraderService");
+        eventBus = new EventBus("DefaultTraderService");
         orderIdGenerator = KunziteOrderIdGenerator.newInstance();
     }
 
@@ -62,7 +62,7 @@ public class TraderModule extends AbstractModule {
         bind(ContextLogger.class).to(DisruptorLogger.class).in(Singleton.class);
         bind(EventBus.class).toInstance(eventBus);
         bind(EventAggregator.class).to(EventBusAggregator.class).in(Singleton.class);
-        bind(StaticLoader.class).to(DigesterStaticLoader.class);
+        bind(StaticDataLoader.class).to(DigesterStaticDataLoader.class);
         bind(TradingManager.class).in(Singleton.class);
         bind(TradingBuilder.class);
         bind(AlgoFactory.class).to(InjectedAlgoFactory.class);

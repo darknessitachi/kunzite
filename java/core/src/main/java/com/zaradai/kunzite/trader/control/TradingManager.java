@@ -23,6 +23,7 @@ import com.zaradai.kunzite.logging.LogHelper;
 import com.zaradai.kunzite.trader.algo.Algo;
 import com.zaradai.kunzite.trader.algo.AlgoException;
 import com.zaradai.kunzite.trader.algo.AlgoResolver;
+import com.zaradai.kunzite.trader.config.ConfigException;
 import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
 import com.zaradai.kunzite.trader.instruments.Instrument;
 import com.zaradai.kunzite.trader.instruments.InstrumentResolver;
@@ -57,24 +58,9 @@ public class TradingManager implements InstrumentResolver, TradingStateResolver,
         algoByAlgoId = Maps.newHashMap();
     }
 
-    public void run(StaticConfiguration configuration) throws TradingException {
-        build(configuration);
-        initAlgos();
-        // pump messages
-    }
-
-    private void initAlgos() throws TradingException {
-        for (Algo algo : algoByAlgoId.values()) {
-            try {
-                algo.initialize();
-            } catch (AlgoException e) {
-                throw new TradingException("Unable to initialize algos", e);
-            }
-        }
-    }
-
-    private void build(StaticConfiguration configuration) {
+    public void build(StaticConfiguration configuration) throws ConfigException {
         builder.build(this, configuration);
+
         logBuilt();
     }
 
@@ -142,5 +128,20 @@ public class TradingManager implements InstrumentResolver, TradingStateResolver,
 
     public void add(Algo algo) {
         algoByAlgoId.put(algo.getId(), algo);
+    }
+
+    public void initialize() throws TradingException {
+        try {
+            initializeAlgos();
+        } catch (AlgoException e) {
+            throw new TradingException("Unable to initialize Algo", e);
+        }
+
+    }
+
+    private void initializeAlgos() throws AlgoException {
+        for (Algo algo : algoByAlgoId.values()) {
+            algo.initialize();
+        }
     }
 }

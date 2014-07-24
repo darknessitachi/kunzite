@@ -27,7 +27,7 @@ public class GatewayLoaderTest {
 
     @Test
     public void shouldLoad() throws Exception {
-        GatewayLoader uut = new GatewayLoader();
+        DigesterOrderGatewayConfigLoader uut = new DigesterOrderGatewayConfigLoader();
         OrderGatewayConfiguration res = uut.load(CONFIG_XML);
 
         assertThat(res.getGateways(), IsIterableWithSize.<GatewayConfig>iterableWithSize(2));

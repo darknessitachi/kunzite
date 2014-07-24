@@ -65,7 +65,7 @@ public class TradingManagerTest {
     public void shouldRun() throws Exception {
         StaticConfiguration configuration = new StaticConfiguration();
 
-        uut.run(configuration);
+        uut.build(configuration);
 
         verify(builder).build(uut, configuration);
         verify(logger).info();

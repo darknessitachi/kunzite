@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.config.orders;
+package com.zaradai.kunzite.trader;
 
-import com.zaradai.kunzite.trader.config.ConfigException;
-
-public interface ConfigLoader {
-    OrderGatewayConfiguration load(String sourceUri) throws ConfigException;
+public class Trader {
 }

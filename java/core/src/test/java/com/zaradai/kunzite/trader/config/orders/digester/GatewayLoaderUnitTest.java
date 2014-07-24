@@ -30,13 +30,13 @@ import static org.mockito.Mockito.mock;
 public class GatewayLoaderUnitTest {
     private InputStream stream;
     private Digester digester;
-    private GatewayLoader uut;
+    private DigesterOrderGatewayConfigLoader uut;
 
     @Before
     public void setUp() throws Exception {
         stream = mock(InputStream.class);
         digester = mock(Digester.class);
-        uut = new GatewayLoader() {
+        uut = new DigesterOrderGatewayConfigLoader() {
             @Override
             protected InputStream getStream(String sourceUri) {
                 return stream;

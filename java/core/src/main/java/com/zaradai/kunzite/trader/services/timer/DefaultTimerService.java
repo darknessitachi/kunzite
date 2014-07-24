@@ -19,7 +19,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.google.inject.Inject;
 import com.zaradai.kunzite.trader.events.TimerEvent;
-import com.zaradai.kunzite.trader.services.trader.TraderService;
+import com.zaradai.kunzite.trader.services.trader.DefaultTraderService;
 
 import java.util.Iterator;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -30,11 +30,11 @@ public class DefaultTimerService extends AbstractExecutionThreadService implemen
     private static final int INITIAL_CAPACITY = 1000;   // Big fat guess
 
     private final PriorityBlockingQueue<TimerRequest> requestQueue;
-    private final TraderService traderService;
+    private final DefaultTraderService traderService;
     private final TimeBase timeBase;
 
     @Inject
-    DefaultTimerService(TraderService traderService, TimeBase timeBase) {
+    DefaultTimerService(DefaultTraderService traderService, TimeBase timeBase) {
         this.traderService = traderService;
         this.timeBase = timeBase;
         requestQueue = new PriorityBlockingQueue<TimerRequest>(INITIAL_CAPACITY, TimerRequest.OLDEST_FIRST);

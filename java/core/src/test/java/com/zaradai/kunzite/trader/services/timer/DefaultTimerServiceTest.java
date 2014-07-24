@@ -16,7 +16,7 @@
 package com.zaradai.kunzite.trader.services.timer;
 
 import com.zaradai.kunzite.trader.events.TimerEvent;
-import com.zaradai.kunzite.trader.services.trader.TraderService;
+import com.zaradai.kunzite.trader.services.trader.DefaultTraderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -31,7 +31,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 public class DefaultTimerServiceTest {
-    private TraderService traderService;
+    private DefaultTraderService traderService;
     private TimeBase timeBase;
     private DefaultTimerService uut;
     @Captor
@@ -41,7 +41,7 @@ public class DefaultTimerServiceTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        traderService = mock(TraderService.class);
+        traderService = mock(DefaultTraderService.class);
         timeBase = mock(TimeBase.class);
         uut = new DefaultTimerService(traderService, timeBase);
     }

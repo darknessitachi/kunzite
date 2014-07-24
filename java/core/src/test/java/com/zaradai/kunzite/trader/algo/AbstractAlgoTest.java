@@ -51,15 +51,4 @@ public class AbstractAlgoTest {
 
         assertThat(uut.getState(), is(TEST_STATE));
     }
-
-    @Test
-    public void shouldGetRunning() throws Exception {
-        assertThat(uut.isRunning(), is(false));
-
-        uut.start();
-        assertThat(uut.isRunning(), is(true));
-
-        uut.stop();
-        assertThat(uut.isRunning(), is(false));
-    }
 }
