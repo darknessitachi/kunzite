@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.services.orders;
 
+import com.codahale.metrics.MetricRegistry;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -44,9 +45,9 @@ public class DefaultOrderGatewayService extends AbstractQueueBridge implements O
     private final ContextLogger logger;
 
     @Inject
-    DefaultOrderGatewayService(ContextLogger logger, EventAggregator eventAggregator, TraderService traderService,
-                               OrderGatewayFactory orderGatewayFactory) {
-        super(logger);
+    DefaultOrderGatewayService(ContextLogger logger, MetricRegistry metricRegistry, EventAggregator eventAggregator,
+                               TraderService traderService, OrderGatewayFactory orderGatewayFactory) {
+        super(logger, metricRegistry);
         this.logger = logger;
         this.eventAggregator = eventAggregator;
         this.traderService = traderService;

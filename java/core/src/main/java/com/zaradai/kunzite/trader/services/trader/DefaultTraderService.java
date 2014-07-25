@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.services.trader;
 
+import com.codahale.metrics.MetricRegistry;
 import com.google.inject.Inject;
 import com.zaradai.kunzite.events.EventAggregator;
 import com.zaradai.kunzite.logging.ContextLogger;
@@ -34,8 +35,9 @@ public class DefaultTraderService extends AbstractQueueBridge implements TraderS
     private final TradingManager tradingManager;
 
     @Inject
-    DefaultTraderService(ContextLogger contextLogger, EventAggregator eventAggregator, TradingManager tradingManager) {
-        super(contextLogger);
+    DefaultTraderService(ContextLogger contextLogger, MetricRegistry metricRegistry, EventAggregator eventAggregator,
+                         TradingManager tradingManager) {
+        super(contextLogger, metricRegistry);
         this.eventAggregator = eventAggregator;
         this.tradingManager = tradingManager;
     }

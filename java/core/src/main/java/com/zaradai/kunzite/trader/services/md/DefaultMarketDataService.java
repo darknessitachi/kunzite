@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.services.md;
 
+import com.codahale.metrics.MetricRegistry;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -40,9 +41,9 @@ public class DefaultMarketDataService extends AbstractQueueBridge implements Mar
     private final Map<String, ChannelConfig> channelConfigByName;
     private MappingManager mappingManager;
     @Inject
-    DefaultMarketDataService(ContextLogger logger,MarketDataChannelFactory marketDataChannelFactory,
-                             DefaultTraderService traderService) {
-        super(logger);
+    DefaultMarketDataService(ContextLogger logger, MetricRegistry metricRegistry,
+                             MarketDataChannelFactory marketDataChannelFactory, DefaultTraderService traderService) {
+        super(logger, metricRegistry);
         this.marketDataChannelFactory = marketDataChannelFactory;
         this.traderService = traderService;
         channelByName = createChannelMap();

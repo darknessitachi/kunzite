@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.services.md;
 
+import com.codahale.metrics.MetricRegistry;
 import com.google.common.collect.Lists;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.trader.config.md.*;
@@ -53,6 +54,7 @@ public class DefaultMarketDataServiceTest {
     ArgumentCaptor<Object> argumentCaptor;
     @Mock
     BlockingQueue<Object> mockQueue;
+    private MetricRegistry metricRegistry;
 
     @Before
     public void setUp() throws Exception {
@@ -65,7 +67,8 @@ public class DefaultMarketDataServiceTest {
         channel = mock(MarketDataChannel.class);
         when(channel.startAsync()).thenReturn(channel);
         when(channel.stopAsync()).thenReturn(channel);
-        uut = new DefaultMarketDataService(logger, marketDataChannelFactory, traderService);
+        metricRegistry = mock(MetricRegistry.class);
+        uut = new DefaultMarketDataService(logger, metricRegistry, marketDataChannelFactory, traderService);
     }
 
     private MarketDataConfiguration createConfiguration() {
@@ -161,7 +164,7 @@ public class DefaultMarketDataServiceTest {
     public void shouldQueueMarketDataFromChannel() throws Exception {
         List<MarketDataField> fields = Lists.newArrayList();
         MarketData marketData = MarketData.newInstance(TEST_ID, fields);
-        uut = new DefaultMarketDataService(logger, marketDataChannelFactory, traderService) {
+        uut = new DefaultMarketDataService(logger, metricRegistry, marketDataChannelFactory, traderService) {
             @Override
             protected BlockingQueue<Object> createQueue() {
                 return mockQueue;

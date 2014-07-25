@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.services.trader;
 
+import com.codahale.metrics.MetricRegistry;
 import com.zaradai.kunzite.events.EventAggregator;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
@@ -40,6 +41,7 @@ public class DefaultTraderServiceTest {
     private TradingManager tradingManager;
     @Mock
     private BlockingQueue<Object> mockQueue;
+    private MetricRegistry metricRegistry;
 
     @Before
     public void setUp() throws Exception {
@@ -48,7 +50,8 @@ public class DefaultTraderServiceTest {
         logger = ContextLoggerMocker.create();
         eventAggregator = mock(EventAggregator.class);
         tradingManager = mock(TradingManager.class);
-        uut = new DefaultTraderService(logger, eventAggregator, tradingManager);
+        metricRegistry = mock(MetricRegistry.class);
+        uut = new DefaultTraderService(logger, metricRegistry, eventAggregator, tradingManager);
     }
 
     @Test
@@ -60,7 +63,7 @@ public class DefaultTraderServiceTest {
 
     @Test
     public void shouldHandleEventForTrader() throws Exception {
-        uut = new DefaultTraderService(logger, eventAggregator, tradingManager) {
+        uut = new DefaultTraderService(logger, metricRegistry, eventAggregator, tradingManager) {
             @Override
             protected BlockingQueue<Object> createQueue() {
                 return mockQueue;

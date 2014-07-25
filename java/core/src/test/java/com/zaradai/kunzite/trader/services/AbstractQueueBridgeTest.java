@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.services;
 
+import com.codahale.metrics.MetricRegistry;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
 import org.junit.Before;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class AbstractQueueBridgeTest {
@@ -38,6 +40,7 @@ public class AbstractQueueBridgeTest {
     private ContextLogger logger;
     private AbstractQueueBridge uut;
     private boolean handleEventCalled;
+    private MetricRegistry metricRegistry;
 
     @Before
     public void setUp() throws Exception {
@@ -45,12 +48,13 @@ public class AbstractQueueBridgeTest {
         handleEventCalled = false;
 
         logger = ContextLoggerMocker.create();
+        metricRegistry = mock(MetricRegistry.class);
         uut = createAbstractQueueBridge(true);
     }
 
     private AbstractQueueBridge createAbstractQueueBridge(boolean mockedQueue) {
         return (mockedQueue) ?
-                new AbstractQueueBridge(logger) {
+                new AbstractQueueBridge(logger, metricRegistry) {
                     @Override
                     public void handleEvent(Object event) {
                         handleEventCalled = true;
@@ -66,7 +70,7 @@ public class AbstractQueueBridgeTest {
                         return mockQueue;
                     }
                 } :
-                new AbstractQueueBridge(logger) {
+                new AbstractQueueBridge(logger, metricRegistry) {
                     @Override
                     public void handleEvent(Object event) {
                         handleEventCalled = true;

@@ -40,7 +40,7 @@
         <appender-ref ref="rollingLogFile"/>
     </logger>
 
-    <root level="Info">
+    <root level="Debug">
         <appender-ref ref="stdout"/>
         <appender-ref ref="rollingLogFile"/>
     </root>

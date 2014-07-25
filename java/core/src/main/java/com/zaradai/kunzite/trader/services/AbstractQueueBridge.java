@@ -15,6 +15,8 @@
  */
 package com.zaradai.kunzite.trader.services;
 
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.zaradai.kunzite.logging.ContextLogger;
@@ -30,9 +32,11 @@ public abstract class AbstractQueueBridge extends AbstractExecutionThreadService
 
     private final BlockingQueue<Object> events;
     private final ContextLogger logger;
+    private final Meter meter;
 
-    public AbstractQueueBridge(ContextLogger logger) {
+    public AbstractQueueBridge(ContextLogger logger, MetricRegistry metricRegistry) {
         this.logger = logger;
+        this.meter = metricRegistry.meter(getName());
         events = createQueue();
     }
 
@@ -53,6 +57,8 @@ public abstract class AbstractQueueBridge extends AbstractExecutionThreadService
             if (event != null) {
                 // process the event within the service thread
                 handleEvent(event);
+                // update process count
+                meter.mark();
             }
         }
     }

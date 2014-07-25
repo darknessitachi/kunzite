@@ -15,11 +15,14 @@
  */
 package com.zaradai.kunzite.trader;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.zaradai.kunzite.config.ConfigurationSource;
 import org.junit.Before;
+import org.slf4j.LoggerFactory;
 
 public class BaseTraderTest {
     private Injector injector;
@@ -27,10 +30,18 @@ public class BaseTraderTest {
 
     @Before
     public void setUp() throws Exception {
+        printLogbackSettings();
+
         injector = Guice.createInjector(getTraderModule());
         // get the config source
         source = injector.getInstance(ConfigurationSource.class);
 
+    }
+
+    private void printLogbackSettings() {
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        // print logback's internal status
+        StatusPrinter.print(lc);
     }
 
     protected Module getTraderModule() {

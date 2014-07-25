@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.services.orders;
 
+import com.codahale.metrics.MetricRegistry;
 import com.google.common.collect.Maps;
 import com.zaradai.kunzite.events.EventAggregator;
 import com.zaradai.kunzite.logging.ContextLogger;
@@ -57,6 +58,7 @@ public class DefaultOrderGatewayServiceTest {
     private Map<String, OrderGateway> gatewayMap;
     @Captor
     ArgumentCaptor<OrderStatusEvent> statusEventArgumentCaptor;
+    private MetricRegistry metricRegistry;
 
     @Before
     public void setUp() throws Exception {
@@ -66,7 +68,9 @@ public class DefaultOrderGatewayServiceTest {
         eventAggregator = mock(EventAggregator.class);
         traderService = mock(DefaultTraderService.class);
         orderGatewayFactory = mock(OrderGatewayFactory.class);
-        uut = new DefaultOrderGatewayService(logger, eventAggregator, traderService, orderGatewayFactory) {
+        metricRegistry = mock(MetricRegistry.class);
+        uut = new DefaultOrderGatewayService(logger, metricRegistry, eventAggregator, traderService,
+                orderGatewayFactory) {
             @Override
             protected BlockingQueue<Object> createQueue() {
                 return mockQueue;
@@ -102,7 +106,8 @@ public class DefaultOrderGatewayServiceTest {
         OrderGateway gateway = mock(OrderGateway.class);
         when(gatewayMap.get(TEST_MARKET_ID)).thenReturn(gateway);
 
-        uut = new DefaultOrderGatewayService(logger, eventAggregator, traderService, orderGatewayFactory) {
+        uut = new DefaultOrderGatewayService(logger, metricRegistry, eventAggregator, traderService,
+                orderGatewayFactory) {
             @Override
             protected Map<String, OrderGateway> createGatewayMap() {
                 return gatewayMap;
@@ -123,7 +128,8 @@ public class DefaultOrderGatewayServiceTest {
         when(order.getRefData()).thenReturn(refData);
         when(refData.getMarketId()).thenReturn(TEST_MARKET_ID);
         when(gatewayMap.get(TEST_MARKET_ID)).thenReturn(null);
-        uut = new DefaultOrderGatewayService(logger, eventAggregator, traderService, orderGatewayFactory) {
+        uut = new DefaultOrderGatewayService(logger, metricRegistry, eventAggregator, traderService,
+                orderGatewayFactory) {
             @Override
             protected Map<String, OrderGateway> createGatewayMap() {
                 return gatewayMap;
@@ -168,7 +174,8 @@ public class DefaultOrderGatewayServiceTest {
         OrderGateway gateway = mock(OrderGateway.class);
         when(gateway.startAsync()).thenReturn(gateway);
         gateways.put(TEST_MARKET_ID, gateway);
-        uut = new DefaultOrderGatewayService(logger, eventAggregator, traderService, orderGatewayFactory) {
+        uut = new DefaultOrderGatewayService(logger, metricRegistry, eventAggregator, traderService,
+                orderGatewayFactory) {
             @Override
             protected Map<String, OrderGateway> createGatewayMap() {
                 return gateways;
@@ -188,7 +195,8 @@ public class DefaultOrderGatewayServiceTest {
         OrderGateway gateway = mock(OrderGateway.class);
         when(gateway.stopAsync()).thenReturn(gateway);
         gateways.put(TEST_MARKET_ID, gateway);
-        uut = new DefaultOrderGatewayService(logger, eventAggregator, traderService, orderGatewayFactory) {
+        uut = new DefaultOrderGatewayService(logger, metricRegistry, eventAggregator, traderService,
+                orderGatewayFactory) {
             @Override
             protected Map<String, OrderGateway> createGatewayMap() {
                 return gateways;
@@ -211,7 +219,8 @@ public class DefaultOrderGatewayServiceTest {
         ogc.add(config);
         OrderGateway gateway = mock(OrderGateway.class);
         when(orderGatewayFactory.create(TEST_GATEWAY_NAME)).thenReturn(gateway);
-        uut = new DefaultOrderGatewayService(logger, eventAggregator, traderService, orderGatewayFactory) {
+        uut = new DefaultOrderGatewayService(logger, metricRegistry, eventAggregator, traderService,
+                orderGatewayFactory) {
             @Override
             protected Map<String, OrderGateway> createGatewayMap() {
                 return gatewayMap;
@@ -231,7 +240,8 @@ public class DefaultOrderGatewayServiceTest {
         OrderGatewayConfiguration ogc = new OrderGatewayConfiguration();
         ogc.add(config);
         doThrow(GatewayException.class).when(orderGatewayFactory).create(TEST_GATEWAY_NAME);
-        uut = new DefaultOrderGatewayService(logger, eventAggregator, traderService, orderGatewayFactory) {
+        uut = new DefaultOrderGatewayService(logger, metricRegistry, eventAggregator, traderService,
+                orderGatewayFactory) {
             @Override
             protected Map<String, OrderGateway> createGatewayMap() {
                 return gatewayMap;
@@ -256,7 +266,8 @@ public class DefaultOrderGatewayServiceTest {
         OrderGatewayConfiguration ogc = new OrderGatewayConfiguration();
         ogc.add(config);
         doThrow(GatewayException.class).when(orderGatewayFactory).create(TEST_GATEWAY_NAME);
-        uut = new DefaultOrderGatewayService(logger, eventAggregator, traderService, orderGatewayFactory) {
+        uut = new DefaultOrderGatewayService(logger, metricRegistry, eventAggregator, traderService,
+                orderGatewayFactory) {
             @Override
             protected Map<String, OrderGateway> createGatewayMap() {
                 return gatewayMap;

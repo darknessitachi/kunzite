@@ -77,7 +77,7 @@ public class Trader extends AbstractIdleService {
     @Override
     protected void startUp() throws Exception {
         // start the metric reporter
-        reporter.start(1, TimeUnit.MINUTES);
+        reporter.start(1, TimeUnit.SECONDS);
         // build the services from loaded config
         build();
         // now start each service and wait for them to be started
