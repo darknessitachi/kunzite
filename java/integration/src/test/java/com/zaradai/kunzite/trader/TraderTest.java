@@ -15,20 +15,31 @@
  */
 package com.zaradai.kunzite.trader;
 
-import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
-import com.zaradai.kunzite.trader.config.statics.StaticDataLoader;
-import com.zaradai.kunzite.trader.control.TradingManager;
+import com.google.common.util.concurrent.Uninterruptibles;
+import com.google.inject.Module;
+import com.zaradai.kunzite.trader.config.SourcedTraderConfiguration;
 import org.junit.Test;
+
+import java.util.concurrent.TimeUnit;
 
 public class TraderTest extends BaseTraderTest {
     @Test
     public void shouldRun() throws Exception {
-        StaticDataLoader loader = getInjector().getInstance(StaticDataLoader.class);
-        // load the config
-        StaticConfiguration configuration = loader.load("trader.xml");
-        // get the manager
-        TradingManager tradingManager = getInjector().getInstance(TradingManager.class);
-        // build
-        tradingManager.build(configuration);
+        // configure the config sources
+        // configure the tactic
+        getSource().set(SourcedTraderConfiguration.STATIC_CONFIG_URI, "trader.xml");
+        getSource().set(SourcedTraderConfiguration.OG_URI, "ordergateways.xml");
+        getSource().set(SourcedTraderConfiguration.MD_CONFIG_URI, "marketdata.xml");
+        // get the trader
+        Trader trader = getInjector().getInstance(Trader.class);
+        //
+        trader.startAsync().awaitRunning();
+        Uninterruptibles.sleepUninterruptibly(10, TimeUnit.SECONDS);
+        trader.stopAsync().awaitTerminated();
+    }
+
+    @Override
+    protected Module getTraderModule() {
+        return new TraderTestModule();
     }
 }

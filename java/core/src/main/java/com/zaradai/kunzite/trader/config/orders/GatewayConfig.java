@@ -16,22 +16,22 @@
 package com.zaradai.kunzite.trader.config.orders;
 
 public class GatewayConfig {
-    private String marketId;
-    private String gatewayClass;
+    private String market;
+    private String clazz;
 
-    public String getMarketId() {
-        return marketId;
+    public String getClazz() {
+        return clazz;
     }
 
-    public void setMarketId(String marketId) {
-        this.marketId = marketId;
+    public void setClazz(String clazz) {
+        this.clazz = clazz;
     }
 
-    public String getGatewayClass() {
-        return gatewayClass;
+    public String getMarket() {
+        return market;
     }
 
-    public void setGatewayClass(String gatewayClass) {
-        this.gatewayClass = gatewayClass;
+    public void setMarket(String market) {
+        this.market = market;
     }
 }

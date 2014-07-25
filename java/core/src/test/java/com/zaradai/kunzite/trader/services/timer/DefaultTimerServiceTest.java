@@ -15,7 +15,9 @@
  */
 package com.zaradai.kunzite.trader.services.timer;
 
+import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.trader.events.TimerEvent;
+import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
 import com.zaradai.kunzite.trader.services.trader.DefaultTraderService;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,14 +38,16 @@ public class DefaultTimerServiceTest {
     private DefaultTimerService uut;
     @Captor
     ArgumentCaptor<TimerEvent> timerEventArgumentCaptor;
+    private ContextLogger logger;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
+        logger = ContextLoggerMocker.create();
         traderService = mock(DefaultTraderService.class);
         timeBase = mock(TimeBase.class);
-        uut = new DefaultTimerService(traderService, timeBase);
+        uut = new DefaultTimerService(logger, traderService, timeBase);
     }
 
     @Test

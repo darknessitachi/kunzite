@@ -15,5 +15,5 @@
     limitations under the License.
 -->
 <gateways>
-    <gateway market="ex1" class="com.zaradai.kunzite.trader.services.orders.gateway.EmulatorGateway" />
+    <gateway market="ex1" clazz="com.zaradai.kunzite.trader.services.orders.gateway.EmulatorGateway" />
 </gateways>

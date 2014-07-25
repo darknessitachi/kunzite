@@ -15,6 +15,8 @@
  */
 package com.zaradai.kunzite.trader;
 
+import com.codahale.metrics.MetricRegistry;
+import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.trader.config.ConfigException;
 import com.zaradai.kunzite.trader.config.TraderConfiguration;
 import com.zaradai.kunzite.trader.config.md.MarketDataConfigLoader;
@@ -23,6 +25,7 @@ import com.zaradai.kunzite.trader.config.orders.OrderGatewayConfigLoader;
 import com.zaradai.kunzite.trader.config.orders.OrderGatewayConfiguration;
 import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
 import com.zaradai.kunzite.trader.config.statics.StaticDataLoader;
+import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
 import com.zaradai.kunzite.trader.services.md.MarketDataService;
 import com.zaradai.kunzite.trader.services.orders.OrderGatewayService;
 import com.zaradai.kunzite.trader.services.timer.TimerService;
@@ -49,9 +52,13 @@ public class TraderTest {
     private StaticConfiguration staticConfiguration;
     private MarketDataConfiguration marketDataConfiguration;
     private OrderGatewayConfiguration orderGatewayConfiguration;
+    private ContextLogger logger;
+    private MetricRegistry metricRegistry;
 
     @Before
     public void setUp() throws Exception {
+        logger = ContextLoggerMocker.create();
+        metricRegistry = mock(MetricRegistry.class);
         traderConfiguration = mock(TraderConfiguration.class);
         when(traderConfiguration.getStaticConfigUri()).thenReturn(STATIC_URI);
         when(traderConfiguration.getMarketDataConfigUri()).thenReturn(MD_URI);
@@ -77,8 +84,9 @@ public class TraderTest {
         timerService = mock(TimerService.class);
         when(timerService.startAsync()).thenReturn(timerService);
         when(timerService.stopAsync()).thenReturn(timerService);
-        uut = new Trader(traderConfiguration, staticDataLoader, orderGatewayConfigLoader, marketDataConfigLoader,
-                traderService, orderGatewayService, marketDataService, timerService);
+        uut = new Trader(logger, traderConfiguration, staticDataLoader, orderGatewayConfigLoader,
+                marketDataConfigLoader, traderService, orderGatewayService, marketDataService, timerService,
+                metricRegistry);
     }
 
     @Test(expected = ConfigException.class)

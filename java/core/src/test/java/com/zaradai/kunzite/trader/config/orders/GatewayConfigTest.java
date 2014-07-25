@@ -24,18 +24,18 @@ public class GatewayConfigTest {
     private static final String TEST_STRING = "test";
 
     @Test
-    public void shouldGetMarketId() throws Exception {
+    public void shouldGetMarket() throws Exception {
         GatewayConfig uut = new GatewayConfig();
-        uut.setMarketId(TEST_STRING);
+        uut.setMarket(TEST_STRING);
 
-        assertThat(uut.getMarketId(), is(TEST_STRING));
+        assertThat(uut.getMarket(), is(TEST_STRING));
     }
 
     @Test
-    public void shouldGetGatewayClass() throws Exception {
+    public void shouldGetClazz() throws Exception {
         GatewayConfig uut = new GatewayConfig();
-        uut.setGatewayClass(TEST_STRING);
+        uut.setClazz(TEST_STRING);
 
-        assertThat(uut.getGatewayClass(), is(TEST_STRING));
+        assertThat(uut.getClazz(), is(TEST_STRING));
     }
 }

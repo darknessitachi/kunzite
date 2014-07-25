@@ -18,6 +18,7 @@ package com.zaradai.kunzite.trader.services.trader;
 import com.google.inject.Inject;
 import com.zaradai.kunzite.events.EventAggregator;
 import com.zaradai.kunzite.logging.ContextLogger;
+import com.zaradai.kunzite.logging.LogHelper;
 import com.zaradai.kunzite.trader.config.ConfigException;
 import com.zaradai.kunzite.trader.config.statics.StaticConfiguration;
 import com.zaradai.kunzite.trader.control.TradingManager;
@@ -63,5 +64,18 @@ public class DefaultTraderService extends AbstractQueueBridge implements TraderS
     protected void startUp() throws Exception {
         // initialize the trader
         tradingManager.initialize();
+        logTraderState("Started");
+    }
+
+    @Override
+    protected void shutDown() throws Exception {
+        logTraderState("Stopping");
+    }
+
+    private void logTraderState(String state) {
+        LogHelper.info(getLogger())
+                .addContext("Trader Service")
+                .add("Is", state)
+                .log();
     }
 }

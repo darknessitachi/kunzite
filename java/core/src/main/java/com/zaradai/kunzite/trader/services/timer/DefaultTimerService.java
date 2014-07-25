@@ -18,6 +18,8 @@ package com.zaradai.kunzite.trader.services.timer;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 import com.google.inject.Inject;
+import com.zaradai.kunzite.logging.ContextLogger;
+import com.zaradai.kunzite.logging.LogHelper;
 import com.zaradai.kunzite.trader.events.TimerEvent;
 import com.zaradai.kunzite.trader.services.trader.DefaultTraderService;
 
@@ -32,9 +34,11 @@ public class DefaultTimerService extends AbstractExecutionThreadService implemen
     private final PriorityBlockingQueue<TimerRequest> requestQueue;
     private final DefaultTraderService traderService;
     private final TimeBase timeBase;
+    private ContextLogger logger;
 
     @Inject
-    DefaultTimerService(DefaultTraderService traderService, TimeBase timeBase) {
+    DefaultTimerService(ContextLogger logger, DefaultTraderService traderService, TimeBase timeBase) {
+        this.logger = logger;
         this.traderService = traderService;
         this.timeBase = timeBase;
         requestQueue = new PriorityBlockingQueue<TimerRequest>(INITIAL_CAPACITY, TimerRequest.OLDEST_FIRST);
@@ -42,9 +46,18 @@ public class DefaultTimerService extends AbstractExecutionThreadService implemen
 
     @Override
     protected void run() throws Exception {
+        logTimeState("Running");
         while (isRunning()) {
             process();
         }
+        logTimeState("Stopped");
+    }
+
+    private void logTimeState(String state) {
+        LogHelper.info(logger)
+                .addContext("Timer Service")
+                .add("Is", state)
+                .log();
     }
 
     @VisibleForTesting

@@ -113,11 +113,14 @@ public class DefaultMarketDataService extends AbstractQueueBridge implements Mar
 
         try {
             // create the channel
-            MarketDataChannel res = marketDataChannelFactory.create(channelConfig.getClazz());
+            String channelClazz = channelConfig.getClazz();
+            MarketDataChannel res = marketDataChannelFactory.create(channelClazz);
             // start it up
             res.startAsync().awaitRunning();
             // add to the cache
             channelByName.put(channelName, res);
+            // log running
+            logChannelState(channelClazz, channelName, "running");
             // and return
             return res;
         } catch (Exception e) {
@@ -132,14 +135,23 @@ public class DefaultMarketDataService extends AbstractQueueBridge implements Mar
         return null;
     }
 
+    private void logChannelState(String channelClazz, String channelName, String state) {
+        LogHelper.info(getLogger())
+                .add("MD Channel", channelName)
+                .add("Class", channelClazz)
+                .add("Is", state)
+                .log();
+    }
+
     @Override
     protected void shutDown() throws Exception {
         closeChannels();
     }
 
     private void closeChannels() {
-        for (MarketDataChannel channel : channelByName.values()) {
-            channel.stopAsync().awaitTerminated();
+        for (Map.Entry<String, MarketDataChannel> channelEntry : channelByName.entrySet()) {
+            channelEntry.getValue().stopAsync().awaitTerminated();
+            logChannelState(channelEntry.getValue().getClass().getName(), channelEntry.getKey(), "Stopped");
         }
     }
 

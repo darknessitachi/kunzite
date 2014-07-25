@@ -154,14 +154,14 @@ public class DefaultOrderGatewayService extends AbstractQueueBridge implements O
     public void build(OrderGatewayConfiguration configuration) throws ConfigException {
         for (GatewayConfig gatewayConfig : configuration.getGateways()) {
             try {
-                OrderGateway gateway = orderGatewayFactory.create(gatewayConfig.getGatewayClass());
-                this.orderGatewayByMarket.put(gatewayConfig.getMarketId(), gateway);
+                OrderGateway gateway = orderGatewayFactory.create(gatewayConfig.getClazz());
+                this.orderGatewayByMarket.put(gatewayConfig.getMarket(), gateway);
             } catch (GatewayException e) {
                 LogHelper.error(logger)
                         .addContext("OrderGatewayService-build gateway")
                         .addReason(e.getMessage())
-                        .add("Gateway", gatewayConfig.getGatewayClass())
-                        .add("Market", gatewayConfig.getMarketId())
+                        .add("Gateway", gatewayConfig.getClazz())
+                        .add("Market", gatewayConfig.getMarket())
                         .log();
                 throw new ConfigException("Unable to build gateway", e);
             }

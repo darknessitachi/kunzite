@@ -205,8 +205,8 @@ public class DefaultOrderGatewayServiceTest {
     @Test
     public void shouldCreateAndBuildConfiguredGateways() throws Exception {
         GatewayConfig config = new GatewayConfig();
-        config.setGatewayClass(TEST_GATEWAY_NAME);
-        config.setMarketId(TEST_MARKET_ID);
+        config.setClazz(TEST_GATEWAY_NAME);
+        config.setMarket(TEST_MARKET_ID);
         OrderGatewayConfiguration ogc = new OrderGatewayConfiguration();
         ogc.add(config);
         OrderGateway gateway = mock(OrderGateway.class);
@@ -226,8 +226,8 @@ public class DefaultOrderGatewayServiceTest {
     @Test
     public void shouldLogIfFailToCreateGateway() throws Exception {
         GatewayConfig config = new GatewayConfig();
-        config.setGatewayClass(TEST_GATEWAY_NAME);
-        config.setMarketId(TEST_MARKET_ID);
+        config.setClazz(TEST_GATEWAY_NAME);
+        config.setMarket(TEST_MARKET_ID);
         OrderGatewayConfiguration ogc = new OrderGatewayConfiguration();
         ogc.add(config);
         doThrow(GatewayException.class).when(orderGatewayFactory).create(TEST_GATEWAY_NAME);
@@ -251,8 +251,8 @@ public class DefaultOrderGatewayServiceTest {
     @Test(expected = ConfigException.class)
     public void shouldThrowIfUnableToBuildGateway() throws Exception {
         GatewayConfig config = new GatewayConfig();
-        config.setGatewayClass(TEST_GATEWAY_NAME);
-        config.setMarketId(TEST_MARKET_ID);
+        config.setClazz(TEST_GATEWAY_NAME);
+        config.setMarket(TEST_MARKET_ID);
         OrderGatewayConfiguration ogc = new OrderGatewayConfiguration();
         ogc.add(config);
         doThrow(GatewayException.class).when(orderGatewayFactory).create(TEST_GATEWAY_NAME);

@@ -15,8 +15,12 @@
  */
 package com.zaradai.kunzite.trader;
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Slf4jReporter;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.inject.Inject;
+import com.zaradai.kunzite.logging.ContextLogger;
+import com.zaradai.kunzite.logging.LogHelper;
 import com.zaradai.kunzite.trader.config.ConfigException;
 import com.zaradai.kunzite.trader.config.TraderConfiguration;
 import com.zaradai.kunzite.trader.config.md.MarketDataConfigLoader;
@@ -26,8 +30,12 @@ import com.zaradai.kunzite.trader.services.md.MarketDataService;
 import com.zaradai.kunzite.trader.services.orders.OrderGatewayService;
 import com.zaradai.kunzite.trader.services.timer.TimerService;
 import com.zaradai.kunzite.trader.services.trader.TraderService;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 public class Trader extends AbstractIdleService {
+    private final ContextLogger logger;
     private final TraderConfiguration configuration;
     private final StaticDataLoader staticDataLoader;
     private final OrderGatewayConfigLoader orderGatewayConfigLoader;
@@ -36,12 +44,14 @@ public class Trader extends AbstractIdleService {
     private final OrderGatewayService orderGatewayService;
     private final MarketDataService marketDataService;
     private final TimerService timerService;
+    private final Slf4jReporter reporter;
 
     @Inject
-    Trader(TraderConfiguration configuration, StaticDataLoader staticDataLoader,
+    Trader(ContextLogger logger, TraderConfiguration configuration, StaticDataLoader staticDataLoader,
            OrderGatewayConfigLoader orderGatewayConfigLoader, MarketDataConfigLoader marketDataConfigLoader,
            TraderService traderService, OrderGatewayService orderGatewayService, MarketDataService marketDataService,
-           TimerService timerService) {
+           TimerService timerService, MetricRegistry metricRegistry) {
+        this.logger = logger;
         this.configuration = configuration;
         this.staticDataLoader = staticDataLoader;
         this.orderGatewayConfigLoader = orderGatewayConfigLoader;
@@ -50,6 +60,12 @@ public class Trader extends AbstractIdleService {
         this.orderGatewayService = orderGatewayService;
         this.marketDataService = marketDataService;
         this.timerService = timerService;
+
+        reporter = Slf4jReporter.forRegistry(metricRegistry)
+                .outputTo(LoggerFactory.getLogger("com.zaradai.kunzite.trader"))
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .build();
     }
 
     private void build() throws ConfigException {
@@ -60,6 +76,8 @@ public class Trader extends AbstractIdleService {
 
     @Override
     protected void startUp() throws Exception {
+        // start the metric reporter
+        reporter.start(1, TimeUnit.MINUTES);
         // build the services from loaded config
         build();
         // now start each service and wait for them to be started
@@ -67,6 +85,8 @@ public class Trader extends AbstractIdleService {
         orderGatewayService.startAsync().awaitRunning();
         marketDataService.startAsync().awaitRunning();
         timerService.startAsync().awaitRunning();
+        // log it
+        LogHelper.info(logger).add("Status", "Trader Engine is running");
     }
 
     @Override
@@ -75,5 +95,7 @@ public class Trader extends AbstractIdleService {
         marketDataService.stopAsync().awaitTerminated();
         orderGatewayService.stopAsync().awaitTerminated();
         traderService.stopAsync().awaitTerminated();
+        // log it
+        LogHelper.info(logger).add("Status", "Trader Engine has stopped");
     }
 }

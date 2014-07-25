@@ -18,14 +18,19 @@ package com.zaradai.kunzite.trader;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.zaradai.kunzite.config.ConfigurationSource;
 import org.junit.Before;
 
 public class BaseTraderTest {
     private Injector injector;
+    private ConfigurationSource source;
 
     @Before
     public void setUp() throws Exception {
         injector = Guice.createInjector(getTraderModule());
+        // get the config source
+        source = injector.getInstance(ConfigurationSource.class);
+
     }
 
     protected Module getTraderModule() {
@@ -34,5 +39,9 @@ public class BaseTraderTest {
 
     protected Injector getInjector() {
         return injector;
+    }
+
+    protected ConfigurationSource getSource() {
+        return source;
     }
 }
