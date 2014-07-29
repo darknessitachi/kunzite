@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.services;
 
+import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.zaradai.kunzite.logging.ContextLogger;
 import com.zaradai.kunzite.trader.mocks.ContextLoggerMocker;
@@ -24,13 +25,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CountDownLatch;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class AbstractQueueBridgeTest {
     private static final String TEST_NAME = "test";
@@ -39,48 +36,33 @@ public class AbstractQueueBridgeTest {
     private BlockingQueue<Object> mockQueue;
     private ContextLogger logger;
     private AbstractQueueBridge uut;
-    private boolean handleEventCalled;
     private MetricRegistry metricRegistry;
+    private Meter meter;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        handleEventCalled = false;
 
         logger = ContextLoggerMocker.create();
         metricRegistry = mock(MetricRegistry.class);
-        uut = createAbstractQueueBridge(true);
-    }
+        meter = mock(Meter.class);
+        when(metricRegistry.meter(TEST_NAME)).thenReturn(meter);
+        uut = new AbstractQueueBridge(logger, metricRegistry) {
+            @Override
+            public void handleEvent(Object event) {
 
-    private AbstractQueueBridge createAbstractQueueBridge(boolean mockedQueue) {
-        return (mockedQueue) ?
-                new AbstractQueueBridge(logger, metricRegistry) {
-                    @Override
-                    public void handleEvent(Object event) {
-                        handleEventCalled = true;
-                    }
+            }
 
-                    @Override
-                    public String getName() {
-                        return TEST_NAME;
-                    }
+            @Override
+            public String getName() {
+                return TEST_NAME;
+            }
 
-                    @Override
-                    protected BlockingQueue<Object> createQueue() {
-                        return mockQueue;
-                    }
-                } :
-                new AbstractQueueBridge(logger, metricRegistry) {
-                    @Override
-                    public void handleEvent(Object event) {
-                        handleEventCalled = true;
-                    }
-
-                    @Override
-                    public String getName() {
-                        return TEST_NAME;
-                    }
-                };
+            @Override
+            protected BlockingQueue<Object> createQueue() {
+                return mockQueue;
+            }
+        };
     }
 
     @Test
@@ -101,13 +83,25 @@ public class AbstractQueueBridgeTest {
 
     @Test
     public void shouldHandleEvent() throws Exception {
-        uut = createAbstractQueueBridge(false);
-        uut.onEvent(TEST_EVENT);
+        final CountDownLatch barrier = new CountDownLatch(1);
+        uut = new AbstractQueueBridge(logger, metricRegistry) {
+            @Override
+            public void handleEvent(Object event) {
+                barrier.countDown();
+            }
+
+            @Override
+            public String getName() {
+                return TEST_NAME;
+            }
+        };
         uut.startAsync().awaitRunning();
-        TimeUnit.MILLISECONDS.sleep(500);
+        uut.onEvent(TEST_EVENT);
+
+        barrier.await();
 
         uut.stopAsync().awaitTerminated();
 
-        assertThat(handleEventCalled, is(true));
+        verify(meter).mark();
     }
 }
