@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod;
+package com.zaradai.kunzite.trader.tools.core;
 
-public interface EodWriter  extends AutoCloseable {
-    /**
-     * Open a writer for the specified symbol
-     * @param symbol
-     * @throws EodIOException
-     */
-    void open(String symbol) throws EodIOException;
+public class OptionReadException extends Exception {
+    public OptionReadException(String message) {
+        super(message);
+    }
 
-    /**
-     * Write one days data
-     * @param eodData
-     * @throws Exception
-     */
-    void write(EodData eodData) throws Exception;
+    public OptionReadException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod;
+package com.zaradai.kunzite.trader.services.md.eod.download;
 
-public interface EodWriter  extends AutoCloseable {
-    /**
-     * Open a writer for the specified symbol
-     * @param symbol
-     * @throws EodIOException
-     */
-    void open(String symbol) throws EodIOException;
+import com.zaradai.kunzite.trader.services.md.eod.EodData;
+import org.joda.time.DateTime;
 
-    /**
-     * Write one days data
-     * @param eodData
-     * @throws Exception
-     */
-    void write(EodData eodData) throws Exception;
+import java.util.List;
+
+public interface EodDataDownloader {
+    List<EodData> download(String symbol, DateTime from, DateTime until) throws EodDownloadException;
 }

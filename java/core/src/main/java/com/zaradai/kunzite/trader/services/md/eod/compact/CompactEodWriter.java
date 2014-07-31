@@ -13,26 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod;
+package com.zaradai.kunzite.trader.services.md.eod.compact;
 
 import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+import com.zaradai.kunzite.trader.services.md.eod.EodData;
+import com.zaradai.kunzite.trader.services.md.eod.EodIOException;
+import com.zaradai.kunzite.trader.services.md.eod.EodWriter;
 
 import java.io.*;
 
-public class FileEodWriter implements EodWriter {
+public class CompactEodWriter implements EodWriter {
     private final EodEncoder encoder;
+    private final String folder;
     private DataOutput dataOutput = null;
+    private String symbol;
 
     @Inject
-    FileEodWriter(EodEncoder encoder) {
+    CompactEodWriter(EodEncoder encoder, @Assisted String folder) {
         this.encoder = encoder;
+        this.folder = folder;
     }
 
-
     @Override
-    public void open(String uri) throws EodIOException{
+    public void open(String symbol) throws EodIOException {
+        this.symbol = symbol;
         try {
-            dataOutput = openStream(uri);
+            dataOutput = openStream(CompactIO.getFilename(folder, symbol));
             // write the header
             writeHeader();
         }catch (Exception e) {
@@ -41,7 +48,7 @@ public class FileEodWriter implements EodWriter {
     }
 
     private void writeHeader() throws IOException {
-        dataOutput.writeInt(FileEodReader.HEADER_MAGIC_CODE);
+        dataOutput.writeInt(CompactIO.HEADER_MAGIC_CODE);
     }
 
     protected DataOutput openStream(String uri) throws FileNotFoundException {
@@ -49,8 +56,8 @@ public class FileEodWriter implements EodWriter {
     }
 
     @Override
-    public void write(EodDayData eodDayData) throws Exception {
-        encoder.encode(dataOutput, eodDayData);
+    public void write(EodData eodData) throws Exception {
+        encoder.encode(dataOutput, eodData);
     }
 
     @Override

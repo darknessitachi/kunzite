@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod;
+package com.zaradai.kunzite.utils;
 
-import org.joda.time.DateTime;
-
-import java.util.Map;
-
-public interface EodDataDownloader {
-    Map<DateTime, EodData> download(String symbol, DateTime from, DateTime until) throws EodDownloadException;
+public interface FileIO {
+    boolean exists(String path);
+    boolean isDirectory(String path);
 }

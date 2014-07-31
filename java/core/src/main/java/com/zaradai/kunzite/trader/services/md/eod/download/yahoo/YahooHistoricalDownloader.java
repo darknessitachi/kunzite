@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod.yahoo;
+package com.zaradai.kunzite.trader.services.md.eod.download.yahoo;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.zaradai.kunzite.trader.services.md.eod.EodData;
-import com.zaradai.kunzite.trader.services.md.eod.EodDataDownloader;
-import com.zaradai.kunzite.trader.services.md.eod.EodDownloadException;
+import com.zaradai.kunzite.trader.services.md.eod.download.EodDataDownloader;
+import com.zaradai.kunzite.trader.services.md.eod.download.EodDownloadException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -29,14 +29,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Map;
+import java.util.List;
 
 public class YahooHistoricalDownloader implements EodDataDownloader {
     private final QuoteUrlFormatter urlFormatter;
     private final DateTimeFormatter dateTimeFormatter;
-
-    private Map<DateTime, EodData> data;
-    private String symbol;
 
     @Inject
     YahooHistoricalDownloader(QuoteUrlFormatter urlFormatter) {
@@ -45,9 +42,8 @@ public class YahooHistoricalDownloader implements EodDataDownloader {
     }
 
     @Override
-    public Map<DateTime, EodData> download(String symbol, DateTime from, DateTime until) throws EodDownloadException {
-        data = Maps.newHashMap();
-        this.symbol = symbol;
+    public List<EodData> download(String symbol, DateTime from, DateTime until) throws EodDownloadException {
+        List<EodData> data = Lists.newArrayList();
         String encodedUrl = "";
 
         try {
@@ -60,7 +56,7 @@ public class YahooHistoricalDownloader implements EodDataDownloader {
             reader.readLine();
 
             while ((line = reader.readLine()) != null) {
-                parseLine(line);
+                data.add(parseLine(line, symbol));
             }
             reader.close();
         } catch (IOException e) {
@@ -70,20 +66,17 @@ public class YahooHistoricalDownloader implements EodDataDownloader {
         return data;
     }
 
-    private void parseLine(String line) {
+    private EodData parseLine(String line, String symbol) {
         String[] entry = line.split(",");
 
-        EodData eodData = EodData.builder()
+        return EodData.builder()
                 .symbol(symbol)
+                .date(dateTimeFormatter.parseDateTime(entry[0]))
                 .open(Double.parseDouble(entry[1]))
                 .high(Double.parseDouble(entry[2]))
                 .low(Double.parseDouble(entry[3]))
                 .close(Double.parseDouble(entry[6]))
                 .volumne(Long.parseLong(entry[5]))
                 .build();
-
-        DateTime dateTime = dateTimeFormatter.parseDateTime(entry[0]);
-
-        data.put(dateTime, eodData);
     }
 }

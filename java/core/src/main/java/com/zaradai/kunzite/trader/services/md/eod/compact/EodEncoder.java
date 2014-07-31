@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod;
+package com.zaradai.kunzite.trader.services.md.eod.compact;
+
+import com.zaradai.kunzite.trader.services.md.eod.EodData;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 
 public interface EodEncoder {
-    void encode(DataOutput dataOutput, EodDayData data) throws Exception;
-    void decode(DataInput dataInput, EodDayData data) throws Exception;
+    void encode(DataOutput dataOutput, EodData data) throws Exception;
+    EodData decode(DataInput dataInput) throws Exception;
 }

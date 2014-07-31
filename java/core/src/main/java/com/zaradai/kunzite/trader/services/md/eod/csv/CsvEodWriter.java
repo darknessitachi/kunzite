@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod;
+package com.zaradai.kunzite.trader.services.md.eod.csv;
 
-import org.joda.time.DateTime;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+import com.zaradai.kunzite.trader.services.md.eod.EodData;
+import com.zaradai.kunzite.trader.services.md.eod.EodIOException;
+import com.zaradai.kunzite.trader.services.md.eod.EodWriter;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -26,20 +30,23 @@ import java.text.DecimalFormat;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class CsvFileEodWriter implements EodWriter {
+public class CsvEodWriter implements EodWriter {
+    private final String folder;
     private BufferedWriter writer;
     private final DateTimeFormatter dateTimeFormatter;
     private final DecimalFormat doubleFormat;
 
-    public CsvFileEodWriter() {
-        dateTimeFormatter = DateTimeFormat.forPattern("MM/dd/YYYY");
+    @Inject
+    CsvEodWriter(@Assisted String folder) {
+        this.folder = folder;
+        dateTimeFormatter = DateTimeFormat.forPattern(CsvIO.DATE_FORMAT_PATTERN);
         doubleFormat = new DecimalFormat("0.00");
     }
 
     @Override
-    public void open(String uri) throws EodIOException {
+    public void open(String symbol) throws EodIOException {
         try {
-            writer = new BufferedWriter(new FileWriter(uri));
+            writer = new BufferedWriter(new FileWriter(CsvIO.getFilename(folder, symbol)));
             writeHeader();
         } catch (IOException e) {
             throw new EodIOException("Unable to open file for writing", e);
@@ -47,23 +54,15 @@ public class CsvFileEodWriter implements EodWriter {
     }
 
     private void writeHeader() throws IOException {
-        writer.write("Date,Symbol,Open,High,Low,Close,Volume");
+        writer.write(CsvIO.HEADER_ROW);
         writer.newLine();
     }
 
     @Override
-    public void write(EodDayData eodDayData) throws Exception {
-        checkNotNull(eodDayData);
+    public void write(EodData eodData) throws Exception {
+        checkNotNull(eodData);
 
-        for (EodData eodData : eodDayData.getData()) {
-            write(eodDayData.getDate(), eodData);
-        }
-    }
-
-    private void write(DateTime date, EodData eodData) throws IOException {
-        writer.write(date.toString(dateTimeFormatter));
-        writer.write(",");
-        writer.write(eodData.getSymbol());
+        writer.write(eodData.getDate().toString(dateTimeFormatter));
         writer.write(",");
         writer.write(doubleFormat.format(eodData.getOpen()));
         writer.write(",");

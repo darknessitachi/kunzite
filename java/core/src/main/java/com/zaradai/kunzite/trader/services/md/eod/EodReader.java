@@ -18,15 +18,20 @@ package com.zaradai.kunzite.trader.services.md.eod;
 import org.joda.time.DateTime;
 
 public interface EodReader extends AutoCloseable {
-    void open(String uri) throws EodIOException;
     /**
-     * Gets a list of <Code>EodData</Code> data for the given date.
+     * Open a reader for the specified symbol
+     * @param symbol
+     * @throws EodIOException
+     */
+    void open(String symbol) throws EodIOException;
+    /**
+     * Gets an <Code>EodData</Code> data for the given date.
      * Note implementations will only read forward, so it is invalid to call getNext with a date previous
      * to last called
      * @param date
      * @return
      */
-    EodDayData getNext(DateTime date);
+    EodData getNext(DateTime date);
     // Simple iterative reading of Eod Data
-    EodDayData getNext();
+    EodData getNext();
 }

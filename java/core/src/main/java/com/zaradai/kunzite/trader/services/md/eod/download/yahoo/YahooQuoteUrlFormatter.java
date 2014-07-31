@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod.yahoo;
+package com.zaradai.kunzite.trader.services.md.eod.download.yahoo;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;

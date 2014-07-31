@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod.yahoo;
+package com.zaradai.kunzite.trader.services.md.eod.download.yahoo;
 
 import com.zaradai.kunzite.trader.services.md.eod.EodData;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import java.util.Map;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -34,7 +34,7 @@ public class YahooHistoricalDownloaderTest {
     public void shouldDownload() throws Exception {
         YahooHistoricalDownloader uut = new YahooHistoricalDownloader(new YahooQuoteUrlFormatter());
 
-        Map<DateTime, EodData> data = uut.download(SYMBOL, FROM_DATE, UNTIL_DATE);
+        List<EodData> data = uut.download(SYMBOL, FROM_DATE, UNTIL_DATE);
 
         assertThat(data.size(), is(SIZE_OF_DATA));
     }

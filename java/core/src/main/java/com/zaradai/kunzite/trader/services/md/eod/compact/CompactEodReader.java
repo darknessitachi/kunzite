@@ -13,31 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod;
+package com.zaradai.kunzite.trader.services.md.eod.compact;
 
 import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+import com.zaradai.kunzite.trader.services.md.eod.EodData;
+import com.zaradai.kunzite.trader.services.md.eod.EodIOException;
+import com.zaradai.kunzite.trader.services.md.eod.EodReader;
 import org.joda.time.DateTime;
 
 import java.io.*;
 
-public class FileEodReader implements EodReader {
-    static final int HEADER_MAGIC_CODE = 0xE456D342;
+/**
+ * Reads EOD data for a given symbol from a binary encoded file.
+ * The file is located in a supplied folder with a filename of Symbol.bmd
+ */
+public class CompactEodReader implements EodReader {
 
     private final EodEncoder encoder;
+    private final String folder;
     private DataInput dataInput = null;
-    private final EodDayData last;
+    private EodData last;
+    private String symbol;
 
     @Inject
-    FileEodReader(EodEncoder encoder) {
+    CompactEodReader(EodEncoder encoder, @Assisted String folder) {
         this.encoder = encoder;
-        last = new EodDayData();
+        this.folder = folder;
+        last = new EodData();
     }
 
     @Override
-    public void open(String uri) throws EodIOException {
+    public void open(String symbol) throws EodIOException {
+        this.symbol = symbol;
         try {
-            dataInput = openStream(uri);
+            dataInput = openStream(CompactIO.getFilename(folder, symbol));
             validateHeader();
+            last = EodData.START_EOD;
         } catch (Exception e) {
             throw new EodIOException("Unable to open file", e);
         }
@@ -49,7 +61,7 @@ public class FileEodReader implements EodReader {
 
     private void validateHeader() throws EodIOException {
         try {
-            if (dataInput.readInt() != HEADER_MAGIC_CODE) {
+            if (dataInput.readInt() != CompactIO.HEADER_MAGIC_CODE) {
                 throw new EodIOException("Header mismatch");
             }
         } catch (IOException e) {
@@ -58,7 +70,7 @@ public class FileEodReader implements EodReader {
     }
 
     @Override
-    public EodDayData getNext(DateTime date) {
+    public EodData getNext(DateTime date) {
         while (last.getDate().isBefore(date)) {
             try {
                 readNext();
@@ -71,7 +83,7 @@ public class FileEodReader implements EodReader {
     }
 
     @Override
-    public EodDayData getNext() {
+    public EodData getNext() {
         try {
             readNext();
         } catch (Exception e) {
@@ -82,7 +94,9 @@ public class FileEodReader implements EodReader {
     }
 
     private void readNext() throws Exception {
-        encoder.decode(dataInput, last);
+        last = encoder.decode(dataInput);
+        // for  efficiency of space symbol is not stored with data as the filename contains this information
+        last.setSymbol(symbol);
     }
 
     @Override

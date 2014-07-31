@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod.yahoo;
+package com.zaradai.kunzite.trader.services.md.eod;
 
-import org.joda.time.DateTime;
-
-public interface QuoteUrlFormatter {
-    String getUrl(String symbol, DateTime from, DateTime until);
+public interface EodReaderFactory {
+    EodReader create(String folder);
 }

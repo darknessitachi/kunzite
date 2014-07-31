@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod;
+package com.zaradai.kunzite.utils;
 
-public interface EodWriter  extends AutoCloseable {
-    /**
-     * Open a writer for the specified symbol
-     * @param symbol
-     * @throws EodIOException
-     */
-    void open(String symbol) throws EodIOException;
+import java.io.File;
 
-    /**
-     * Write one days data
-     * @param eodData
-     * @throws Exception
-     */
-    void write(EodData eodData) throws Exception;
+public class SystemFileIO implements FileIO {
+    @Override
+    public boolean exists(String path) {
+        return new File(path).exists();
+    }
+
+    @Override
+    public boolean isDirectory(String path) {
+        return new File(path).isDirectory();
+    }
 }

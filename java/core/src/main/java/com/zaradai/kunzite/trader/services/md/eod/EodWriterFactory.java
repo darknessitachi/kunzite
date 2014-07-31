@@ -15,18 +15,6 @@
  */
 package com.zaradai.kunzite.trader.services.md.eod;
 
-public interface EodWriter  extends AutoCloseable {
-    /**
-     * Open a writer for the specified symbol
-     * @param symbol
-     * @throws EodIOException
-     */
-    void open(String symbol) throws EodIOException;
-
-    /**
-     * Write one days data
-     * @param eodData
-     * @throws Exception
-     */
-    void write(EodData eodData) throws Exception;
+public interface EodWriterFactory {
+    EodWriter create(String folder);
 }

@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod;
+package com.zaradai.kunzite.trader.services.md.eod.download.yahoo;
 
-public class EodDownloadException extends Exception {
-    public EodDownloadException(String message) {
-        super(message);
-    }
+import org.joda.time.DateTime;
 
-    public EodDownloadException(String message, Throwable cause) {
-        super(message, cause);
-    }
+public interface QuoteUrlFormatter {
+    String getUrl(String symbol, DateTime from, DateTime until);
 }

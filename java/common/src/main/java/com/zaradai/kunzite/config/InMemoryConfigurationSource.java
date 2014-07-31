@@ -15,13 +15,19 @@
  */
 package com.zaradai.kunzite.config;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 public class InMemoryConfigurationSource extends AbstractConfigurationSource {
+    private static final Logger LOGGER = LoggerFactory.getLogger(InMemoryConfigurationSource.class);
+
     private final Map<String, String> configurationData;
 
     public InMemoryConfigurationSource() {
@@ -30,6 +36,11 @@ public class InMemoryConfigurationSource extends AbstractConfigurationSource {
 
     protected Map<String, String> createConfigMap() {
         return Maps.newConcurrentMap();
+    }
+
+    @Override
+    public void addProperties(Properties properties) {
+        storeValues(properties);
     }
 
     @Override
@@ -48,5 +59,19 @@ public class InMemoryConfigurationSource extends AbstractConfigurationSource {
 
     protected Set<String> getKeys() {
         return ImmutableSet.copyOf(configurationData.keySet());
+    }
+
+    private void storeValues(final Properties properties) {
+        if (properties.isEmpty()) {
+            return;
+        }
+
+        for (final String key : properties.stringPropertyNames()) {
+            final String value = properties.getProperty(key);
+            if (!Strings.isNullOrEmpty(value)) {
+                set(key, value);
+                LOGGER.debug("{}={}", key, value);
+            }
+        }
     }
 }

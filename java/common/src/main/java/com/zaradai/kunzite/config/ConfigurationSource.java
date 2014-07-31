@@ -15,12 +15,21 @@
  */
 package com.zaradai.kunzite.config;
 
+import java.util.Properties;
+
 /**
  * Provides a key value store to set and retrieve configuration data.
  * Helper functions provided to do common type conversions.
  */
 public interface ConfigurationSource {
     void setup(String uri) throws ConfigurationException;
+
+    /**
+     * Add properties to the configuration source
+     * @param properties
+     * @throws ConfigurationException
+     */
+    void addProperties(Properties properties);
 
     /**
      * Get string configuration value to associated key.

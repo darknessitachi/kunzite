@@ -15,7 +15,6 @@
  */
 package com.zaradai.kunzite.config;
 
-import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +39,7 @@ public class PropertiesConfigurationSource extends InMemoryConfigurationSource {
             throw new ConfigurationException("Unable to load properties file", e);
         }
 
-        storeValues(properties);
+        addProperties(properties);
         LOGGER.info("Loaded {} entries", getNumEntries());
 
     }
@@ -70,20 +69,6 @@ public class PropertiesConfigurationSource extends InMemoryConfigurationSource {
 
     protected Properties createProperties() {
         return new Properties();
-    }
-
-    private void storeValues(final Properties properties) {
-        if (properties.isEmpty()) {
-            return;
-        }
-
-        for (final String key : properties.stringPropertyNames()) {
-            final String value = properties.getProperty(key);
-            if (!Strings.isNullOrEmpty(value)) {
-                set(key, value);
-                LOGGER.debug("{}={}", key, value);
-            }
-        }
     }
 
     private URL getConfigUrl(String uri) throws ConfigurationException {

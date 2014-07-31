@@ -15,6 +15,7 @@
  */
 package com.zaradai.kunzite.trader.services.md.eod;
 
+import com.zaradai.kunzite.trader.services.md.eod.compact.CompactEodEncoder;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class CompactEodEncoderTest {
     public void shouldFailToEncodeWithInvalidStream() throws Exception {
         CompactEodEncoder uut = new CompactEodEncoder();
 
-        uut.encode(null, new EodDayData());
+        uut.encode(null, new EodData());
     }
 
     @Test(expected = NullPointerException.class)
@@ -73,46 +74,32 @@ public class CompactEodEncoderTest {
         eodData.setLow(TEST_LOW);
         eodData.setHigh(TEST_HIGH);
         eodData.setOpen(TEST_OPEN);
-        EodDayData eodDayData = new EodDayData();
-        eodDayData.setDate(TEST_DATE);
-        eodDayData.add(eodData);
+        eodData.setDate(TEST_DATE);
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(2048);
         DataOutputStream outputStream = new DataOutputStream(byteArrayOutputStream);
 
-        uut.encode(outputStream, eodDayData);
+        uut.encode(outputStream, eodData);
         outputStream.flush();
         byte[] bytes = byteArrayOutputStream.toByteArray();
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         DataInputStream inputStream = new DataInputStream(byteArrayInputStream);
 
-        EodDayData read = new EodDayData();
-        uut.decode(inputStream, read);
+        EodData decoded = uut.decode(inputStream);
 
-        assertThat(read.getDate(), is(TEST_DATE));
-        assertThat(read.getData().size(), is(1));
-        EodData testEodData = read.getData().get(0);
-
-        assertThat(testEodData.getSymbol(), is(TEST_SYMBOL));
-        assertThat(testEodData.getOpen(), is(TEST_OPEN));
-        assertThat(testEodData.getHigh(), is(TEST_HIGH));
-        assertThat(testEodData.getLow(), is(TEST_LOW));
-        assertThat(testEodData.getClose(), is(TEST_CLOSE));
-        assertThat(testEodData.getVolume(), is(TEST_VOLUME));
+        assertThat(decoded.getDate(), is(TEST_DATE));
+        assertThat(decoded.getOpen(), is(TEST_OPEN));
+        assertThat(decoded.getHigh(), is(TEST_HIGH));
+        assertThat(decoded.getLow(), is(TEST_LOW));
+        assertThat(decoded.getClose(), is(TEST_CLOSE));
+        assertThat(decoded.getVolume(), is(TEST_VOLUME));
     }
 
     @Test(expected = NullPointerException.class)
     public void shouldFailToDecodeWithInvalidStream() throws Exception {
         CompactEodEncoder uut = new CompactEodEncoder();
 
-        uut.decode(null, new EodDayData());
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void shouldFailToDecodeWithInvalidData() throws Exception {
-        CompactEodEncoder uut = new CompactEodEncoder();
-
-        uut.decode(mockInput, null);
+        uut.decode(null);
     }
 }

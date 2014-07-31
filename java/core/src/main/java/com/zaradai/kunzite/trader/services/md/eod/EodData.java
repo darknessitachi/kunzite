@@ -15,13 +15,34 @@
  */
 package com.zaradai.kunzite.trader.services.md.eod;
 
-public class EodData {
+import org.joda.time.DateTime;
+
+public class EodData implements Comparable<EodData> {
+    public static final EodData START_EOD = new EodData(new DateTime(1800, 1, 1, 0, 0));
+
+    private DateTime date;
     private String symbol;
     private double open;
     private double high;
     private double low;
     private double close;
     private long volume;
+
+    public EodData(DateTime date) {
+        this.date = date;
+    }
+
+    public EodData() {
+
+    }
+
+    public DateTime getDate() {
+        return date;
+    }
+
+    public void setDate(DateTime date) {
+        this.date = date;
+    }
 
     public String getSymbol() {
         return symbol;
@@ -75,6 +96,11 @@ public class EodData {
         return new EodDataBuilder();
     }
 
+    @Override
+    public int compareTo(EodData o) {
+        return date.compareTo(o.date);
+    }
+
     public static class EodDataBuilder {
         private final EodData eodData;
 
@@ -113,6 +139,11 @@ public class EodData {
 
         public EodDataBuilder volumne(long volume) {
             eodData.setVolume(volume);
+            return this;
+        }
+
+        public EodDataBuilder date(DateTime date) {
+            eodData.setDate(date);
             return this;
         }
     }

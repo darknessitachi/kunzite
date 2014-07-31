@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.zaradai.kunzite.trader.services.md.eod;
+package com.zaradai.kunzite.trader.services.md.eod.compact;
 
+import com.zaradai.kunzite.trader.services.md.eod.EodIOException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,16 +25,17 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 
-public class FileEodReaderTest {
+public class CompactEodReaderTest {
+    private static final String TEST_FOLDER = "test";
     private EodEncoder eodEncoder;
-    private FileEodReader uut;
+    private CompactEodReader uut;
     private DataInput mockInput;
 
     @Before
     public void setUp() throws Exception {
         eodEncoder = mock(EodEncoder.class);
         mockInput = mock(DataInput.class);
-        uut = new FileEodReader(eodEncoder) {
+        uut = new CompactEodReader(eodEncoder, TEST_FOLDER) {
             @Override
             protected DataInput openStream(String uri) throws FileNotFoundException {
                 return mockInput;
@@ -43,7 +45,7 @@ public class FileEodReaderTest {
 
     @Test
     public void shouldOpenAndTestHeader() throws Exception {
-        when(mockInput.readInt()).thenReturn(FileEodReader.HEADER_MAGIC_CODE);
+        when(mockInput.readInt()).thenReturn(CompactIO.HEADER_MAGIC_CODE);
 
         uut.open("test");
     }
@@ -57,7 +59,7 @@ public class FileEodReaderTest {
 
     @Test(expected = EodIOException.class)
     public void shouldFailIfOpenThrows() throws Exception {
-        uut = new FileEodReader(eodEncoder) {
+        uut = new CompactEodReader(eodEncoder, TEST_FOLDER) {
             @Override
             protected DataInput openStream(String uri) throws FileNotFoundException {
                 throw new FileNotFoundException("Error");

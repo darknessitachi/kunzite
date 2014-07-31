@@ -17,6 +17,8 @@ package com.zaradai.kunzite.config;
 
 import com.google.common.base.Strings;
 
+import java.util.Properties;
+
 /**
  * Provides a default implementation for {link ConfigurationSource }.
  * Default action is to try and type coerce given String representation and catch
@@ -29,6 +31,11 @@ public abstract class AbstractConfigurationSource implements ConfigurationSource
         if (uri == null) {
             throw new ConfigurationException("Invalid URI");
         }
+    }
+
+    @Override
+    public void addProperties(Properties properties) {
+
     }
 
     @Override
